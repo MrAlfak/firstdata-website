@@ -3,6 +3,7 @@ FROM docker.arvancloud.ir/node:22-alpine AS builder
 WORKDIR /usr/src/app
 
 ENV NODE_NO_WARNINGS=1
+ENV SKIP_DEV_PORT_GUARD=1
 
 # مهم: نصب کتابخانه‌های پایه برای اجرای esbuild و sharp در Alpine Linux
 RUN apk add --no-cache libc6-compat
