@@ -1,0 +1,11 @@
+/* FIRST DATA / اولین دیتا — https://firstdata.ir */
+
+Team: First Data
+Site: https://firstdata.ir
+Contact: info@firstdata.ir
+Phone: +98 933 127 4039
+
+/* developers */
+We build custom web, mobile, and desktop software.
+Open the browser console for a surprise.
+Interested in working with us? info@firstdata.ir

@@ -1,0 +1,69 @@
+---
+description: First Data Next.js marketing site — version, changelog, panel, and admin conventions
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# First Data (Next.js) — Project Rules
+
+## Stack
+
+- **Next.js 14** App Router, React 18, Tailwind, TypeScript
+- **SQLite** (`data/auth.db`) via `better-sqlite3` — auth + client panel
+- **Bilingual** fa/en — `i18n/dictionaries.ts`, `i18n/panel.ts`, `i18n/admin.ts`, `LangProvider`
+- **Deploy:** `output: "standalone"` — use `npm run dev:4000` / `npm run start:4000`
+
+This is **not** a Laravel project. Do not apply Laravel/Metronic/Blade rules here.
+
+## Version & Changelog (MANDATORY)
+
+**Single source of truth:** `config/changelog.ts`
+
+When shipping **any user-visible change** (UI, panel, admin, API behavior, PWA, i18n):
+
+1. Bump `APP_VERSION` in `config/changelog.ts` (semver: patch for fixes, minor for features)
+2. Add a new entry at the **top** of `CHANGELOG[]` with:
+   - `version`, `date` (ISO `YYYY-MM-DD`)
+   - `items.fa[]` and `items.en[]` — concise bullets of what changed
+3. Sync `package.json` `"version"` with `APP_VERSION`
+4. Changelog is shown in footer badge, `ChangelogModal`, and terms page
+
+**Do not** ship visible updates without updating the changelog.
+
+## i18n
+
+- No hardcoded user-visible strings in components — use `useT()` → `d`, `p` (panel), `a` (admin)
+- Persian digits: `fd()` from `LangProvider` for numeric display in FA
+
+## Panel & Admin Auth
+
+- Session cookie: `fd_session` (JWT, 7 days)
+- **Client panel:** `/panel/*` — session required; data scoped by user + organization membership
+- **Staff admin UI:** `/admin/*` — roles `staff` or `admin` (or `ADMIN_API_KEY` on API)
+- **Production:** set `ADMIN_API_KEY` in `.env`; assign `users.role = 'admin'` or `'staff'` in DB
+- Admin API helper: `requireStaffFromRequest()` + `isStaffAuthorized()` in `lib/panel/auth.ts`
+
+## File Storage
+
+- Uploads: `data/uploads/` via `getUploadsRoot()`
+- Contracts: PDF preferred; signed metadata in `contracts.signature_*` columns
+
+## Payments
+
+- **Zarinpal** when `ZARINPAL_MERCHANT_ID` is set — `POST /api/panel/invoices/[id]/pay`
+- Fallback: manual `pay_url` on invoice row
+
+## Notifications
+
+- In-app: `createNotification()` in `lib/panel/repository.ts`
+- Email/SMS: `dispatchPanelNotification()` in `lib/panel/notify.ts` (webhooks from `.env`)
+
+## Build & Verify
+
+After frontend/API changes:
+
+```bash
+npm run build
+npx tsc --noEmit
+```

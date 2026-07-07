@@ -1,0 +1,31 @@
+# Dokploy remote-source build — full app is downloaded from SOURCE_ZIP_URL at build time.
+# This avoids Dokploy drop-deployment path traversal issues with Next.js route groups like app/(site)/.
+
+ARG SOURCE_ZIP_URL
+FROM docker.arvancloud.ir/alpine:3.21 AS source
+ARG SOURCE_ZIP_URL
+RUN apk add --no-cache curl unzip \
+  && curl -fsSL "$SOURCE_ZIP_URL" -o /tmp/source.zip \
+  && mkdir -p /src \
+  && unzip -q /tmp/source.zip -d /src
+
+FROM docker.arvancloud.ir/node:22-alpine AS builder
+WORKDIR /usr/src/app
+ENV NODE_NO_WARNINGS=1
+RUN apk add --no-cache libc6-compat
+COPY --from=source /src/package.json ./
+RUN npm install
+COPY --from=source /src/ ./
+RUN npm run build
+
+FROM docker.arvancloud.ir/node:22-alpine AS runner
+WORKDIR /usr/src/app
+ENV NODE_NO_WARNINGS=1
+ENV NODE_ENV=production
+ENV PORT=3000
+COPY --from=builder /usr/src/app/public ./public
+COPY --from=builder /usr/src/app/.next/standalone ./
+COPY --from=builder /usr/src/app/.next/static ./.next/static
+EXPOSE 3000
+VOLUME ["/usr/src/app/data"]
+CMD ["node", "server.js"]

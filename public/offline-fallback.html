@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080c08" />
+  <title>آفلاین — اولین دیتا</title>
+  <style>
+    :root {
+      --bg: #080c08;
+      --fg: #33ff66;
+      --dim: #1c7838;
+      --amber: #ffb020;
+      --paper: #33ff66;
+      --ink: #080c08;
+    }
+    html[data-theme="light"] {
+      --bg: #eef4e8;
+      --fg: #125026;
+      --dim: #5a9a6e;
+      --amber: #a66c00;
+      --paper: #125026;
+      --ink: #eef4e8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--paper);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 5rem 1rem 2rem;
+    }
+    .eyebrow {
+      font-size: 10px;
+      color: color-mix(in srgb, var(--amber) 70%, transparent);
+      margin-bottom: 1rem;
+    }
+    .title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      letter-spacing: -0.04em;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .badge {
+      border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+      background: color-mix(in srgb, var(--amber) 8%, transparent);
+      color: color-mix(in srgb, var(--amber) 85%, transparent);
+      font-size: 10px;
+      padding: 0.25rem 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: color-mix(in srgb, var(--paper) 90%, transparent);
+    }
+    p.lead {
+      font-size: 0.875rem;
+      color: color-mix(in srgb, var(--paper) 60%, transparent);
+      max-width: 36rem;
+    }
+    .terminal {
+      margin-top: 1.5rem;
+      border: 1px solid color-mix(in srgb, var(--paper) 15%, transparent);
+      background: color-mix(in srgb, var(--paper) 2%, transparent);
+      overflow: hidden;
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
+      background: color-mix(in srgb, var(--paper) 3%, transparent);
+      padding: 0.5rem 0.75rem;
+      font-size: 10px;
+      color: color-mix(in srgb, var(--paper) 35%, transparent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .dots { display: flex; gap: 0.35rem; }
+    .dots span {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent);
+      background: color-mix(in srgb, var(--amber) 20%, transparent);
+    }
+    .terminal-body {
+      padding: 1rem;
+      font-size: 11px;
+      direction: ltr;
+      text-align: left;
+      color: color-mix(in srgb, var(--paper) 60%, transparent);
+      min-height: 9rem;
+    }
+    .warn { color: color-mix(in srgb, var(--amber) 80%, transparent); }
+    .err { color: #ff7070; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    button, a.btn {
+      appearance: none;
+      border: 1px solid color-mix(in srgb, var(--paper) 30%, transparent);
+      background: transparent;
+      color: color-mix(in srgb, var(--paper) 75%, transparent);
+      padding: 0.65rem 1.1rem;
+      font: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button.primary {
+      border-color: var(--paper);
+      background: color-mix(in srgb, var(--paper) 8%, transparent);
+      color: var(--paper);
+    }
+    .hint {
+      margin-top: 1rem;
+      font-size: 10px;
+      color: color-mix(in srgb, var(--paper) 35%, transparent);
+    }
+    html[dir="rtl"] .fa-copy { display: block; }
+    html[dir="rtl"] .en-copy { display: none; }
+    html[dir="ltr"] .fa-copy { display: none; }
+    html[dir="ltr"] .en-copy { display: block; }
+    html[dir="rtl"] h2, html[dir="rtl"] p.lead, html[dir="rtl"] .hint { font-family: Tahoma, sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="fa-copy">
+      <p class="eyebrow">&gt; خطا — شبکه در دسترس نیست</p>
+      <div class="title-row">
+        <h1>NET</h1>
+        <span class="badge">ERR_OFFLINE</span>
+      </div>
+      <h2>آفلاین هستید</h2>
+      <p class="lead">اتصال اینترنت یا سرور برقرار نیست. بعد از اتصال دوباره تلاش کنید.</p>
+    </div>
+    <div class="en-copy">
+      <p class="eyebrow">&gt; error — network unreachable</p>
+      <div class="title-row">
+        <h1>NET</h1>
+        <span class="badge">ERR_OFFLINE</span>
+      </div>
+      <h2>You’re offline</h2>
+      <p class="lead">No internet connection or server unreachable. Reconnect and try again.</p>
+    </div>
+
+    <div class="terminal" aria-hidden="true">
+      <div class="terminal-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span>bash — fd.net</span>
+      </div>
+      <div class="terminal-body">
+        <div>$ ping firstdata.ir -c 4</div>
+        <div class="warn">Request timeout for icmp_seq 0</div>
+        <div class="warn">Request timeout for icmp_seq 1</div>
+        <div class="err">4 packets transmitted, 0 received, 100% packet loss</div>
+        <div>root@fd:~$ <span class="warn">▮</span></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary" onclick="location.reload()">
+        <span class="fa-copy">تلاش دوباره</span>
+        <span class="en-copy">Retry</span>
+      </button>
+      <a class="btn" href="/">
+        <span class="fa-copy">بازگشت به خانه</span>
+        <span class="en-copy">Back home</span>
+      </a>
+    </div>
+
+    <p class="hint fa-copy">این صفحه آفلاین توسط Service Worker اولین دیتا نمایش داده می‌شود.</p>
+    <p class="hint en-copy">Served by the First Data offline service worker.</p>
+  </div>
+
+  <script>
+    (function () {
+      try {
+        var fa = localStorage.getItem("fd-lang") === "fa";
+        var root = document.documentElement;
+        root.lang = fa ? "fa" : "en";
+        root.dir = fa ? "rtl" : "ltr";
+        var theme = localStorage.getItem("fd-theme");
+        if (theme === "light") root.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

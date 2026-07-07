@@ -1,0 +1,8 @@
+Contact: mailto:info@firstdata.ir
+Contact: tel:+989331274039
+Preferred-Languages: en, fa
+Canonical: https://firstdata.ir/
+Policy: https://firstdata.ir/contactus
+
+# If you discover a security issue, please report it responsibly:
+# Email info@firstdata.ir with subject "Security Report"

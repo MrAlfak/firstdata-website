@@ -1,0 +1,21 @@
+services:
+  firstdata:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      AUTH_SECRET: ${AUTH_SECRET:-change-me-in-production}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-false}
+      OTP_EMAIL_WEBHOOK: ${OTP_EMAIL_WEBHOOK:-}
+      OTP_SMS_WEBHOOK: ${OTP_SMS_WEBHOOK:-}
+      CONTACT_WEBHOOK: ${CONTACT_WEBHOOK:-}
+      ERROR_REPORT_WEBHOOK: ${ERROR_REPORT_WEBHOOK:-}
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN:-}
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-}
+    volumes:
+      - firstdata_data:/usr/src/app/data
+    restart: unless-stopped
+
+volumes:
+  firstdata_data:

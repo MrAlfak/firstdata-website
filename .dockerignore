@@ -1,0 +1,29 @@
+# build outputs
+.next
+out
+dist
+
+# dependencies (داخل container نصب می‌شن)
+node_modules
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# local env files (در Production نمی‌خوایم)
+.env.local
+.env.development
+.env.test
+
+# system files
+.DS_Store
+Thumbs.db
+
+# git
+.git
+.gitignore
+
+# docker/meta files
+docker-compose.yml
