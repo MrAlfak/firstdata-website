@@ -1,10 +1,19 @@
 /**
  * Guard production build: refuse to run while a Next dev server is listening.
  * Concurrent dev + build corrupts .next and breaks both processes.
+ * Skipped in CI/Docker where other services may legitimately bind common ports.
  */
 import { execSync } from "node:child_process";
+import fs from "node:fs";
 
 const PORTS = [3000, 4000];
+
+function shouldSkipPortGuard() {
+  if (process.env.CI === "true" || process.env.CI === "1") return true;
+  if (process.env.SKIP_DEV_PORT_GUARD === "1") return true;
+  if (fs.existsSync("/.dockerenv")) return true;
+  return false;
+}
 
 function isPortListening(port) {
   try {
@@ -25,7 +34,7 @@ function isPortListening(port) {
   }
 }
 
-const busy = PORTS.filter(isPortListening);
+const busy = shouldSkipPortGuard() ? [] : PORTS.filter(isPortListening);
 
 if (busy.length > 0) {
   console.error(
