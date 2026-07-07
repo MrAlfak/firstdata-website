@@ -13,6 +13,7 @@ alwaysApply: true
 - **SQLite** (`data/auth.db`) via `better-sqlite3` — auth + client panel
 - **Bilingual** fa/en — `i18n/dictionaries.ts`, `i18n/panel.ts`, `i18n/admin.ts`, `LangProvider`
 - **Deploy:** `output: "standalone"` — use `npm run dev:4000` / `npm run start:4000`
+- **Git:** `https://github.com/MrAlfak/firstdata-website.git` (branch `main`) — canonical repo for all pushes and Dokploy deploys
 
 This is **not** a Laravel project. Do not apply Laravel/Metronic/Blade rules here.
 
