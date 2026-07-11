@@ -6,16 +6,19 @@ FROM docker.arvancloud.ir/alpine:3.21 AS source
 ARG SOURCE_ZIP_URL
 RUN apk add --no-cache curl unzip \
   && curl -fsSL "$SOURCE_ZIP_URL" -o /tmp/source.zip \
-  && mkdir -p /src \
-  && unzip -q /tmp/source.zip -d /src
+  && mkdir -p /src/unpack /src/app \
+  && unzip -q /tmp/source.zip -d /src/unpack \
+  && mv /src/unpack/*/* /src/app/
 
 FROM docker.arvancloud.ir/node:22-alpine AS builder
 WORKDIR /usr/src/app
 ENV NODE_NO_WARNINGS=1
+ENV SKIP_DEV_PORT_GUARD=1
 RUN apk add --no-cache libc6-compat
-COPY --from=source /src/package.json ./
+COPY --from=source /src/app/package.json ./
+COPY --from=source /src/app/package-lock.json* ./
 RUN npm install
-COPY --from=source /src/ ./
+COPY --from=source /src/app/ ./
 RUN npm run build
 
 FROM docker.arvancloud.ir/node:22-alpine AS runner
