@@ -332,6 +332,33 @@ html[data-preloader="active"] {
   animation: iran-grid-city-pulse 1.8s ease-in-out infinite;
 }
 
+@keyframes product-demo-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.85; }
+}
+
+.product-demo-pulse {
+  animation: product-demo-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes product-demo-node-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(51 255 102 / 0); }
+  50% { box-shadow: 0 0 12px 1px rgb(51 255 102 / 0.25); }
+}
+
+.product-demo-node {
+  animation: product-demo-node-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes product-demo-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.product-demo-cursor {
+  animation: product-demo-cursor 1s step-end infinite;
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   .animate-scanline,
@@ -347,6 +374,11 @@ html[data-preloader="active"] {
   }
 
   .iran-grid-city-pulse,
+  .product-demo-pulse,
+  .product-demo-node,
+  .product-demo-cursor {
+    animation: none !important;
+  }
   .iran-grid-map__bright--on {
     animation: none !important;
   }

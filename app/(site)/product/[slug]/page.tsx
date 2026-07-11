@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
+import ProductJsonLdScript from "@/components/seo/ProductJsonLdScript";
 import { PRODUCT_SLUGS, PRODUCT_SLUG_TO_PAGE } from "@/config/navigation";
 import { productPageDictionaries } from "@/i18n/product-page";
 import { productSubPageDictionaries } from "@/i18n/product-sub-page";
+import { buildProductJsonLd } from "@/lib/seo/product-jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import ProductSubClient from "./ProductSubClient";
 
@@ -52,8 +54,18 @@ export default async function ProductSubPage({ params }: Props) {
     { name: TITLES[slug] ?? slug },
   ];
 
+  const title = TITLES[slug] ?? slug;
+  const description = productSubPageDictionaries.en[slug as keyof typeof productSubPageDictionaries.en].hero.body;
+
+  const jsonLd = buildProductJsonLd({
+    slug: slug as keyof typeof productSubPageDictionaries.en,
+    name: title,
+    description,
+  });
+
   return (
     <main>
+      <ProductJsonLdScript data={jsonLd} />
       <BreadcrumbJsonLd items={breadcrumbs} />
       <div className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
         <BreadcrumbNav items={breadcrumbs} />

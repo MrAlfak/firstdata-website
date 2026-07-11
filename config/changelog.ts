@@ -2,7 +2,7 @@
  * Single source of truth for site version and changelog.
  * Bump APP_VERSION and add an entry here when shipping user-visible updates.
  */
-export const APP_VERSION = "1.4.12";
+export const APP_VERSION = "1.4.15";
 
 export type ChangelogLocaleItems = {
   fa: string[];
@@ -16,6 +16,48 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: "1.4.15",
+    date: "2026-07-11",
+    items: {
+      fa: [
+        "فاز ۳ صفحات محصول: boot sequence، demo loop، pricing tiers و service graph",
+        "Changelog teaser، one-pager چاپی و JSON-LD برای SEO در /product و sub-pages",
+      ],
+      en: [
+        "Product pages phase 3: boot sequence, demo loop, pricing tiers, and service graph",
+        "Changelog teaser, printable one-pager, and JSON-LD schema on /product and sub-pages",
+      ],
+    },
+  },
+  {
+    version: "1.4.14",
+    date: "2026-07-11",
+    items: {
+      fa: [
+        "فاز ۲ صفحات محصول: Product Explorer و Product Matcher در /product",
+        "قبل/بعد terminal، دیاگرام معماری، stack تعاملی، testimonial و جدول مقایسه در صفحات sub-product",
+      ],
+      en: [
+        "Product pages phase 2: Product Explorer and Matcher on /product",
+        "Before/after terminal, architecture diagram, interactive stack, testimonial, and comparison table on sub-product pages",
+      ],
+    },
+  },
+  {
+    version: "1.4.13",
+    date: "2026-07-11",
+    items: {
+      fa: [
+        "فاز ۱ صفحات محصول: Hero بصری، آمار، نمونه‌کار، FAQ و sticky nav",
+        "بهبود لندینگ /product با نوار آمار و FAQ",
+      ],
+      en: [
+        "Product pages phase 1: visual hero, stats, portfolio samples, FAQ, and sticky nav",
+        "Improved /product landing with stats strip and FAQ",
+      ],
+    },
+  },
   {
     version: "1.4.12",
     date: "2026-07-11",
