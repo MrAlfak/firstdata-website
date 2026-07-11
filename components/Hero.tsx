@@ -59,11 +59,11 @@ export default function Hero() {
 
   return (
     <section id="top" className="border-b border-paper/20 px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         {/* Single unified hero frame: copy + map + stats */}
         <div className="overflow-hidden rounded-sm border border-paper/20 bg-paper/[0.02]">
           <div className="p-5 sm:p-7 lg:p-8">
-            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10 xl:gap-x-14">
+            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8 xl:gap-x-10">
               <motion.div
                 variants={itemReveal}
                 initial="hidden"

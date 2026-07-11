@@ -2,7 +2,7 @@
  * Single source of truth for site version and changelog.
  * Bump APP_VERSION and add an entry here when shipping user-visible updates.
  */
-export const APP_VERSION = "1.4.11";
+export const APP_VERSION = "1.4.12";
 
 export type ChangelogLocaleItems = {
   fa: string[];
@@ -16,6 +16,18 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: "1.4.12",
+    date: "2026-07-11",
+    items: {
+      fa: [
+        "هم‌تراز کردن عرض Hero با هدر — کاهش فاصله افقی کناره‌های صفحه",
+      ],
+      en: [
+        "Aligned hero width with the header — reduced horizontal side gutters",
+      ],
+    },
+  },
   {
     version: "1.4.11",
     date: "2026-07-11",
