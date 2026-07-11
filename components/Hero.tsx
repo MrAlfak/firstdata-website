@@ -79,14 +79,6 @@ export default function Hero() {
                 animate={revealed ? "show" : "hidden"}
                 className="lg:order-1"
               >
-                <motion.p
-                  variants={itemReveal}
-                  dir={dir}
-                  className={`mb-4 text-[10px] uppercase tracking-widest txt-comment sm:mb-6 ${fa ? "font-fa" : "font-mono"}`}
-                >
-                  {t("hero.eyebrow")}
-                </motion.p>
-
                 <motion.h1
                   variants={itemReveal}
                   dir={dir}

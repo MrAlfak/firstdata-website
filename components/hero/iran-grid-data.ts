@@ -8,8 +8,11 @@ export const IRAN_GRID_ROWS: readonly string[] = [
 
 export type IranGridCity = { id: "tehran" | "shiraz" | "ahvaz"; row: number; col: number };
 
+/** Source-grid positions aligned to Tehran, Shiraz, and Ahvaz on the Iran bitmap. */
 export const IRAN_GRID_CITIES: IranGridCity[] = [
-  { id: "tehran", row: 54, col: 62 }, { id: "ahvaz", row: 74, col: 52 }, { id: "shiraz", row: 83, col: 65 },
+  { id: "tehran", row: 25, col: 46 },
+  { id: "shiraz", row: 72, col: 54 },
+  { id: "ahvaz", row: 59, col: 29 },
 ];
 
 export type IranLandCell = { row: number; col: number; order: number; bright: boolean };
@@ -36,6 +39,16 @@ function blockHasLand(row: number, col: number): boolean {
   return false;
 }
 
+function blockHasCity(sourceRow: number, sourceCol: number): boolean {
+  const coarseRow = sourceRow / MAP_STRIDE;
+  const coarseCol = sourceCol / MAP_STRIDE;
+  return IRAN_GRID_CITIES.some((city) => {
+    const cityCoarseRow = Math.floor(city.row / MAP_STRIDE);
+    const cityCoarseCol = Math.floor(city.col / MAP_STRIDE);
+    return cityCoarseRow === coarseRow && cityCoarseCol === coarseCol;
+  });
+}
+
 function buildCoarseLandCells(): IranLandCell[] {
   const cells: IranLandCell[] = [];
   let order = 0;
@@ -43,7 +56,11 @@ function buildCoarseLandCells(): IranLandCell[] {
     for (let col = 0; col < IRAN_GRID_COLS; col += MAP_STRIDE) {
       if (!blockHasLand(row, col)) continue;
       cells.push({
-        row: row / MAP_STRIDE, col: col / MAP_STRIDE, order: order++, bright: ((row * 17 + col * 31 + row * col) % 100) < 12, });
+        row: row / MAP_STRIDE,
+        col: col / MAP_STRIDE,
+        order: order++,
+        bright: blockHasCity(row, col),
+      });
     }
   }
   return cells;

@@ -2,7 +2,7 @@
  * Single source of truth for site version and changelog.
  * Bump APP_VERSION and add an entry here when shipping user-visible updates.
  */
-export const APP_VERSION = "1.4.9";
+export const APP_VERSION = "1.4.11";
 
 export type ChangelogLocaleItems = {
   fa: string[];
@@ -16,6 +16,28 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: "1.4.11",
+    date: "2026-07-11",
+    items: {
+      fa: [
+        "اصلاح موقعیت نقاط دفاتر (تهران، شیراز، اهواز) روی نقشه Hero",
+        "حذف نقاط برجسته تصادفی از نقشه — فقط شهرهای دفتر مشخص می‌شوند",
+      ],
+      en: [
+        "Fixed office node positions (Tehran, Shiraz, Ahvaz) on the hero Iran map",
+        "Removed random highlight dots — only office cities are marked now",
+      ],
+    },
+  },
+  {
+    version: "1.4.10",
+    date: "2026-07-11",
+    items: {
+      fa: ["حذف متن eyebrow از بخش Hero صفحه اصلی"],
+      en: ["Removed hero eyebrow label from the homepage"],
+    },
+  },
   {
     version: "1.4.9",
     date: "2026-07-07",
