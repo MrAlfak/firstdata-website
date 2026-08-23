@@ -3,11 +3,19 @@ node_modules
 out
 build
 .DS_Store
+Thumbs.db
+Desktop.ini
+.idea
 *.pem
+.env
 .env*.local
 .vercel
 next-env.d.ts
 data/
+*.log
+
+# Accidental nested clone of this repo (breaks GitHub Desktop commits)
+/firstdata-website/
 
 # Visual testing capture artifacts (keep local)
 visual-tests/reference/
