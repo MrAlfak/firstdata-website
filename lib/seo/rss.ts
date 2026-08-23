@@ -60,6 +60,15 @@ export function buildBlogRssFeed(lang: LangCode): string {
       const url = langUrl(`/blog/${post.slug}`, lang);
       const guid = `${url}#${lang}`;
 
+      const bodyHtml = content.body
+        .map((block) => {
+          const text = escapeXml(block);
+          if (block.startsWith("## ")) return `<h2>${escapeXml(block.slice(3))}</h2>`;
+          if (block.startsWith(", ")) return `<li>${escapeXml(block.slice(2))}</li>`;
+          return `<p>${text}</p>`;
+        })
+        .join("");
+
       return `
     <item>
       <title>${escapeXml(content.title)}</title>
@@ -67,21 +76,26 @@ export function buildBlogRssFeed(lang: LangCode): string {
       <guid isPermaLink="false">${escapeXml(guid)}</guid>
       <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
       <description>${escapeXml(content.excerpt)}</description>
+      <content:encoded><![CDATA[${bodyHtml}]]></content:encoded>
       <category>${escapeXml(post.category)}</category>
       <author>${escapeXml(`${author.name} (${SITE_URL})`)}</author>
     </item>`;
     })
     .join("");
 
+  const otherLang: LangCode = lang === "fa" ? "en" : "fa";
+  const otherFeed = absoluteUrl(CHANNEL[otherLang].feedPath);
+
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>${escapeXml(meta.title)}</title>
     <link>${escapeXml(blogUrl)}</link>
     <description>${escapeXml(meta.description)}</description>
     <language>${meta.language}</language>
     <lastBuildDate>${feedLastBuildDate(posts)}</lastBuildDate>
-    <atom:link href="${escapeXml(feedUrl)}" rel="self" type="application/rss+xml" />${items}
+    <atom:link href="${escapeXml(feedUrl)}" rel="self" type="application/rss+xml" />
+    <atom:link href="${escapeXml(otherFeed)}" rel="alternate" type="application/rss+xml" hreflang="${otherLang}" />${items}
   </channel>
 </rss>`;
 }

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { timingSafeEqual } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { getDb } from "@/lib/auth/db";
 import { getSessionFromCookies, getSessionFromRequest } from "@/lib/auth/session";
@@ -64,8 +65,15 @@ export function isStaffAuthorized(req: NextRequest | Request, user: PanelAuthUse
   if (!key) return false;
   const header = req.headers.get("x-admin-key") ?? req.headers.get("authorization");
   if (!header) return false;
-  if (header === key) return true;
-  return header === `Bearer ${key}`;
+  return safeEqual(header, key) || safeEqual(header, `Bearer ${key}`);
+}
+
+/** Constant-time string comparison to avoid timing side-channels on secrets. */
+function safeEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
 }
 
 export function getUploadsRoot(): string {

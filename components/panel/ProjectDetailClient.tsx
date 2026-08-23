@@ -6,7 +6,8 @@ import { useT } from "@/i18n/LangProvider";
 import type { ProjectDetail } from "@/lib/panel/types";
 import { scheduleUpdate } from "@/lib/react/schedule-update";
 import { panelFetch } from "./panel-fetch";
-import { PanelAlert, PanelCard, PanelEmpty, PanelLoading } from "./PanelLayoutClient";
+import { PanelAlert, PanelCard, PanelEmpty } from "./PanelLayoutClient";
+import { PanelGateLoading } from "./PanelGateLoading";
 
 export default function ProjectDetailClient({ id }: { id: string }) {
   const { dir, p, fd } = useT();
@@ -39,7 +40,7 @@ export default function ProjectDetailClient({ id }: { id: string }) {
     void load();
   }
 
-  if (detail === undefined) return <PanelLoading label={p.common.loading} />;
+  if (detail === undefined) return <PanelGateLoading label={p.common.loading} variant="detail" />;
   if (error) {
     return (
       <div dir={dir}>
@@ -165,7 +166,11 @@ export default function ProjectDetailClient({ id }: { id: string }) {
       <PanelCard className="mt-4">
         <h2 className="text-sm text-paper/70">{p.projects.updates}</h2>
         {updates.length === 0 ? (
-          <PanelEmpty label={p.common.empty} />
+          <PanelEmpty
+            label={p.common.empty}
+            title={p.projects.updatesEmpty}
+            description={p.common.emptyHint}
+          />
         ) : (
           <ul className="mt-3 space-y-3">
             {updates.map((u) => (

@@ -1,65 +1,68 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "motion/react";
-import TermIcon from "@/components/icons/TermIcon";
-import AboutSectionHeader from "@/components/about/AboutSectionHeader";
-import ProductArchitectureDiagram from "@/components/product/ProductArchitectureDiagram";
-import ProductBeforeAfter from "@/components/product/ProductBeforeAfter";
-import ProductChangelogTeaser from "@/components/product/ProductChangelogTeaser";
-import ProductDemoSection from "@/components/product/ProductDemoSection";
+import ProductCaseStudy from "@/components/product/ProductCaseStudy";
+import ProductComparisonTable from "@/components/product/ProductComparisonTable";
+import ProductCrossNav from "@/components/product/ProductCrossNav";
 import ProductFaq from "@/components/product/ProductFaq";
+import ProductFeaturesSection from "@/components/product/ProductFeaturesSection";
+import ProductInteractiveDemo from "@/components/product/ProductInteractiveDemo";
+import ProductLogoStrip from "@/components/product/ProductLogoStrip";
 import ProductOnePagerCta from "@/components/product/ProductOnePagerCta";
 import ProductPortfolioSamples from "@/components/product/ProductPortfolioSamples";
 import ProductPricingTiers from "@/components/product/ProductPricingTiers";
-import ProductServiceGraph from "@/components/product/ProductServiceGraph";
-import ProductStackTags from "@/components/product/ProductStackTags";
-import ProductStatsStrip from "@/components/product/ProductStatsStrip";
+import ProductProcessSection from "@/components/product/ProductProcessSection";
 import ProductStickyNav from "@/components/product/ProductStickyNav";
 import ProductSubHero from "@/components/product/ProductSubHero";
 import ProductTestimonial from "@/components/product/ProductTestimonial";
+import ProductUseCaseCards from "@/components/product/ProductUseCaseCards";
 import FinalCta from "@/components/sales/FinalCta";
-import { PRODUCT_CHILDREN } from "@/config/navigation";
-import { itemReveal, moduleReveal } from "@/motion/tokens";
 import { useT } from "@/i18n/LangProvider";
 import { productPhase2Sub } from "@/i18n/product-phase2";
 import { productPhase3Sub } from "@/i18n/product-phase3";
+import { productPolishUi } from "@/i18n/product-polish";
 import { productSubExtensions } from "@/i18n/product-sub-extensions";
 import { productSubPageDictionaries } from "@/i18n/product-sub-page";
 import type { ProductSlug } from "@/i18n/product-page";
 
-const sectionClass = "scroll-mt-24 border-b border-paper/20 px-4 py-12 sm:px-6 sm:py-16 lg:px-8";
-
-const accentMap: Record<ProductSlug, { border: string; text: string; hover: string; cta: string }> = {
+/** CRT-aligned accents — avoid generic SaaS sky/violet. */
+const accentMap: Record<
+  ProductSlug,
+  { border: string; text: string; hover: string; card: string; cta: string }
+> = {
   web: {
-    border: "border-paper/35",
+    border: "border-paper/40",
     text: "text-paper",
-    hover: "hover:border-paper/55",
-    cta: "border border-paper/30 px-5 py-2.5 text-xs uppercase tracking-wider text-paper/70 transition-colors duration-200 hover:border-paper hover:text-paper",
+    hover: "hover:border-paper/45",
+    card: "border-paper/15 bg-paper/[0.02]",
+    cta: "border border-paper/40 bg-paper/10 px-5 py-2.5 text-xs uppercase tracking-wider text-paper transition-colors duration-200 hover:bg-paper/20",
   },
   mobile: {
     border: "border-term/40",
     text: "text-term",
-    hover: "hover:border-term/55",
-    cta: "border border-term/40 px-5 py-2.5 text-xs uppercase tracking-wider text-term transition-colors duration-200 hover:bg-term/10",
+    hover: "hover:border-term/35",
+    card: "border-term/15 bg-term/[0.03]",
+    cta: "border border-term/40 bg-term/10 px-5 py-2.5 text-xs uppercase tracking-wider text-term transition-colors duration-200 hover:bg-term/20",
   },
   windows: {
-    border: "border-sky/40",
-    text: "text-sky",
-    hover: "hover:border-sky/55",
-    cta: "border border-sky/40 px-5 py-2.5 text-xs uppercase tracking-wider text-sky transition-colors duration-200 hover:bg-sky/10",
+    border: "border-amber/40",
+    text: "text-amber",
+    hover: "hover:border-amber/35",
+    card: "border-amber/15 bg-amber/[0.03]",
+    cta: "border border-amber/40 bg-amber/10 px-5 py-2.5 text-xs uppercase tracking-wider text-amber transition-colors duration-200 hover:bg-amber/20",
   },
   ai: {
-    border: "border-violet/40",
-    text: "text-violet",
-    hover: "hover:border-violet/55",
-    cta: "border border-violet/40 px-5 py-2.5 text-xs uppercase tracking-wider text-violet transition-colors duration-200 hover:bg-violet/10",
+    border: "border-term/45",
+    text: "text-term",
+    hover: "hover:border-term/40",
+    card: "border-term/20 bg-term/[0.04]",
+    cta: "border border-term/45 bg-term/10 px-5 py-2.5 text-xs uppercase tracking-wider text-term transition-colors duration-200 hover:bg-term/20",
   },
   platforms: {
-    border: "border-emerald/40",
-    text: "text-emerald",
-    hover: "hover:border-emerald/55",
-    cta: "border border-emerald/40 px-5 py-2.5 text-xs uppercase tracking-wider text-emerald transition-colors duration-200 hover:bg-emerald/10",
+    border: "border-paper/45",
+    text: "text-paper",
+    hover: "hover:border-term/30",
+    card: "border-paper/15 bg-paper/[0.025]",
+    cta: "border border-paper/40 bg-paper/10 px-5 py-2.5 text-xs uppercase tracking-wider text-paper transition-colors duration-200 hover:border-term/40 hover:text-term",
   },
 };
 
@@ -68,193 +71,125 @@ type Props = {
 };
 
 export default function ProductSubPage({ slug }: Props) {
-  const { fa, dir, lang, t } = useT();
+  const { fa, lang } = useT();
   const ui = productSubPageDictionaries[lang][slug];
   const ext = productSubExtensions[lang][slug];
   const p2 = productPhase2Sub[lang][slug];
   const p3 = productPhase3Sub[lang][slug];
+  const polish = productPolishUi[lang];
   const accent = accentMap[slug];
-  const others = PRODUCT_CHILDREN.filter((item) => item.slug !== slug);
 
-  const navItems = [
-    { id: "stats", label: ext.nav.stats },
+  const stickyItems = [
     { id: "use-cases", label: ext.nav.useCases },
-    { id: "before-after", label: p2.nav.beforeAfter },
-    { id: "demo", label: p3.nav.demo },
-    { id: "samples", label: ext.nav.samples },
     { id: "features", label: ext.nav.features },
-    { id: "architecture", label: p2.nav.architecture },
-    { id: "stack", label: ext.nav.stack },
+    { id: "demo", label: polish.navDemo },
+    { id: "pricing", label: polish.navPricing },
+    { id: "case-study", label: polish.navCaseStudy },
+    { id: "compare", label: polish.navCompare },
+    { id: "samples", label: ext.nav.samples },
     { id: "process", label: ext.nav.process },
-    { id: "pricing", label: p3.nav.pricing },
-    { id: "services", label: p3.nav.services },
-    { id: "changelog", label: p3.nav.changelog },
     { id: "faq", label: ext.nav.faq },
+    { id: "related", label: polish.crossNavHint },
   ];
 
   return (
-    <>
+    <div className="product-sub-page" data-product-page>
       <ProductSubHero
         slug={slug}
-        eyebrow={ui.hero.eyebrow}
         title={ui.hero.title}
         subtitle={ui.hero.lead}
         body={ui.hero.body}
-        cta={ui.pageCta}
+        cta={polish.processCta}
         ctaClassName={`${accent.cta} ${fa ? "font-fa" : ""}`}
-        bootLines={p3.bootLines}
         badges={p3.badges}
         accentBorder={accent.border}
         accentText={accent.text}
       />
 
-      <ProductStickyNav items={navItems} />
+      <ProductStickyNav items={stickyItems} />
 
-      <ProductStatsStrip eyebrow={ext.stats.eyebrow} items={ext.stats.items} accentText={accent.text} />
-
-      <motion.section
-        id="use-cases"
-        variants={moduleReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-10% 0px" }}
-        className={sectionClass}
-      >
-        <div className="mx-auto max-w-6xl">
-          <AboutSectionHeader eyebrow={ui.useCases.eyebrow} title={ui.useCases.title} />
-          <div className="grid gap-4 sm:grid-cols-2">
-            {ui.useCases.cards.map((card) => (
-              <motion.article
-                key={card.title}
-                variants={itemReveal}
-                dir={dir}
-                className={`border border-paper/15 bg-paper/[0.015] p-5 sm:p-6 ${fa ? "font-fa" : ""}`}
-              >
-                <h3 className={`text-base text-paper/90 ${fa ? "font-fa" : "font-pixel"}`}>{card.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-paper/55">{card.body}</p>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      <ProductBeforeAfter data={p2.beforeAfter} />
-
-      <ProductDemoSection slug={slug} data={p3.demo} accentBorder={accent.border} />
-
-      <ProductPortfolioSamples
-        slug={slug}
-        eyebrow={ext.portfolio.eyebrow}
-        title={ext.portfolio.title}
-        linkLabel={ext.portfolio.linkLabel}
-        href={ext.portfolio.href}
+      <ProductUseCaseCards
+        data={ui.useCases}
         accentText={accent.text}
+        accentHover={accent.hover}
+        accentCard={accent.card}
       />
 
-      <motion.section
-        id="features"
-        variants={moduleReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-10% 0px" }}
-        className={sectionClass}
-      >
-        <div className="mx-auto max-w-6xl">
-          <AboutSectionHeader eyebrow={ui.features.eyebrow} title={ui.features.title} />
-          <motion.ul variants={itemReveal} dir={dir} className={`grid gap-3 sm:grid-cols-2 lg:grid-cols-3 ${fa ? "font-fa" : ""}`}>
-            {ui.features.items.map((item) => (
-              <li key={item} className="flex items-center gap-2 border border-paper/12 bg-paper/[0.015] px-4 py-3 text-sm text-paper/70">
-                <span className={accent.text} aria-hidden>
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-      </motion.section>
+      <ProductFeaturesSection data={ui.features} accentText={accent.text} />
 
-      <ProductArchitectureDiagram data={p2.architecture} accentBorder={accent.border} accentText={accent.text} />
-
-      <ProductStackTags
-        eyebrow={ui.stack.eyebrow}
-        title={ui.stack.title}
-        tags={ui.stack.tags}
-        stackWhy={p2.stackWhy}
+      <ProductInteractiveDemo
+        slug={slug}
+        eyebrow={polish.demo.eyebrow}
+        title={polish.demo.title}
+        subtitle={polish.demo.subtitle}
+        accentText={accent.text}
         accentBorder={accent.border}
       />
 
+      <ProductPricingTiers
+        data={p3.pricing}
+        accentBorder={accent.border}
+        accentText={accent.text}
+      />
+
+      <ProductCaseStudy
+        slug={slug}
+        href={ext.portfolio.href}
+        accentText={accent.text}
+        accentBorder={accent.border}
+        accentHover={accent.hover}
+      />
+
+      <ProductComparisonTable data={p2.comparison} />
+
       <ProductTestimonial data={p2.testimonial} accentBorder={accent.border} />
 
-      <motion.section
-        id="process"
-        variants={moduleReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-10% 0px" }}
-        className={sectionClass}
-      >
-        <div className="mx-auto max-w-6xl">
-          <AboutSectionHeader eyebrow={ui.process.eyebrow} title={ui.process.title} />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {ui.process.steps.map((step, index) => (
-              <motion.article
-                key={step.title}
-                variants={itemReveal}
-                dir={dir}
-                className={`border border-paper/15 bg-paper/[0.015] p-5 sm:p-6 ${fa ? "font-fa" : ""}`}
-              >
-                <span className={`font-mono text-[10px] ${accent.text}`}>{String(index + 1).padStart(2, "0")}</span>
-                <h3 className={`mt-3 text-base text-paper/90 ${fa ? "font-fa" : "font-pixel"}`}>{step.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-paper/55">{step.body}</p>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      <ProductLogoStrip eyebrow={polish.industries.eyebrow} title={polish.industries.title} />
 
-      <ProductPricingTiers data={p3.pricing} accentBorder={accent.border} accentText={accent.text} />
+      <ProductPortfolioSamples
+        slug={slug}
+        limit={3}
+        eyebrow={ext.portfolio.eyebrow}
+        title={ext.portfolio.title}
+        subtitle={ext.portfolio.subtitle}
+        linkLabel={ext.portfolio.linkLabel}
+        href={ext.portfolio.href}
+        accentText={accent.text}
+        accentHover={accent.hover}
+        accentBorder={accent.border}
+      />
 
-      <ProductServiceGraph data={p3.services} accentText={accent.text} />
+      <ProductProcessSection
+        data={ui.process}
+        accentText={accent.text}
+        accentBorder={accent.border}
+      />
 
-      <ProductChangelogTeaser data={p3.changelog} />
+      <ProductOnePagerCta
+        slug={slug}
+        data={p3.onePager}
+        accentBorder={accent.border}
+        accentText={accent.text}
+      />
 
-      <ProductOnePagerCta slug={slug} data={p3.onePager} accentBorder={accent.border} accentText={accent.text} />
+      <ProductFaq
+        slug={slug}
+        eyebrow={ext.faq.eyebrow}
+        title={ext.faq.title}
+        items={ext.faq.items}
+        maxItems={5}
+      />
 
-      <ProductFaq slug={slug} eyebrow={ext.faq.eyebrow} title={ext.faq.title} items={ext.faq.items} />
-
-      <motion.section
-        variants={moduleReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-10% 0px" }}
-        className={sectionClass}
-      >
-        <div className="mx-auto max-w-6xl">
-          <AboutSectionHeader eyebrow={ui.crossNav.eyebrow} title={ui.crossNav.title} />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {others.map((item) => (
-              <motion.div key={item.slug} variants={itemReveal}>
-                <Link
-                  href={item.href}
-                  dir={dir}
-                  className={`group flex items-center justify-between border border-paper/15 bg-paper/[0.015] px-4 py-3 text-sm transition-colors ${accent.hover} hover:bg-paper/[0.03] ${fa ? "font-fa" : ""}`}
-                >
-                  <span className="flex items-center gap-2 text-paper/75 group-hover:text-paper">
-                    <TermIcon name={item.slug} plain className="group-hover:text-current" />
-                    {t(item.labelKey)}
-                  </span>
-                  <span className={`font-mono text-[10px] text-paper/35 ${accent.text}`}>
-                    {ui.crossNav.linkLabel} {fa ? "←" : "→"}
-                  </span>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      <ProductCrossNav
+        slug={slug}
+        related={ui.relatedService}
+        crossNav={ui.crossNav}
+        services={p3.services}
+        accentText={accent.text}
+        accentHover={accent.hover}
+      />
 
       <FinalCta />
-    </>
+    </div>
   );
 }

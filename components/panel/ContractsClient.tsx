@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Download, FileSignature, PenLine } from "lucide-react";
 import { useT } from "@/i18n/LangProvider";
-import { PanelCard, PanelEmpty, PanelLoading } from "./PanelLayoutClient";
+import { PanelCard, PanelEmpty } from "./PanelLayoutClient";
+import { PanelGateLoading } from "./PanelGateLoading";
+import { usePanelSkin } from "./PanelSkinToggle";
+import PanelDataTable from "./PanelDataTable";
 
 type ContractItem = {
   id: number;
@@ -15,6 +19,8 @@ type ContractItem = {
 
 export default function ContractsClient() {
   const { dir, p } = useT();
+  const [skin] = usePanelSkin();
+  const isModern = skin === "modern";
   const [contracts, setContracts] = useState<ContractItem[] | null>(null);
   const [signing, setSigning] = useState<number | null>(null);
 
@@ -36,15 +42,69 @@ export default function ContractsClient() {
     load();
   }
 
-  if (!contracts) return <PanelLoading label={p.common.loading} />;
+  if (!contracts) return <PanelGateLoading label={p.common.loading} />;
+
+  if (isModern) {
+    return (
+      <div dir={dir}>
+        <h1 className="text-2xl text-paper">{p.contracts.title}</h1>
+        <div className="mt-6">
+          <PanelDataTable
+            title={p.contracts.title}
+            primaryHeader={p.contracts.title}
+            columnHeaders={[p.common.project, p.common.status]}
+            actionsHeader={p.common.action}
+            showCheckbox
+            empty={
+              <PanelEmpty
+                label={p.common.empty}
+                title={p.contracts.emptyTitle}
+                description={p.contracts.emptyHint}
+              />
+            }
+            rows={contracts.map((c) => ({
+              id: String(c.id),
+              icon: FileSignature,
+              iconClassName: c.status === "signed" ? "text-teal-400" : "text-amber-400",
+              iconBgClassName: c.status === "signed" ? "bg-teal-400/20" : "bg-amber-400/20",
+              title: c.title,
+              subtitle: c.summary ?? undefined,
+              cells: [c.project_title, p.status.contract[c.status] ?? c.status],
+              actions: [
+                {
+                  label: p.common.download,
+                  icon: Download,
+                  href: `/api/panel/contracts/${c.id}/download`,
+                },
+                ...(c.status === "pending"
+                  ? [
+                      {
+                        label: p.common.sign,
+                        icon: PenLine,
+                        disabled: signing === c.id,
+                        onSelect: () => void sign(c.id),
+                      },
+                    ]
+                  : []),
+              ],
+            }))}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div dir={dir}>
       <h1 className="text-2xl text-paper">{p.contracts.title}</h1>
       {contracts.length === 0 ? (
-        <PanelCard className="mt-6">
-          <PanelEmpty label={p.common.empty} />
-        </PanelCard>
+        <div className="mt-6">
+          <PanelEmpty
+            label={p.common.empty}
+            title={p.contracts.emptyTitle}
+            description={p.contracts.emptyHint}
+          />
+        </div>
       ) : (
         <ul className="mt-6 space-y-3">
           {contracts.map((c) => (

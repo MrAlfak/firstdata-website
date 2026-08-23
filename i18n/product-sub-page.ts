@@ -1,6 +1,11 @@
 import type { Lang } from "./dictionaries";
 import type { ProductSlug } from "./product-page";
 
+const featuresCallout: Record<Lang, string> = {
+  fa: "این موارد «چک‌لیست معمول» است — نه لیست قیمت. آنچه واقعاً تحویل می‌دهیم بعد از discovery مشخص می‌شود.",
+  en: "This is a typical capability checklist — not a price list. Final scope is defined after discovery.",
+};
+
 export type ProductSubPageUi = {
   hero: {
     eyebrow: string;
@@ -11,11 +16,14 @@ export type ProductSubPageUi = {
   useCases: {
     eyebrow: string;
     title: string;
-    cards: { title: string; body: string }[];
+    subtitle: string;
+    cards: { icon: string; title: string; outcome: string }[];
   };
   features: {
     eyebrow: string;
     title: string;
+    subtitle: string;
+    callout: string;
     items: string[];
   };
   stack: {
@@ -54,17 +62,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// موارد استفاده",
-        title: "وب برای چه مسئله‌هایی مناسب است؟",
+        title: "کدام تیم‌ها بیشترین ارزش را از محصول وب می‌گیرند؟",
+        subtitle: "نقش‌هایی که به سرعت، محتوا و پنل نیاز دارند",
         cards: [
-          { title: "سایت و پورتال سازمانی", body: "برای معرفی، محتوا، جذب سرنخ و مدیریت تجربه برند." },
-          { title: "CMS و اتاق انتشار", body: "برای تیم‌هایی که باید محتوا، صفحات و کمپین‌ها را مستقل مدیریت کنند." },
-          { title: "پنل و داشبورد", body: "برای عملیات داخلی، گزارش‌گیری و نقش‌های مختلف کاربری." },
-          { title: "PWA و تجربه همیشه‌در‌دسترس", body: "برای دسترسی سریع، cache هوشمند و استفاده نزدیک به اپ." },
+          { icon: "team", title: "تیم بازاریابی و محتوا", outcome: "انتشار کمپین و landing بدون وابستگی به توسعه." },
+          { icon: "ecommerce", title: "عملیات فروش آنلاین", outcome: "سفارش، پنل و گزارش در یک پورتال یکپارچه." },
+          { icon: "web", title: "تیم عملیات داخلی", outcome: "داشبورد و نقش‌بندی برای کار روزمره تیم." },
+          { icon: "seo", title: "رشد و SEO", outcome: "ساختار فنی، schema و صفحات مقیاس‌پذیر برای ترافیک." },
         ],
       },
       features: {
         eyebrow: "// قابلیت‌ها",
-        title: "ویژگی‌های رایج",
+        title: "در محصول وب معمولاً چه تحویل می‌دهیم؟",
+        subtitle: "چک‌لیست قابلیت‌های رایج — scope نهایی بعد از discovery مشخص می‌شود.",
+        callout: featuresCallout.fa,
         items: [
           "CMS سفارشی و نقش‌بندی دسترسی",
           "پنل مدیریت و گزارش‌گیری",
@@ -112,17 +123,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// موارد استفاده",
-        title: "موبایل کجا بیشترین ارزش را ایجاد می‌کند؟",
+        title: "کدام تیم‌ها به اپ موبایل اولویت می‌دهند؟",
+        subtitle: "سناریوهایی که دسترسی همراه و آفلاین تعیین‌کننده است",
         cards: [
-          { title: "اپ مشتری", body: "برای سفارش، پیگیری، اعلان و تعامل مداوم با برند." },
-          { title: "اپ عملیات میدانی", body: "برای تیم‌هایی که بیرون از دفتر کار می‌کنند و به آفلاین‌بودن نیاز دارند." },
-          { title: "ابزار فروش و توزیع", body: "برای ثبت سفارش، موجودی، ویزیت و هماهنگی روزانه." },
-          { title: "اپ داخلی سازمان", body: "برای تأییدها، تیکت‌ها، گزارش‌ها و دسترسی سریع کارکنان." },
+          { icon: "message", title: "تیم تجربه مشتری", outcome: "سفارش، پیگیری و push — بدون تماس پشتیبانی." },
+          { icon: "android", title: "عملیات میدانی", outcome: "ثبت و sync آفلاین — حتی بدون اینترنت پایدار." },
+          { icon: "ecommerce", title: "فروش و توزیع", outcome: "ویزیت، سفارش و موجودی در جیب نماینده." },
+          { icon: "team", title: "کارکنان داخلی", outcome: "تأیید، تیکت و گزارش از هر مکان." },
         ],
       },
       features: {
         eyebrow: "// قابلیت‌ها",
-        title: "ویژگی‌های رایج",
+        title: "در محصول موبایل معمولاً چه تحویل می‌دهیم؟",
+        subtitle: "چک‌لیست قابلیت‌های رایج — scope نهایی بعد از discovery مشخص می‌شود.",
+        callout: featuresCallout.fa,
         items: [
           "پشتیبانی Android و iOS",
           "ذخیره‌سازی محلی و workflow آفلاین",
@@ -170,22 +184,25 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// موارد استفاده",
-        title: "ویندوز برای چه سناریوهایی مناسب است؟",
+        title: "چه تیم‌هایی هنوز به دسکتاپ LOB نیاز دارند؟",
+        subtitle: "نقش‌هایی که بیشترین بازده را از محصولات ویندوز می‌گیرند",
         cards: [
-          { title: "ابزارهای خط کسب‌وکار", body: "برای تیم‌های فروش، انبار، حسابداری و عملیات روزمره." },
-          { title: "کار با سخت‌افزار جانبی", body: "برای چاپ، بارکد، اسکنر، کارت‌خوان و تجهیزات محلی." },
-          { title: "پردازش آفلاین یا محلی", body: "برای محیط‌هایی که latency پایین یا اتصال محدود مهم است." },
-          { title: "استقرار سازمانی", body: "برای rollout کنترل‌شده، MSI و به‌روزرسانی قابل مدیریت." },
+          { icon: "ecommerce", title: "مدیر فروشگاه / retail", outcome: "POS، چاپ فاکتور و sync شعبه — بدون Excel پراکنده." },
+          { icon: "android", title: "سرپرست انبار", outcome: "بارکد و موجودی حتی وقتی اینترنت قطع است." },
+          { icon: "key", title: "مدیر IT", outcome: "Rollout با GPO و MSI — نه USB و نصب دستی." },
+          { icon: "team", title: "حسابداری / back-office", outcome: "Export، چاپ و audit trail برای گزارش روزانه." },
         ],
       },
       features: {
         eyebrow: "// قابلیت‌ها",
-        title: "ویژگی‌های رایج",
+        title: "در تحویل محصول ویندوز معمولاً چه داریم؟",
+        subtitle: "قالب پیش‌فرض قابلیت‌ها — scope دقیق بعد از discovery و تحلیل محیط شما تعیین می‌شود.",
+        callout: featuresCallout.fa,
         items: [
           "رابط دسکتاپ برای نقش‌های عملیاتی",
           "MSI و استقرار کنترل‌شده",
-          "auto-update و version management",
-          "اتصال به API، دیتابیس یا queue",
+          "به‌روزرسانی خودکار و مدیریت نسخه",
+          "اتصال به API، دیتابیس یا صف",
           "گزارش‌گیری، export و چاپ",
           "مدیریت مجوز و دسترسی محلی",
         ],
@@ -228,17 +245,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// موارد استفاده",
-        title: "AI کجا بیشترین اثر را می‌گذارد؟",
+        title: "کدام تیم‌ها بیشترین ROI از AI می‌گیرند؟",
+        subtitle: "نقش‌هایی که حجم کار تکراری یا جستجو در اسناد دارند",
         cards: [
-          { title: "جستجوی دانش و RAG", body: "برای بازیابی سریع اطلاعات از اسناد، FAQها و پایگاه‌های دانش داخلی." },
-          { title: "اتوماسیون فرایند", body: "برای خلاصه‌سازی، دسته‌بندی، پاسخ‌نویسی و حذف کارهای تکراری." },
-          { title: "دستیار داخلی تیم", body: "برای پشتیبانی از فروش، عملیات، پشتیبانی یا مدیریت محتوا." },
-          { title: "تصمیم‌یار", body: "برای ارائه پیشنهاد، تحلیل اولیه یا هدایت کاربر در سناریوهای پیچیده." },
+          { icon: "support", title: "پشتیبانی و helpdesk", outcome: "پاسخ سریع از اسناد داخلی — نه ۲۰ PDF برای هر تیکت." },
+          { icon: "message", title: "فروش و pre-sales", outcome: "خلاصه prop و پاسخ به FAQ محصول در لحظه." },
+          { icon: "team", title: "عملیات و back-office", outcome: "دسته‌بندی، خلاصه‌سازی و حذف copy-paste." },
+          { icon: "ai", title: "مدیر محصول / تصمیم‌گیر", outcome: "تحلیل اولیه و پیشنهاد در سناریوهای پیچیده." },
         ],
       },
       features: {
         eyebrow: "// قابلیت‌ها",
-        title: "ویژگی‌های رایج",
+        title: "در محصول AI معمولاً چه تحویل می‌دهیم؟",
+        subtitle: "چک‌لیست قابلیت‌های رایج — scope نهایی بعد از discovery مشخص می‌شود.",
+        callout: featuresCallout.fa,
         items: [
           "اتصال به مدل‌های LLM و workflowهای سفارشی",
           "RAG و جستجوی مبتنی بر اسناد",
@@ -286,17 +306,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// موارد استفاده",
-        title: "پلتفرم یکپارچه در چه موقعیت‌هایی لازم می‌شود؟",
+        title: "کدام تیم‌ها به پلتفرم یکپارچه نیاز دارند؟",
+        subtitle: "وقتی چند سامانه و چند کانال باید مثل یک محصول عمل کنند",
         cards: [
-          { title: "SSO و هویت مشترک", body: "وقتی چند سامانه باید با یک مدل هویت و دسترسی کار کنند." },
-          { title: "API واحد برای چند کانال", body: "وقتی وب، موبایل، پنل و ابزار داخلی باید روی منطق مشترک تکیه کنند." },
-          { title: "چند سامانه، یک تجربه", body: "وقتی legacy و سیستم‌های جدید باید پشت یک لایه منسجم قرار بگیرند." },
-          { title: "رشد مرحله‌ای محصول", body: "وقتی سازمان می‌خواهد بدون بازنویسی کامل، قابلیت‌های جدید اضافه کند." },
+          { icon: "key", title: "IT و امنیت", outcome: "SSO و دسترسی واحد روی همه سامانه‌ها." },
+          { icon: "platforms", title: "محصول چندکاناله", outcome: "وب، موبایل و پنل روی API و منطق مشترک." },
+          { icon: "consulting", title: "معماری و یکپارچه‌سازی", outcome: "Legacy و سیستم جدید پشت یک لایه منسجم." },
+          { icon: "team", title: "رهبری محصول", outcome: "افزودن قابلیت مرحله‌ای بدون بازنویسی کامل." },
         ],
       },
       features: {
         eyebrow: "// قابلیت‌ها",
-        title: "ویژگی‌های رایج",
+        title: "در پلتفرم یکپارچه معمولاً چه تحویل می‌دهیم؟",
+        subtitle: "چک‌لیست قابلیت‌های رایج — scope نهایی بعد از discovery مشخص می‌شود.",
+        callout: featuresCallout.fa,
         items: [
           "SSO و مدیریت دسترسی متمرکز",
           "Unified APIs و orchestration سرویس‌ها",
@@ -346,17 +369,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// use cases",
-        title: "Where web products fit best",
+        title: "Which teams get the most value from web products?",
+        subtitle: "Roles that need speed, content control, and operational panels",
         cards: [
-          { title: "Sites and organizational portals", body: "For brand presence, content, lead capture, and managed user journeys." },
-          { title: "CMS and publishing rooms", body: "For teams that need to manage pages, content, and campaigns independently." },
-          { title: "Panels and dashboards", body: "For internal operations, reporting, and role-based workflows." },
-          { title: "PWA and always-available experiences", body: "For fast access, smart caching, and app-like usage on the web." },
+          { icon: "team", title: "Marketing and content", outcome: "Launch campaigns and landing pages without waiting on engineering." },
+          { icon: "ecommerce", title: "Online sales operations", outcome: "Orders, panels, and reporting in one integrated portal." },
+          { icon: "web", title: "Internal operations", outcome: "Dashboards and role-based workflows for daily team work." },
+          { icon: "seo", title: "Growth and SEO", outcome: "Technical structure, schema, and pages built to scale traffic." },
         ],
       },
       features: {
         eyebrow: "// features",
-        title: "Common capabilities",
+        title: "What we typically deliver in a web product",
+        subtitle: "A common capability checklist — final scope is set after discovery.",
+        callout: featuresCallout.en,
         items: [
           "Custom CMS and role-based access",
           "Admin panels and reporting",
@@ -404,17 +430,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// use cases",
-        title: "Where mobile creates the most value",
+        title: "Which teams should prioritize mobile?",
+        subtitle: "Scenarios where handheld access and offline work decide success",
         cards: [
-          { title: "Customer apps", body: "For ordering, tracking, notifications, and ongoing brand engagement." },
-          { title: "Field operations apps", body: "For teams working outside the office who need offline reliability." },
-          { title: "Sales and distribution tools", body: "For order capture, stock visibility, visits, and daily coordination." },
-          { title: "Internal workforce apps", body: "For approvals, tickets, reports, and fast employee access." },
+          { icon: "message", title: "Customer experience", outcome: "Orders, tracking, and push — without calling support." },
+          { icon: "android", title: "Field operations", outcome: "Capture and sync offline — even on unstable networks." },
+          { icon: "ecommerce", title: "Sales and distribution", outcome: "Visits, orders, and stock in the rep’s pocket." },
+          { icon: "team", title: "Internal workforce", outcome: "Approvals, tickets, and reports from anywhere." },
         ],
       },
       features: {
         eyebrow: "// features",
-        title: "Common capabilities",
+        title: "What we typically deliver in a mobile product",
+        subtitle: "A common capability checklist — final scope is set after discovery.",
+        callout: featuresCallout.en,
         items: [
           "Android and iOS support",
           "Local storage and offline workflows",
@@ -462,17 +491,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// use cases",
-        title: "Where Windows products fit best",
+        title: "Which teams still need desktop LOB software?",
+        subtitle: "Roles that get the strongest return from Windows products",
         cards: [
-          { title: "Line-of-business tools", body: "For sales, warehouse, accounting, and day-to-day operational teams." },
-          { title: "Peripheral-heavy workflows", body: "For printing, barcode, scanner, payment, and local device interaction." },
-          { title: "Offline or local processing", body: "For low-latency or limited-connectivity environments." },
-          { title: "Organizational rollout", body: "For managed distribution, MSI packaging, and controlled updates." },
+          { icon: "ecommerce", title: "Store manager / retail", outcome: "POS, invoice printing, and branch sync — without scattered Excel files." },
+          { icon: "android", title: "Warehouse supervisor", outcome: "Barcode and stock workflows even when the network drops." },
+          { icon: "key", title: "IT manager", outcome: "GPO and MSI rollout — not USB sticks and manual installs." },
+          { icon: "team", title: "Accounting / back-office", outcome: "Export, printing, and audit trail for daily reporting." },
         ],
       },
       features: {
         eyebrow: "// features",
-        title: "Common capabilities",
+        title: "What we typically deliver in a Windows product",
+        subtitle: "A default capability template — exact scope follows discovery and your runtime environment.",
+        callout: featuresCallout.en,
         items: [
           "Desktop UI for operational roles",
           "MSI packaging and controlled rollout",
@@ -520,17 +552,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// use cases",
-        title: "Where AI delivers the most impact",
+        title: "Which teams see the strongest AI ROI?",
+        subtitle: "Roles drowning in repetitive work or document search",
         cards: [
-          { title: "Knowledge search and RAG", body: "For fast retrieval from documents, FAQs, and internal knowledge bases." },
-          { title: "Process automation", body: "For summarization, classification, response drafting, and repetitive-task reduction." },
-          { title: "Internal team assistants", body: "For supporting sales, operations, support, or content management teams." },
-          { title: "Decision support", body: "For suggestions, initial analysis, or user guidance in complex workflows." },
+          { icon: "support", title: "Support and helpdesk", outcome: "Fast answers from internal docs — not twenty PDFs per ticket." },
+          { icon: "message", title: "Sales and pre-sales", outcome: "Instant prop summaries and product FAQ responses." },
+          { icon: "team", title: "Operations and back-office", outcome: "Classification, summarization, and less copy-paste." },
+          { icon: "ai", title: "Product lead / decision-maker", outcome: "Initial analysis and guidance in complex scenarios." },
         ],
       },
       features: {
         eyebrow: "// features",
-        title: "Common capabilities",
+        title: "What we typically deliver in an AI product",
+        subtitle: "A common capability checklist — final scope is set after discovery.",
+        callout: featuresCallout.en,
         items: [
           "LLM integration and custom workflows",
           "RAG and document-grounded search",
@@ -578,17 +613,20 @@ export const productSubPageDictionaries: Record<Lang, Record<ProductSlug, Produc
       },
       useCases: {
         eyebrow: "// use cases",
-        title: "When an integrated platform becomes necessary",
+        title: "Which teams need an integrated platform?",
+        subtitle: "When multiple systems and channels must behave like one product",
         cards: [
-          { title: "Shared identity and SSO", body: "When multiple systems must work through one access and authentication model." },
-          { title: "Unified APIs for many channels", body: "When web, mobile, admin, and internal tools should rely on the same core logic." },
-          { title: "Many systems, one experience", body: "When legacy and newer systems need a coherent layer in front of them." },
-          { title: "Staged product growth", body: "When the organization needs to add capability without a complete rewrite." },
+          { icon: "key", title: "IT and security", outcome: "SSO and unified access across every system." },
+          { icon: "platforms", title: "Multi-channel product", outcome: "Web, mobile, and admin on shared APIs and logic." },
+          { icon: "consulting", title: "Architecture and integration", outcome: "Legacy and new systems behind one coherent layer." },
+          { icon: "team", title: "Product leadership", outcome: "Add capability in stages without a full rewrite." },
         ],
       },
       features: {
         eyebrow: "// features",
-        title: "Common capabilities",
+        title: "What we typically deliver in an integrated platform",
+        subtitle: "A common capability checklist — final scope is set after discovery.",
+        callout: featuresCallout.en,
         items: [
           "SSO and centralized access management",
           "Unified APIs and service orchestration",

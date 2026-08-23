@@ -11,7 +11,7 @@ type ServiceCopy = {
 
 type ProcessStep = { num: string; label: string; text: string };
 type WhyPoint   = { label: string; text: string };
-type HomeServiceItem = { slug: string; title: string; desc: string };
+type HomeServiceItem = { slug: string; title: string; desc: string; cta: string };
 type HomePoint = { icon: string; label: string; text: string };
 type HomeStatItem = { value: string; suffix?: string; label: string; punchline: string };
 type Testimonial = { name: string; role: string; text: string };
@@ -70,6 +70,8 @@ type Dict = {
     aboutHonors: string;
     aboutVision: string;
     aboutMission: string;
+    method: string;
+    status: string;
     product: string;
     productWeb: string;
     productMobile: string;
@@ -100,9 +102,30 @@ type Dict = {
     login: string;
     contact: string;
     menuTitle: string;
+    menuOpen: string;
+    menuClose: string;
+    search: string;
     themeLight: string;
     themeDark: string;
     language: string;
+    cart: string;
+    cartItems: string;
+    cartSpendMore: string;
+    cartFreeShipping: string;
+    cartAlsoLike: string;
+    cartSubtotal: string;
+    cartShipping: string;
+    cartShippingFree: string;
+    cartTax: string;
+    cartCheckout: string;
+    cartClose: string;
+    cartEmpty: string;
+    cartEmptyDesc: string;
+    cartEmptyCta: string;
+    cartEmptyProgress: string;
+    megaViewAll: string;
+    megaFeatured: string;
+    submenuToggle: string;
   };
   pages: {
     aboutus: PageCopy;
@@ -153,6 +176,10 @@ type Dict = {
     writtenBy: string;
     tableOfContents: string;
     allArticlesLabel: string;
+    pageOf: string;
+    pageGo: string;
+    pagePrev: string;
+    pageNext: string;
     categories: {
       web: string;
       design: string;
@@ -228,9 +255,27 @@ type Dict = {
     subcopy: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    ctaTertiary: string;
+    ctaChat: string;
     scroll: string;
     version: string;
     brand: string;
+    mainframe: {
+      introLine1: string;
+      introLine2: string;
+      typewriter: string;
+      pillIdea: string;
+      pillCareers: string;
+      pillHello: string;
+      pillMethod: string;
+      emailReach: string;
+      emailCopied: string;
+      copyEmailAria: string;
+    };
+    spline: {
+      title: string;
+      description: string;
+    };
   };
   heroMap: {
     ariaLabel: string;
@@ -290,8 +335,9 @@ type Dict = {
       title: string;
       subtitle: string;
       hint: string;
-      moreLabel: string;
       allLink: string;
+      integrationTitle: string;
+      integrationDescription: string;
       items: HomeServiceItem[];
     };
     products: {
@@ -299,7 +345,6 @@ type Dict = {
       title: string;
       subtitle: string;
       hint: string;
-      moreLabel: string;
       allLink: string;
       items: HomeServiceItem[];
     };
@@ -325,11 +370,40 @@ type Dict = {
       subtitle: string;
     };
   };
+  assistantChat: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    assistantName: string;
+    online: string;
+    thinking: string;
+    typing: string;
+    placeholder: string;
+    send: string;
+    stop: string;
+    newChat: string;
+    close: string;
+    collapse: string;
+    miniLabel: string;
+    expandAria: string;
+    modalTitle: string;
+    composerLabel: string;
+    contextChip: string;
+    autoBadge: string;
+    attach: string;
+    errorGeneric: string;
+    footerHint: string;
+    disclaimer: string;
+    welcomeLines: string[];
+    suggestions: string[];
+  };
   auth: {
     login: {
       eyebrow: string;
       title: string;
       subtitle: string;
+      welcomeTitle: string;
+      welcomeSubtitle: string;
       tabEmail: string;
       tabOtp: string;
       labelEmail: string;
@@ -339,6 +413,8 @@ type Dict = {
       otpChannelSms: string;
       labelPhone: string;
       phonePlaceholder: string;
+      emailPlaceholder: string;
+      passwordPlaceholder: string;
       otpSentEmail: string;
       otpSentSms: string;
       submit: string;
@@ -347,6 +423,10 @@ type Dict = {
       changeContact: string;
       loading: string;
       toRegister: string;
+      noAccount: string;
+      createAccount: string;
+      rememberDevice: string;
+      orSignInWith: string;
       errorGeneric: string;
       forgotPassword: string;
       labelTotp: string;
@@ -404,6 +484,14 @@ type Dict = {
       otpChannelSms: string;
       labelPhone: string;
       phonePlaceholder: string;
+      namePlaceholder: string;
+      emailPlaceholder: string;
+      passwordPlaceholder: string;
+      confirmPlaceholder: string;
+      orSignUpWith: string;
+      alreadyHaveAccount: string;
+      signIn: string;
+      logoAlt: string;
       otpSentEmail: string;
       otpSentSms: string;
       submit: string;
@@ -456,6 +544,7 @@ type Dict = {
       nameRequired: string;
       emailRequired: string;
       emailInvalid: string;
+      serviceRequired: string;
       messageRequired: string;
       messageMin: string;
       networkError: string;
@@ -534,6 +623,10 @@ type Dict = {
     eyebrow: string;
     title: string;
     subtitle: string;
+    stepContactTitle: string;
+    stepContactDesc: string;
+    stepDetailsTitle: string;
+    stepDetailsDesc: string;
     labelName: string;
     labelEmail: string;
     labelPhone: string;
@@ -543,10 +636,21 @@ type Dict = {
     submitting: string;
     serviceOptions: string[];
     success: string;
+    sendAnother: string;
     directEmail: string;
     directPhone: string;
     directAddress: string;
     orDirect: string;
+    pathsTitle: string;
+    pathRequestTitle: string;
+    pathRequestDesc: string;
+    pathConsultationTitle: string;
+    pathConsultationDesc: string;
+    pathCollaborateTitle: string;
+    pathCollaborateDesc: string;
+    whatsappLabel: string;
+    telegramLabel: string;
+    mapLabel: string;
   };
   projectRequest: {
     sectionBasic: string;
@@ -555,6 +659,12 @@ type Dict = {
     sectionTimeline: string;
     sectionDescription: string;
     sectionFiles: string;
+    stepBasicDesc: string;
+    stepTypeDesc: string;
+    stepPlanTitle: string;
+    stepPlanDesc: string;
+    stepBriefTitle: string;
+    stepBriefDesc: string;
     labelName: string;
     labelEmail: string;
     labelPhone: string;
@@ -575,6 +685,10 @@ type Dict = {
   consultationRequest: {
     sectionContactMethod: string;
     sectionContactTime: string;
+    stepIdentityTitle: string;
+    stepIdentityDesc: string;
+    stepMethodDesc: string;
+    stepTimeDesc: string;
     labelName: string;
     labelPhone: string;
     labelEmail: string;
@@ -657,6 +771,41 @@ type Dict = {
     accept: string;
     reject: string;
   };
+  backToTop: {
+    ariaLabel: string;
+    tooltip: string;
+  };
+  formStepper: {
+    back: string;
+    continue: string;
+  };
+  liquidSpinner: {
+    words: string[];
+  };
+  alerts: {
+    stackLabel: string;
+    dismiss: string;
+    externalTab: string;
+    copied: string;
+    offline: string;
+    online: string;
+    pageOpened: string;
+    formSent: string;
+    formError: string;
+    uploadOk: string;
+    uploadFail: string;
+    saved: string;
+    skinAi: string;
+    skin56k: string;
+    skinSwitchFail: string;
+    loginOk: string;
+    loginFail: string;
+  };
+  crossing: {
+    assemble: string;
+    ready: string;
+    reconnect: string;
+  };
   pwa: {
     installTitle: string;
     installBody: string;
@@ -676,6 +825,7 @@ type Dict = {
     corner: string;
     welcome: string;
     deploying: string;
+    ready: string;
     bottom: string;
     lines: { text: string; tone: "ok" | "error" | "accent" | "wait" | "success"; gap: number }[];
   };
@@ -702,7 +852,7 @@ type Dict = {
 export const dictionaries: Record<Lang, Dict> = {
   en: {
     nav: {
-      home: "Home", aboutus: "About Us", aboutTeam: "Our Team", aboutPartners: "Key Partners", aboutHonors: "Achievements", aboutVision: "Vision", aboutMission: "Mission", product: "Product", productWeb: "Web", productMobile: "Mobile", productWindows: "Windows", productAi: "Artificial Intelligence", productPlatforms: "Integrated Platforms", services: "Services", serviceWeb: "Website Design", serviceUiUx: "UI/UX Design", serviceEcommerce: "Online Store", serviceAndroid: "Android App", serviceIos: "iOS App", serviceSeo: "SEO & Optimization", serviceConsulting: "Consulting & Project Analysis", serviceSupport: "Support & Development", portfolio: "Portfolio", portfolioWebsites: "Websites", portfolioEcommerce: "Online Stores", portfolioMobile: "Mobile Apps", portfolioDesktop: "Desktop Software", portfolioOther: "Other Projects", blog: "Blog", contactus: "Contact", contactRequest: "Submit Project Request", contactConsultation: "Free Consultation", contactCollaborate: "Work With Us", panel: "User Panel", login: "Sign in", contact: "Contact Us", menuTitle: "Site menu", themeLight: "Light", themeDark: "Dark", language: "Language", }, pages: {
+      home: "Home", aboutus: "About Us", aboutTeam: "Our Team", aboutPartners: "Key Partners", aboutHonors: "Achievements", aboutVision: "Vision", aboutMission: "Mission", method: "How we work", status: "System status", product: "Product", productWeb: "Web", productMobile: "Mobile", productWindows: "Windows", productAi: "Artificial Intelligence", productPlatforms: "Integrated Platforms", services: "Services", serviceWeb: "Website Design", serviceUiUx: "UI/UX Design", serviceEcommerce: "Online Store", serviceAndroid: "Android App", serviceIos: "iOS App", serviceSeo: "SEO & Optimization", serviceConsulting: "Consulting & Project Analysis", serviceSupport: "Support & Development", portfolio: "Portfolio", portfolioWebsites: "Websites", portfolioEcommerce: "Online Stores", portfolioMobile: "Mobile Apps", portfolioDesktop: "Desktop Software", portfolioOther: "Other Projects", blog: "Blog", contactus: "Contact", contactRequest: "Submit Project Request", contactConsultation: "Free Consultation", contactCollaborate: "Work With Us", panel: "User Panel", login: "Sign in", contact: "Contact Us", menuTitle: "Site menu", menuOpen: "Open menu", menuClose: "Close menu", search: "Search", themeLight: "Light", themeDark: "Dark", language: "Language", cart: "Cart", cartItems: "{count} items", cartSpendMore: "Spend {amount} more for free shipping", cartFreeShipping: "You've unlocked free shipping", cartAlsoLike: "You may also like", cartSubtotal: "Subtotal ({count} items)", cartShipping: "Shipping", cartShippingFree: "Free", cartTax: "Tax", cartCheckout: "Checkout · {total}", cartClose: "Close cart", cartEmpty: "Cart is empty", cartEmptyDesc: "No items yet. Add from suggestions below or browse products.", cartEmptyCta: "Browse products", cartEmptyProgress: "Add items to unlock free shipping", megaViewAll: "View all", megaFeatured: "Featured", submenuToggle: "Toggle submenu", }, pages: {
       aboutus: {
         eyebrow: "> loading /aboutus...", title: "About First Data", subtitle: "Fifteen years building software, with the same passion and more experience.", lines: [
           "150+ live projects across web, mobile, desktop, and custom platforms.",
@@ -753,7 +903,7 @@ export const dictionaries: Record<Lang, Dict> = {
           "Long-form guides and checklists from projects we ship, web, mobile, SEO, and product.", "Filter by topic or open the featured article for this week's deep dive.", ], }, panel: {
         eyebrow: "> auth /panel...", title: "User Panel", subtitle: "Client dashboard, project status, files, and support tickets.", lines: [
           "Sign in to track milestones, download deliverables, and message your team.", "Panel access is provided after project kickoff.", ], }, }, blogUi: {
-      filterLabel: "Filter by category", filterAll: "All", readMore: "Read article", readFull: "Read full article", minRead: "min read", noPosts: "No posts in this category yet.", relatedTitle: "Related articles", backToBlog: "Back to blog", featuredLabel: "Featured", articlesLabel: "articles shown", categoriesLabel: "topics", totalLabel: "total posts", rssLinkEn: "RSS (English)", rssLinkFa: "RSS (Persian)", shareLabel: "Share", copyLink: "Copy link", copiedLink: "Copied!", prevPost: "Previous", nextPost: "Next", postNavLabel: "Post navigation", writtenBy: "By", tableOfContents: "On this page", allArticlesLabel: "All articles", categories: {
+      filterLabel: "Filter by category", filterAll: "All", readMore: "Read article", readFull: "Read full article", minRead: "min read", noPosts: "No posts in this category yet.", relatedTitle: "Related articles", backToBlog: "Back to blog", featuredLabel: "Featured", articlesLabel: "articles shown", categoriesLabel: "topics", totalLabel: "total posts", rssLinkEn: "RSS (English)", rssLinkFa: "RSS (Persian)", shareLabel: "Share", copyLink: "Copy link", copiedLink: "Copied!", prevPost: "Previous", nextPost: "Next", postNavLabel: "Post navigation", writtenBy: "By", tableOfContents: "On this page", allArticlesLabel: "All articles", pageOf: "of", pageGo: "GO", pagePrev: "Previous", pageNext: "Next", categories: {
         web: "Web", design: "UI/UX", seo: "SEO", mobile: "Mobile", product: "Product", ai: "AI", }, }, aboutUi: {
       manifesto: "Tools change, engineering principles do not.",
       storyEyebrow: "// our story",
@@ -954,7 +1104,25 @@ export const dictionaries: Record<Lang, Dict> = {
     }, hero: {
       eyebrow: "// web.mobile.desktop.seo, delivered.", slogan: "From the dialup era to the world of AI.", lead:
         "At First Data, we're passionate about building digital solutions, from simple websites and online stores to mobile apps, custom software, and our own software products.", tagline:
-        "Whether you're just starting out or have been in business for years, we design and deliver the right solution for your needs and budget. From the initial idea through development, support, and updates, we're with you to build a quality, reliable product.", subcopy: "", ctaPrimary: "Start Your Project", ctaSecondary: "Request Free Consult", scroll: "scroll to explore", version: "first-data ~ v1.0.0", brand: "FIRST DATA", }, heroMap: {
+        "Whether you're just starting out or have been in business for years, we design and deliver the right solution for your needs and budget. From the initial idea through development, support, and updates, we're with you to build a quality, reliable product.", subcopy: "", ctaPrimary: "Start a Project Assessment", ctaSecondary: "View Work & Outcomes", ctaTertiary: "Enter the 56K World", ctaChat: "Ask the assistant", scroll: "scroll to explore", version: "first-data ~ v1.0.0", brand: "FIRST DATA",
+      mainframe: {
+        introLine1: "Hey there — this is First Data,",
+        introLine2: "from the dialup era to the world of AI",
+        typewriter: "Glad you stopped in. Good taste tends to find us. Now, what are we building?",
+        pillIdea: "Pitch us an idea",
+        pillCareers: "Come work here",
+        pillHello: "Send a brief hello",
+        pillMethod: "See how we operate",
+        emailReach: "Reach us:",
+        emailCopied: "Email copied",
+        copyEmailAria: "Copy contact email",
+      },
+      spline: {
+        title: "FIRST DATA",
+        description:
+          "We design, build, and grow digital products that convert, scale, and stay supported after launch.",
+      },
+    }, heroMap: {
       ariaLabel: "Dot-matrix map of Iran with office locations", windowTitle: "geo.iran, live nodes", hint: "hover a node ▸", statusLine: "nodes: tehran, shiraz, ahvaz, ping ok", cities: {
         tehran: "Tehran", shiraz: "Shiraz", ahvaz: "Ahvaz", }, }, trust: {
       eyebrow: "// not pitch decks, shipped products", items: [
@@ -1010,25 +1178,29 @@ export const dictionaries: Record<Lang, Dict> = {
       eyebrow: "// ready to start", title: "Let's Build Something Real.", subtitle:
         "Tell us about your project. We respond within one business day.", ctaPrimary: "Start a Project", ctaSecondary: "Ask a Question", }, home: {
       services: {
-        eyebrow: "Our services", title: "What can First Data do for you?", subtitle:
-          "Pick the option that matches what you need. Each one opens a simple page with details, no technical jargon required.", hint: "Tap a box to learn more about that service.", moreLabel: "See how it works", allLink: "See all services", items: [
+        eyebrow: "Services", title: "Services we deliver for you", subtitle:
+          "Engagements where we design, build, and support — pick a card for plain-language details.", hint: "Tap a box to learn more about that service.", allLink: "See all services",
+        integrationTitle: "Services that connect end to end",
+        integrationDescription:
+          "Web, mobile, design, SEO, and support — one team, one workflow, so you don’t chase vendors across platforms.",
+        items: [
           {
-            slug: "web-design", title: "Business website", desc: "A professional site so customers can find you, trust you, and contact you online.", }, {
-            slug: "ecommerce", title: "Online store", desc: "Sell products on the internet with secure payments and easy order management.", }, {
-            slug: "android", title: "Android app", desc: "An app for Android phones, for your customers or your internal team.", }, {
-            slug: "ios", title: "iPhone app", desc: "An app for iPhone and iPad users, published on the App Store.", }, {
-            slug: "ui-ux", title: "Design & ease of use", desc: "We make your site or app clear, beautiful, and easy for anyone to use.", }, {
-            slug: "seo", title: "Google visibility", desc: "Help more people discover you when they search on Google.", }, {
-            slug: "consulting", title: "Free guidance", desc: "Not sure where to start? We explain your options in plain language.", }, {
-            slug: "support", title: "After-launch care", desc: "Updates, fixes, and improvements, we stay with you after go-live.", }, ], }, products: {
-        eyebrow: "Our products", title: "Digital products we build for you", subtitle:
-          "Not just a website, full platforms and tools that run your business online and on devices.", hint: "Tap a box to see what each product type includes.", moreLabel: "→ details", allLink: "See all products", items: [
+            slug: "web-design", title: "Business website", desc: "A professional site so customers can find you, trust you, and contact you online.", cta: "See the website design process", }, {
+            slug: "ecommerce", title: "Online store", desc: "Sell products on the internet with secure payments and easy order management.", cta: "Online store details", }, {
+            slug: "android", title: "Android app", desc: "An app for Android phones, for your customers or your internal team.", cta: "Android app build details", }, {
+            slug: "ios", title: "iPhone app", desc: "An app for iPhone and iPad users, published on the App Store.", cta: "iPhone app build details", }, {
+            slug: "ui-ux", title: "Design & ease of use", desc: "We make your site or app clear, beautiful, and easy for anyone to use.", cta: "Learn about design & UX", }, {
+            slug: "seo", title: "Google visibility", desc: "Help more people discover you when they search on Google.", cta: "Learn about SEO services", }, {
+            slug: "consulting", title: "Free guidance", desc: "Not sure where to start? We explain your options in plain language.", cta: "Free consultation details", }, {
+            slug: "support", title: "After-launch care", desc: "Updates, fixes, and improvements, we stay with you after go-live.", cta: "After-launch support details", }, ],       }, products: {
+        eyebrow: "Solutions", title: "Solutions we build for businesses", subtitle:
+          "Product lines and platforms we ship — separate from how we engage as a service.", hint: "Tap a box to see what each product type includes.", allLink: "See all products", items: [
           {
-            slug: "web", title: "Web apps & portals", desc: "Online dashboards, customer portals, and browser-based tools your team uses every day.", }, {
-            slug: "mobile", title: "Mobile apps", desc: "iPhone and Android apps for customers or staff, with updates and support included.", }, {
-            slug: "windows", title: "Windows software", desc: "Desktop programs for office computers, fast, reliable, and easy to install.", }, {
-            slug: "ai", title: "Artificial intelligence", desc: "Search, chatbots, and automation that save time, built safely into your product.", }, {
-            slug: "platforms", title: "All-in-one platforms", desc: "Website, app, admin panel, and backend connected, one system, one login.", }, ], }, why: {
+            slug: "web", title: "Web apps & portals", desc: "Online dashboards, customer portals, and browser-based tools your team uses every day.", cta: "Web app & portal details", }, {
+            slug: "mobile", title: "Mobile apps", desc: "iPhone and Android apps for customers or staff, with updates and support included.", cta: "Mobile app details", }, {
+            slug: "windows", title: "Windows software", desc: "Desktop programs for office computers, fast, reliable, and easy to install.", cta: "Windows software details", }, {
+            slug: "ai", title: "Artificial intelligence", desc: "Search, chatbots, and automation that save time, built safely into your product.", cta: "AI product details", }, {
+            slug: "platforms", title: "All-in-one platforms", desc: "Website, app, admin panel, and backend connected, one system, one login.", cta: "Platform details", }, ], }, why: {
         eyebrow: "Why work with us", title: "A team you can rely on", subtitle:
           "You do not need to understand code or tech terms. We explain everything clearly and deliver on time.", points: [
           {
@@ -1047,12 +1219,48 @@ export const dictionaries: Record<Lang, Dict> = {
         eyebrow: "Ready when you are", title: "Tell us what you need", subtitle:
           "Describe your idea in your own words. We reply within one business day, consultation is free.", cta: "Contact us", responseNote: "Usually answered within 24 hours on business days.", }, terminalIntro: {
         title: "Play with our mini terminal", subtitle:
-          "If you enjoy tech, type commands below. Otherwise, skip this, it is just for fun.", }, }, auth: {
+          "If you enjoy tech, type commands below. Otherwise, skip this, it is just for fun.", },     }, assistantChat: {
+      eyebrow: "First Data Assistant",
+      title: "Ask First Data",
+      subtitle: "Ask about services, pricing ranges, timelines, or how to start.",
+      assistantName: "First Data",
+      online: "Online",
+      thinking: "Thinking…",
+      typing: "Typing…",
+      placeholder: "Send follow-up",
+      send: "Send",
+      stop: "Stop",
+      newChat: "New chat",
+      close: "Close",
+      collapse: "Collapse",
+      miniLabel: "Ask First Data",
+      expandAria: "Open First Data assistant",
+      modalTitle: "First Data assistant",
+      composerLabel: "Ask the assistant",
+      contextChip: "First Data knowledge",
+      autoBadge: "Auto",
+      attach: "Focus input",
+      errorGeneric: "Couldn’t reach the assistant. Try again in a moment.",
+      footerHint: "Unknown questions are saved so we can improve answers.",
+      disclaimer:
+        "Answers stay on First Data products & services. Prices are estimates; contracts & payments need a human. Free consult via the contact form.",
+      welcomeLines: [
+        "Hi — I’m the First Data assistant.",
+        "Ask about services, ballpark pricing, timelines, or how to start a project.",
+        "Tip: contracts and payments are handled by our team via /contactus",
+      ],
+      suggestions: [
+        "What services do you offer?",
+        "How much does a website cost?",
+        "How long does delivery take?",
+        "How do we get started?",
+      ],
+    }, auth: {
       login: {
-        eyebrow: "> auth /login...", title: "Sign In", subtitle: "Access your panel with email + password, or OTP via email or SMS.", tabEmail: "Email", tabOtp: "OTP", labelEmail: "Email", labelPassword: "Password", labelOtp: "Verification code", otpChannelEmail: "Email OTP", otpChannelSms: "SMS OTP", labelPhone: "Mobile number", phonePlaceholder: "09123456789", otpSentEmail: "Code sent to your email.", otpSentSms: "Code sent via SMS to your mobile.", submit: "Sign In", sendOtp: "Send Code", verifyOtp: "Verify & Sign In", changeContact: "← change contact", loading: "please wait...", toRegister: "No account? Create one →", errorGeneric: "Something went wrong. Try again.", forgotPassword: "Forgot password?", labelTotp: "Authenticator code", totpSubtitle: "Enter the 6-digit code from your authenticator app.", totpSubmit: "Verify & Sign In", totpBack: "← back to sign in", }, forgotPassword: {
+        eyebrow: "> auth /login...", title: "Sign In", subtitle: "Access your panel with email + password, or OTP via email or SMS.", welcomeTitle: "Welcome to First Data", welcomeSubtitle: "Sign in to your account", tabEmail: "Email", tabOtp: "OTP", labelEmail: "Email", labelPassword: "Password", labelOtp: "Verification code", otpChannelEmail: "Email OTP", otpChannelSms: "SMS OTP", labelPhone: "Mobile number", phonePlaceholder: "09123456789", emailPlaceholder: "you@company.com", passwordPlaceholder: "Enter your password", otpSentEmail: "Code sent to your email.", otpSentSms: "Code sent via SMS to your mobile.", submit: "Sign In", sendOtp: "Send Code", verifyOtp: "Verify & Sign In", changeContact: "← change contact", loading: "please wait...", toRegister: "No account? Create one →", noAccount: "Don't have an account?", createAccount: "Create an account", rememberDevice: "Remember this device", orSignInWith: "or sign in with", errorGeneric: "Something went wrong. Try again.", forgotPassword: "Forgot password?", labelTotp: "Authenticator code", totpSubtitle: "Enter the 6-digit code from your authenticator app.", totpSubmit: "Verify & Sign In", totpBack: "← back to sign in", }, forgotPassword: {
         eyebrow: "> auth /forgot-password...", title: "Reset Password", subtitle: "We will send a verification code to your email or mobile.", tabEmail: "Email", tabSms: "SMS", labelEmail: "Email", labelPhone: "Mobile number", phonePlaceholder: "09123456789", submit: "Send reset code", loading: "please wait...", sentEmail: "If an account exists, a code was sent to your email.", sentSms: "If an account exists, a code was sent via SMS.", continueReset: "Enter code & new password →", changeContact: "← change contact", toLogin: "Back to sign in", errorGeneric: "Something went wrong. Try again.", }, resetPassword: {
         eyebrow: "> auth /reset-password...", title: "Choose New Password", subtitle: "Enter the code we sent and your new password.", labelEmail: "Email", labelPhone: "Mobile number", phonePlaceholder: "09123456789", labelCode: "Verification code", labelPassword: "New password", labelConfirm: "Confirm password", submit: "Update password", loading: "please wait...", passwordMismatch: "Passwords do not match.", resendCode: "Resend code", toLogin: "Back to sign in", errorGeneric: "Something went wrong. Try again.", }, register: {
-        eyebrow: "> auth /register...", title: "Create Account", subtitle: "Register with email + password, or OTP via email or SMS.", tabEmail: "Email", tabOtp: "OTP", labelName: "Full name", labelEmail: "Email", labelPassword: "Password (min 8 chars)", labelConfirm: "Confirm password", labelOtp: "Verification code", otpChannelEmail: "Email OTP", otpChannelSms: "SMS OTP", labelPhone: "Mobile number", phonePlaceholder: "09123456789", otpSentEmail: "Code sent to your email.", otpSentSms: "Code sent via SMS to your mobile.", submit: "Create Account", sendOtp: "Send Code", verifyOtp: "Verify & Register", changeContact: "← edit details", loading: "please wait...", toLogin: "Already have an account? Sign in →", errorGeneric: "Something went wrong. Try again.", errorPasswordMatch: "Passwords do not match.", }, panel: {
+        eyebrow: "> auth /register...", title: "Create Account", subtitle: "Register with email + password, or OTP via email or SMS.", tabEmail: "Email", tabOtp: "OTP", labelName: "Full name", labelEmail: "Email", labelPassword: "Password (min 8 chars)", labelConfirm: "Confirm password", labelOtp: "Verification code", otpChannelEmail: "Email OTP", otpChannelSms: "SMS OTP", labelPhone: "Mobile number", phonePlaceholder: "09123456789", namePlaceholder: "Your full name", emailPlaceholder: "you@example.com", passwordPlaceholder: "Min. 8 characters", confirmPlaceholder: "Confirm password", orSignUpWith: "or sign up with", alreadyHaveAccount: "Already have an account?", signIn: "Sign in", logoAlt: "First Data", otpSentEmail: "Code sent to your email.", otpSentSms: "Code sent via SMS to your mobile.", submit: "Create Account", sendOtp: "Send Code", verifyOtp: "Verify & Register", changeContact: "← edit details", loading: "please wait...", toLogin: "Already have an account? Sign in →", errorGeneric: "Something went wrong. Try again.", errorPasswordMatch: "Passwords do not match.", }, panel: {
         welcome: "Welcome back", signedInAs: "Signed in as", logout: "Sign Out", loggingOut: "Signing out...", noPasswordHint: "You signed up with OTP. Set a password in Account settings.", statusLabel: "Session status", statusValue: "OPERATIONAL [OK]", linkServices: "View services", linkPortfolio: "View portfolio", linkContact: "Contact support", }, }, errors: {
       pages: {
         notFound: {
@@ -1091,7 +1299,7 @@ export const dictionaries: Record<Lang, Dict> = {
           eyebrow: "> kernel panic, root layout unreachable", title: "Something broke deep inside", subtitle:
             "The page shell crashed before we could recover. Reload or return home, your session data is safe.", prompt: "root@fd:~$ systemctl restart first-data", ctaHome: "homepage", ctaContact: "contact us", ctaRetry: "reload", }, }, auth: {
         INVALID_CREDENTIALS: "Invalid email or password.", INVALID_OTP: "Invalid or expired verification code.", ACCOUNT_NOT_FOUND: "No account found for this email.", ACCOUNT_NOT_FOUND_PHONE: "No account found for this mobile number.", EMAIL_ALREADY_EXISTS: "This email is already registered.", PHONE_ALREADY_EXISTS: "This mobile number is already registered.", RATE_LIMIT: "Too many requests. Try again later.", VALIDATION: "Please check your input and try again.", SERVER: "Something went wrong. Try again.", LOGOUT_FAILED: "Could not sign out. Try again.", SESSION_FAILED: "Could not verify your session.", OTP_SEND_FAILED: "Could not send verification code.", }, contact: {
-        nameRequired: "Name is required.", emailRequired: "Email is required.", emailInvalid: "Enter a valid email address.", messageRequired: "Message is required.", messageMin: "Message must be at least 10 characters.", networkError: "Network error. Check your connection and try again.", }, projectRequest: {
+        nameRequired: "Name is required.", emailRequired: "Email is required.", emailInvalid: "Enter a valid email address.", serviceRequired: "Select a service.", messageRequired: "Message is required.", messageMin: "Message must be at least 10 characters.", networkError: "Network error. Check your connection and try again.", }, projectRequest: {
         nameRequired: "Full name is required.", emailRequired: "Email is required.", emailInvalid: "Enter a valid email address.", phoneRequired: "Phone number is required.", phoneInvalid: "Enter a valid phone number.", projectTypeRequired: "Select at least one project type.", budgetRequired: "Select an approximate budget.", timelineRequired: "Select an expected timeline.", descriptionRequired: "Project description is required.", descriptionMin: "Description must be at least 10 characters.", networkError: "Network error. Check your connection and try again.", }, consultationRequest: {
         nameRequired: "Name is required.", phoneRequired: "Phone number is required.", phoneInvalid: "Enter a valid phone number.", contactMethodRequired: "Select a contact method.", emailRequired: "Email is required when email is your contact method.", emailInvalid: "Enter a valid email address.", contactTimeRequired: "Select the best time to contact you.", networkError: "Network error. Check your connection and try again.", }, collaborateRequest: {
         networkError: "Network error. Check your connection and try again.", hiring: {
@@ -1103,13 +1311,13 @@ export const dictionaries: Record<Lang, Dict> = {
           "Check Wi‑Fi or mobile data is enabled", "Try another network or disable VPN", "Reload this page after reconnecting", ], onlineRestored: "Connection restored, you can retry now.", lastSync: "Last successful sync: unknown (offline)", }, network: {
         failed: "Connection failed. Check your network.", timeout: "Request timed out. Try again.", badGateway: "Server temporarily unavailable (502/504).", malformed: "Unexpected server response.", }, }, contact: {
       eyebrow: "// get in touch", title: "Contact First Data", subtitle:
-        "Fill in the form or reach us directly. No sales pressure, just a conversation.", labelName: "Name", labelEmail: "Email", labelPhone: "Phone (optional)", labelService: "Service needed", labelMessage: "Tell us about your project", labelSubmit: "Send Message", submitting: "Sending...", serviceOptions: [
-        "Web Design & Development", "Android App", "iOS App", "Windows Software", "SEO & Performance", "UI/UX Design", "E-Commerce", "Support & Maintenance", "Other", ], success: "> Message sent. We'll respond within 1 business day.", directEmail: "info@firstdata.ir", directPhone: "+98 933 127 4039", directAddress: "Shiraz, Sarbaz Blvd, Isargaran St, Alley 3", orDirect: "or reach us directly:", }, projectRequest: {
-      sectionBasic: "Basic information", sectionType: "Project type", sectionBudget: "Approximate budget", sectionTimeline: "Expected timeline", sectionDescription: "Project description", sectionFiles: "Attachments", labelName: "Full name", labelEmail: "Email", labelPhone: "Phone number", labelCompany: "Company name", labelCompanyOptional: "Optional", labelDescription: "Describe your goals, features, and any constraints…", labelUpload: "Upload file", removeFile: "Remove file", filesHint: "Wireframe, PDF, sample site, logo, or brand assets (max 5 files, 10 MB each).", labelSubmit: "Submit request", submitting: "Sending…", success: "> Request received. We'll review it and respond within one business day.", sendAnother: "Submit another request", projectTypes: {
+        "Fill in the form or reach us directly. No sales pressure, just a conversation.", stepContactTitle: "Contact", stepContactDesc: "Who you are", stepDetailsTitle: "Request", stepDetailsDesc: "Service & message", labelName: "Name", labelEmail: "Email", labelPhone: "Phone (optional)", labelService: "Service needed", labelMessage: "Tell us about your project", labelSubmit: "Send Message", submitting: "Sending...", serviceOptions: [
+        "Web Design & Development", "Android App", "iOS App", "Windows Software", "SEO & Performance", "UI/UX Design", "E-Commerce", "Support & Maintenance", "Other", ], success: "> Message sent. We'll respond within 1 business day.", sendAnother: "Send another message", directEmail: "info@firstdata.ir", directPhone: "+98 933 127 4039", directAddress: "Shiraz, Sarbaz Blvd, Isargaran St, Alley 3", orDirect: "or reach us directly:", pathsTitle: "Choose your path", pathRequestTitle: "Build", pathRequestDesc: "Scope, budget, timeline — reviewed by a senior engineer.", pathConsultationTitle: "Diagnose", pathConsultationDesc: "Clarify product, stack, and next steps — short discovery, no obligation.", pathCollaborateTitle: "Grow & partner", pathCollaborateDesc: "Ongoing support, hiring, or long-term collaboration with our team.", whatsappLabel: "WhatsApp", telegramLabel: "Telegram", mapLabel: "Open on map", }, projectRequest: {
+      sectionBasic: "Basic information", sectionType: "Project type", sectionBudget: "Approximate budget", sectionTimeline: "Expected timeline", sectionDescription: "Project description", sectionFiles: "Attachments", stepBasicDesc: "Name & contact", stepTypeDesc: "What you need", stepPlanTitle: "Plan", stepPlanDesc: "Budget & timeline", stepBriefTitle: "Brief", stepBriefDesc: "Details & files", labelName: "Full name", labelEmail: "Email", labelPhone: "Phone number", labelCompany: "Company name", labelCompanyOptional: "Optional", labelDescription: "Describe your goals, features, and any constraints…", labelUpload: "Upload file", removeFile: "Remove file", filesHint: "Wireframe, PDF, sample site, logo, or brand assets (max 5 files, 10 MB each).", labelSubmit: "Submit request", submitting: "Sending…", success: "> Request received. We'll review it and respond within one business day.", sendAnother: "Submit another request", projectTypes: {
         web: "Website design", ecommerce: "Online store", android: "Android app", ios: "iOS app", windows: "Windows software", seo: "SEO", support: "Support", custom: "Custom product", }, budgets: {
         under_30m: "Under 30M", "30_70m": "30M – 70M", "70_150m": "70M – 150M", over_150m: "Over 150M", unknown: "Not sure yet", }, timelines: {
         urgent: "Urgent", one_month: "One month", two_three_months: "Two to three months", flexible: "Flexible", }, }, consultationRequest: {
-      sectionContactMethod: "Preferred contact method", sectionContactTime: "Best time to contact", labelName: "Name", labelPhone: "Phone", labelEmail: "Email", labelEmailOptional: "Optional (required if email is your contact method)", labelSubmit: "Request consultation", submitting: "Sending…", success: "> Consultation request received. We'll contact you at your preferred time.", sendAnother: "Submit another request", contactMethods: {
+      sectionContactMethod: "Preferred contact method", sectionContactTime: "Best time to contact", stepIdentityTitle: "You", stepIdentityDesc: "Name & phone", stepMethodDesc: "How we reach you", stepTimeDesc: "When to call", labelName: "Name", labelPhone: "Phone", labelEmail: "Email", labelEmailOptional: "Optional (required if email is your contact method)", labelSubmit: "Request consultation", submitting: "Sending…", success: "> Consultation request received. We'll contact you at your preferred time.", sendAnother: "Submit another request", contactMethods: {
         call: "Phone call", whatsapp: "WhatsApp", telegram: "Telegram", email: "Email", }, contactTimes: {
         morning: "Morning", noon: "Noon", afternoon: "Afternoon", }, }, collaborateRequest: {
       branchToggleLabel: "Application type", branches: {
@@ -1129,16 +1337,23 @@ export const dictionaries: Record<Lang, Dict> = {
           title: "Versioning & changelog", body: "The footer shows the current site version. Click the version number to open the release changelog. We update the changelog whenever we ship meaningful improvements.", }, {
           title: "Availability", body: "We aim for high uptime but do not guarantee uninterrupted access. Maintenance or updates may briefly affect the site.", }, {
           title: "Changes", body: "We may revise these terms or release new site versions. Continued use after an update means you accept the current terms and changelog.", }, ], changelogTitle: "Release history", changelogIntro: "Every published version and its user-visible changes are listed below.", versionNote: "Current version is shown in the site footer. Click it anytime to reopen this list.", }, consent: {
-      message: "We use analytics cookies (Google Analytics) to improve the site. Accept or decline, your choice.", accept: "Accept", reject: "Decline", }, pwa: {
+      message: "We use analytics cookies (Google Analytics) to improve the site. Accept or decline, your choice.", accept: "Accept", reject: "Decline", }, backToTop: {
+      ariaLabel: "Back to top", tooltip: "Back to top", }, formStepper: {
+      back: "Back", continue: "Continue", }, liquidSpinner: {
+      words: [
+        "Assembling modules...", "Calibrating delivery...", "Almost ready...", "Loading preview...",
+      ], }, alerts: {
+      stackLabel: "Notifications. Hover or tap to expand.", dismiss: "Dismiss", externalTab: "Opening link in a new tab", copied: "Copied to clipboard", offline: "You are offline", online: "Back online", pageOpened: "Page opened", formSent: "Request sent successfully", formError: "Could not send — check the form", uploadOk: "File uploaded", uploadFail: "Upload failed", saved: "Saved", skinAi: "Switched to Business View", skin56k: "Entered Builder View (56K)", skinSwitchFail: "Could not switch view — try again", loginOk: "Signed in", loginFail: "Sign-in failed", }, crossing: {
+      assemble: "Assembling First Data", ready: "First Data is ready", reconnect: "Reconnecting on 56K", }, pwa: {
       installTitle: "Install First Data", installBody: "Add the app to your home screen for faster access and offline support.", installAction: "Install app", installDismiss: "Not now", installSuccess: "App installed, welcome aboard.", pushTitle: "Enable notifications", pushBody: "Get updates about releases, blog posts, and site status.", pushAction: "Enable", pushDismiss: "No thanks", pushSuccess: "Notifications enabled.", pushDenied: "Notifications blocked in browser settings.", pushUnsupported: "Push notifications are not supported on this device.", installedBadge: "PWA, installed", }, preloader: {
-      corner: "SYS,INIT v1.0.0", welcome: "> WELCOME TO FIRST DATA", deploying: "DEPLOYING", bottom: "FIRSTDATA.IR", lines: [
+      corner: "SYS,INIT v1.0.0", welcome: "> WELCOME TO FIRST DATA", deploying: "DEPLOYING", ready: "Ready", bottom: "FIRSTDATA.IR", lines: [
         { text: "> mounting runtime.............. [ OK ]", tone: "ok", gap: 1200 }, { text: "> loading service modules [1/8..8/8].. [ OK ]", tone: "ok", gap: 100 }, { text: "> negotiating TLS handshake.....", tone: "ok", gap: 100 }, { text: "> [ ERROR ]", tone: "error", gap: 300 }, { text: "> [ ERROR ]", tone: "error", gap: 100 }, { text: "> [ ERROR ]", tone: "error", gap: 100 }, { text: "> [ ERROR ]", tone: "error", gap: 100 }, { text: "> [ ERROR ]", tone: "error", gap: 100 }, { text: "> [FIRST,DATA]: detected 11 faults. on your system.", tone: "accent", gap: 300 }, { text: "> [FIRST,DATA]: calibrating delivery engine.....", tone: "accent", gap: 100 }, { text: "> [FIRST,DATA]: configuring web + mobile + desktop layers.....", tone: "accent", gap: 100 }, { text: "> [FIRST,DATA]: standby...", tone: "wait", gap: 100 }, { text: "> [FIRST,DATA]: solution compiled. shipping.....", tone: "success", gap: 100 }, { text: "> 0 errors  0 warnings  [ SUCCESS ]", tone: "success", gap: 1000 }, { text: "> all systems nominal. status: READY", tone: "success", gap: 120 }, ], }, navPreloader: {
       prompt: "root@fd:~$", loading: (path) => `> loading ${path}...`, steps: [
         "▸ resolving route …", "▸ fetching RSC payload …", "▸ rendering page …", ], }, terminal: {
       title: "First Data Terminal v1.0.0", hint: "Type 'help' for available commands.", prompt: "fd@first-data:~$ ", tabTitle: "first-data ~ interactive", clearCmd: "clear", whoamiCmd: "whoami", placeholder: "type a command...", notFound: (cmd) => `command not found: ${cmd}. Type 'help'.`, whoamiLines: (d) => [
         "identity scan:", `  ip:        ${d.ip}`, `  os:        ${d.os}`, `  browser:   ${d.browser}`, `  device:    ${d.device}`, `  screen:    ${d.screen}`, `  viewport:  ${d.viewport}`, `  language:  ${d.language}`, `  timezone:  ${d.timezone}`, `  cores:     ${d.cores}`, "[ scan complete ]", ], commands: {
         help: [
-          "Available commands:", "  help     , show this list", "  services , list our 8 services", "  stat     , runtime statistics", "  render   , run first,data.runtime", "  whoami   , scan your device + ip", "  whoareyou, about First Data", "  version  , runtime version", "  clear    , clear terminal", ], services: [
+          "Available commands:", "  help     , show this list", "  start    , open project assessment (optional: start [brief])", "  brief    , same as start — prefill the request form", "  contact  , open Diagnose / consultation", "  services , list our 8 services", "  stat     , runtime statistics", "  render   , run first,data.runtime", "  whoami   , scan your device + ip", "  whoareyou, about First Data", "  version  , runtime version", "  clear    , clear terminal", ], services: [
           "First Data, services loaded:", "  01  Web Design & Development", "  02  Android App Development", "  03  iOS App Development", "  04  Windows & Desktop Software", "  05  SEO & Performance Optimization", "  06  UI/UX Design", "  07  E-Commerce & Online Stores", "  08  Support & Ongoing Development", "  status: OPERATIONAL [OK]", ], stat: [
           "first,data.runtime statistics:", "  client:     businesses of all sizes", "  services:   8", "  projects:   150+", "  uptime:     99.9% SLA", "  contrast:   21:1 [WCAG AAA]", "  stack:      every language & framework", "  status:     OPERATIONAL [OK]", ], render: [
           "initializing first,data.runtime...", "loading service,stack [1/8..8/8]", "mounting delivery,engine ....... [OK]", "calibrating quality,layer ....... [OK]", "build status: SHIPPED [OK]", "runtime: OPERATIONAL", ], whoareyou: [
@@ -1146,7 +1361,7 @@ export const dictionaries: Record<Lang, Dict> = {
           "first,data.runtime v1.0.0", "runtime: Next.js / React 18", "build: production [static]", "contact: info@firstdata.ir", ], }, }, marquee: [
       "Web Design", "Android", "iOS", "Windows", "SEO", "UI/UX", "E-Commerce", "Support", "React", "Next.js", "Swift", "Kotlin", "Laravel", "Node.js", "TypeScript", "Figma", ], }, fa: {
     nav: {
-      home: "خانه", aboutus: "درباره ما", aboutTeam: "تیم ما", aboutPartners: "شرکا کلیدی", aboutHonors: "افتخارات", aboutVision: "چشم‌انداز", aboutMission: "ماموریت", product: "محصولات", productWeb: "وب", productMobile: "موبایل", productWindows: "ویندوز", productAi: "هوش مصنوعی", productPlatforms: "پلتفرم‌های یکپارچه", services: "خدمات", serviceWeb: "طراحی وب‌سایت", serviceUiUx: "طراحی UI و UX", serviceEcommerce: "فروشگاه اینترنتی", serviceAndroid: "اپلیکیشن اندروید", serviceIos: "اپلیکیشن iOS", serviceSeo: "سئو و بهینه‌سازی", serviceConsulting: "مشاوره و تحلیل پروژه", serviceSupport: "پشتیبانی و توسعه", portfolio: "نمونه‌کارها", portfolioWebsites: "وب‌سایت‌ها", portfolioEcommerce: "فروشگاه اینترنتی", portfolioMobile: "اپلیکیشن موبایل", portfolioDesktop: "نرم‌افزار دسکتاپ", portfolioOther: "دیگر پروژه‌ها", blog: "وبلاگ", contactus: "تماس", contactRequest: "ثبت درخواست پروژه", contactConsultation: "دریافت مشاوره رایگان", contactCollaborate: "همکاری با ما", panel: "پنل کاربری", login: "ورود", contact: "تماس با ما", menuTitle: "منوی سایت", themeLight: "روز", themeDark: "شب", language: "زبان", }, pages: {
+      home: "خانه", aboutus: "درباره ما", aboutTeam: "تیم ما", aboutPartners: "شرکا کلیدی", aboutHonors: "افتخارات", aboutVision: "چشم‌انداز", aboutMission: "ماموریت", method: "روش کار", status: "وضعیت سیستم", product: "محصولات", productWeb: "وب", productMobile: "موبایل", productWindows: "ویندوز", productAi: "هوش مصنوعی", productPlatforms: "پلتفرم‌های یکپارچه", services: "خدمات", serviceWeb: "طراحی وب‌سایت", serviceUiUx: "طراحی UI و UX", serviceEcommerce: "فروشگاه اینترنتی", serviceAndroid: "اپلیکیشن اندروید", serviceIos: "اپلیکیشن iOS", serviceSeo: "سئو و بهینه‌سازی", serviceConsulting: "مشاوره و تحلیل پروژه", serviceSupport: "پشتیبانی و توسعه", portfolio: "نمونه‌کارها", portfolioWebsites: "وب‌سایت‌ها", portfolioEcommerce: "فروشگاه اینترنتی", portfolioMobile: "اپلیکیشن موبایل", portfolioDesktop: "نرم‌افزار دسکتاپ", portfolioOther: "دیگر پروژه‌ها", blog: "وبلاگ", contactus: "تماس", contactRequest: "ثبت درخواست پروژه", contactConsultation: "دریافت مشاوره رایگان", contactCollaborate: "همکاری با ما", panel: "پنل کاربری", login: "ورود", contact: "تماس با ما", menuTitle: "منوی سایت", menuOpen: "باز کردن منو", menuClose: "بستن منو", search: "جستجو", themeLight: "روز", themeDark: "شب", language: "زبان", cart: "سبد خرید", cartItems: "{count} کالا", cartSpendMore: "{amount} دیگر تا ارسال رایگان", cartFreeShipping: "ارسال رایگان فعال شد", cartAlsoLike: "شاید این‌ها را هم بپسندید", cartSubtotal: "جمع جزء ({count} کالا)", cartShipping: "ارسال", cartShippingFree: "رایگان", cartTax: "مالیات", cartCheckout: "تسویه · {total}", cartClose: "بستن سبد", cartEmpty: "سبد خرید خالی است", cartEmptyDesc: "هنوز کالایی ندارید. از پیشنهادهای زیر اضافه کنید یا محصولات را ببینید.", cartEmptyCta: "مشاهده محصولات", cartEmptyProgress: "برای ارسال رایگان کالا اضافه کنید", megaViewAll: "مشاهده همه", megaFeatured: "ویژه", submenuToggle: "باز و بسته کردن زیرمنو", }, pages: {
       aboutus: {
         eyebrow: "> بارگذاری /aboutus...", title: "درباره FirstData", subtitle: "۱۵ سال است که نرم‌افزار می‌سازیم؛ هنوز هم با همان اشتیاق، اما با تجربه‌ای بیشتر.", lines: [
           "بیش از ۱۵۰ پروژه زنده در وب، موبایل، دسکتاپ و پلتفرم‌های اختصاصی.",
@@ -1197,7 +1412,7 @@ export const dictionaries: Record<Lang, Dict> = {
           "راهنماها و چک‌لیست‌های بلند از پروژه‌هایی که تحویل می‌دهیم، وب، موبایل، سئو و محصول.", "بر اساس موضوع فیلتر کنید یا مقاله ویژه این هفته را باز کنید.", ], }, panel: {
         eyebrow: "> احراز هویت /panel...", title: "پنل کاربری", subtitle: "داشبورد مشتری, وضعیت پروژه، فایل‌ها و تیکت پشتیبانی.", lines: [
           "وارد شوید تا نقاط عطف را ببینید، تحویل‌ها را دانلود کنید و با تیم در ارتباط باشید.", "دسترسی پنل پس از شروع پروژه فعال می‌شود.", ], }, }, blogUi: {
-      filterLabel: "فیلتر بر اساس دسته", filterAll: "همه", readMore: "مطالعه مقاله", readFull: "خواندن کامل مقاله", minRead: "دقیقه مطالعه", noPosts: "هنوز پستی در این دسته نیست.", relatedTitle: "مقالات مرتبط", backToBlog: "بازگشت به وبلاگ", featuredLabel: "ویژه", articlesLabel: "مقاله نمایش‌داده‌شده", categoriesLabel: "موضوع", totalLabel: "کل مقالات", rssLinkEn: "RSS انگلیسی", rssLinkFa: "RSS فارسی", shareLabel: "اشتراک‌گذاری", copyLink: "کپی لینک", copiedLink: "کپی شد!", prevPost: "قبلی", nextPost: "بعدی", postNavLabel: "ناوبری مقالات", writtenBy: "نویسنده", tableOfContents: "فهرست این صفحه", allArticlesLabel: "همه مقالات", categories: {
+      filterLabel: "فیلتر بر اساس دسته", filterAll: "همه", readMore: "مطالعه مقاله", readFull: "خواندن کامل مقاله", minRead: "دقیقه مطالعه", noPosts: "هنوز پستی در این دسته نیست.", relatedTitle: "مقالات مرتبط", backToBlog: "بازگشت به وبلاگ", featuredLabel: "ویژه", articlesLabel: "مقاله نمایش‌داده‌شده", categoriesLabel: "موضوع", totalLabel: "کل مقالات", rssLinkEn: "RSS انگلیسی", rssLinkFa: "RSS فارسی", shareLabel: "اشتراک‌گذاری", copyLink: "کپی لینک", copiedLink: "کپی شد!", prevPost: "قبلی", nextPost: "بعدی", postNavLabel: "ناوبری مقالات", writtenBy: "نویسنده", tableOfContents: "فهرست این صفحه", allArticlesLabel: "همه مقالات", pageOf: "از", pageGo: "برو", pagePrev: "قبلی", pageNext: "بعدی", categories: {
         web: "وب", design: "UI/UX", seo: "سئو", mobile: "موبایل", product: "محصول", ai: "هوش مصنوعی", }, }, aboutUi: {
       manifesto: "ابزارها تغییر می‌کنند، اصول مهندسی نه!",
       storyEyebrow: "// داستان ما",
@@ -1398,7 +1613,25 @@ export const dictionaries: Record<Lang, Dict> = {
     }, hero: {
       eyebrow: "// وب.موبایل.دسکتاپ.سئو, تحویل‌شده.", slogan: "از روزهای Dialup تا دنیای AI", lead:
         "در FirstData به ساخت راهکارهای دیجیتال علاقه‌مندیم؛ از وب‌سایت‌های ساده و فروشگاه‌های اینترنتی گرفته تا اپلیکیشن‌های موبایل، نرم‌افزارهای اختصاصی و محصولات نرم‌افزاری خودمان.", tagline:
-        "فرقی نمی‌کند در ابتدای مسیر باشید یا سال‌ها از کسب‌وکارتان گذشته باشد؛ ما متناسب با نیاز و بودجه شما بهترین راهکار را طراحی و اجرا می‌کنیم. از ایده اولیه تا توسعه، پشتیبانی و به‌روزرسانی، کنار شما هستیم تا محصولی باکیفیت و قابل اعتماد داشته باشید.", subcopy: "", ctaPrimary: "شروع پروژه", ctaSecondary: "مشاوره رایگان", scroll: "برای کاوش اسکرول کنید", version: "اولین‌دیتا ~ نسخه ۱.۰.۰", brand: "اولین دیتا", }, heroMap: {
+        "فرقی نمی‌کند در ابتدای مسیر باشید یا سال‌ها از کسب‌وکارتان گذشته باشد؛ ما متناسب با نیاز و بودجه شما بهترین راهکار را طراحی و اجرا می‌کنیم. از ایده اولیه تا توسعه، پشتیبانی و به‌روزرسانی، کنار شما هستیم تا محصولی باکیفیت و قابل اعتماد داشته باشید.", subcopy: "", ctaPrimary: "شروع برآورد پروژه", ctaSecondary: "دیدن نمونه‌کار و نتایج", ctaTertiary: "ورود به جهان 56K", ctaChat: "از دستیار بپرس", scroll: "برای کاوش اسکرول کنید", version: "اولین‌دیتا ~ نسخه ۱.۰.۰", brand: "اولین دیتا",
+      mainframe: {
+        introLine1: "سلام — اینجا First Data است،",
+        introLine2: "از روزهای Dialup تا دنیای AI",
+        typewriter: "خوش آمدید. سلیقه خوب معمولاً ما را پیدا می‌کند. حالا چه چیزی می‌سازیم؟",
+        pillIdea: "ایده‌تان را بگویید",
+        pillCareers: "با ما همکاری کنید",
+        pillHello: "سلام کوتاه بفرستید",
+        pillMethod: "روش کار ما",
+        emailReach: "ایمیل:",
+        emailCopied: "ایمیل کپی شد",
+        copyEmailAria: "کپی ایمیل تماس",
+      },
+      spline: {
+        title: "اولین دیتا",
+        description:
+          "محصول دیجیتال شما را از ایده تا رشد طراحی، توسعه و پشتیبانی می‌کنیم — سریع‌تر می‌فروشد، قابل توسعه است و بعد از تحویل رها نمی‌شود.",
+      },
+    }, heroMap: {
       ariaLabel: "نقشه نقطه‌ای ایران با موقعیت دفاتر", windowTitle: "geo.iran, نودهای فعال", hint: "روی نقطه بروید ▸", statusLine: "نودها: تهران, شیراز, اهواز, ping ok", cities: {
         tehran: "تهران", shiraz: "شیراز", ahvaz: "اهواز", }, }, trust: {
       eyebrow: "// نه پاورپوینت, محصول واقعی", items: [
@@ -1454,25 +1687,29 @@ export const dictionaries: Record<Lang, Dict> = {
       eyebrow: "// آماده‌اید؟", title: "بیایید چیزی واقعی بسازیم.", subtitle:
         "درباره پروژه‌تان بگویید. در یک روز کاری پاسخ می‌دهیم.", ctaPrimary: "شروع پروژه", ctaSecondary: "سوال بپرسید", }, home: {
       services: {
-        eyebrow: "خدمات ما", title: "اولین دیتا چه کارهایی برای شما انجام می‌دهد؟", subtitle:
-          "هر کارت یک خدمت است. روی آن بزنید تا توضیح ساده و قابل‌فهم ببینید, بدون اصطلاحات فنی.", hint: "روی هر باکس بزنید تا جزئیات همان خدمت را ببینید.", moreLabel: "ببین چطور کار می‌کنه", allLink: "مشاهده همه خدمات", items: [
+        eyebrow: "خدمات", title: "خدماتی که برای شما انجام می‌دهیم", subtitle:
+          "همکاری‌هایی که در آن طراحی، ساخت و پشتیبانی می‌کنیم — روی هر کارت توضیح ساده ببینید.", hint: "روی هر باکس بزنید تا جزئیات همان خدمت را ببینید.", allLink: "مشاهده همه خدمات",
+        integrationTitle: "خدماتی که سر به سر به هم وصل می‌شوند",
+        integrationDescription:
+          "وب، موبایل، طراحی، سئو و پشتیبانی — یک تیم و یک جریان کار، بدون دویدن بین چند پیمانکار.",
+        items: [
           {
-            slug: "web-design", title: "ساخت وب‌سایت", desc: "یک سایت حرفه‌ای تا مشتریان شما را آنلاین پیدا کنند و با شما تماس بگیرند.", }, {
-            slug: "ecommerce", title: "فروشگاه اینترنتی", desc: "فروش محصول در اینترنت با پرداخت امن و مدیریت آسان سفارش‌ها.", }, {
-            slug: "android", title: "اپلیکیشن اندروید", desc: "برنامه موبایل برای گوشی‌های اندروید, برای مشتری یا کارکنان شما.", }, {
-            slug: "ios", title: "اپلیکیشن آیفون", desc: "برنامه برای کاربران آیفون و iPad، با انتشار در App Store.", }, {
-            slug: "ui-ux", title: "طراحی و سادگی استفاده", desc: "سایت یا اپ شما را زیبا، مرتب و برای همه قابل‌استفاده می‌کنیم.", }, {
-            slug: "seo", title: "دیده شدن در گوگل", desc: "وقتی مردم در گوگل جستجو می‌کنند، راحت‌تر شما را پیدا کنند.", }, {
-            slug: "consulting", title: "مشاوره رایگان", desc: "نمی‌دانید از کجا شروع کنید؟ گزینه‌ها را به زبان ساده توضیح می‌دهیم.", }, {
-            slug: "support", title: "پشتیبانی بعد از تحویل", desc: "بعد از راه‌اندازی هم کنار شما می‌مانیم, به‌روزرسانی و رفع مشکل.", }, ], }, products: {
-        eyebrow: "محصولات ما", title: "محصولات دیجیتالی که برای شما می‌سازیم", subtitle:
-          "فراتر از یک سایت ساده, پلتفرم و ابزار کامل برای مدیریت کسب‌وکار آنلاین و روی دستگاه‌ها.", hint: "روی هر باکس بزنید تا ببینید هر نوع محصول شامل چه چیزهایی است.", moreLabel: "→ جزئیات", allLink: "مشاهده همه محصولات", items: [
+            slug: "web-design", title: "ساخت وب‌سایت", desc: "یک سایت حرفه‌ای تا مشتریان شما را آنلاین پیدا کنند و با شما تماس بگیرند.", cta: "مشاهده فرایند طراحی سایت", }, {
+            slug: "ecommerce", title: "فروشگاه اینترنتی", desc: "فروش محصول در اینترنت با پرداخت امن و مدیریت آسان سفارش‌ها.", cta: "جزئیات ساخت فروشگاه اینترنتی", }, {
+            slug: "android", title: "اپلیکیشن اندروید", desc: "برنامه موبایل برای گوشی‌های اندروید, برای مشتری یا کارکنان شما.", cta: "جزئیات ساخت اپلیکیشن اندروید", }, {
+            slug: "ios", title: "اپلیکیشن آیفون", desc: "برنامه برای کاربران آیفون و iPad، با انتشار در App Store.", cta: "جزئیات ساخت اپلیکیشن آیفون", }, {
+            slug: "ui-ux", title: "طراحی و سادگی استفاده", desc: "سایت یا اپ شما را زیبا، مرتب و برای همه قابل‌استفاده می‌کنیم.", cta: "آشنایی با طراحی و سادگی استفاده", }, {
+            slug: "seo", title: "دیده شدن در گوگل", desc: "وقتی مردم در گوگل جستجو می‌کنند، راحت‌تر شما را پیدا کنند.", cta: "آشنایی با خدمات سئو", }, {
+            slug: "consulting", title: "مشاوره رایگان", desc: "نمی‌دانید از کجا شروع کنید؟ گزینه‌ها را به زبان ساده توضیح می‌دهیم.", cta: "جزئیات مشاوره رایگان", }, {
+            slug: "support", title: "پشتیبانی بعد از تحویل", desc: "بعد از راه‌اندازی هم کنار شما می‌مانیم, به‌روزرسانی و رفع مشکل.", cta: "آشنایی با پشتیبانی بعد از تحویل", }, ], }, products: {
+        eyebrow: "راهکارها", title: "راهکارهایی که برای کسب‌وکارها می‌سازیم", subtitle:
+          "خطوط محصول و پلتفرم‌هایی که تحویل می‌دهیم — جدا از مدل همکاری خدماتی.", hint: "روی هر باکس بزنید تا ببینید هر نوع راهکار شامل چه چیزهایی است.", allLink: "مشاهده همه محصولات", items: [
           {
-            slug: "web", title: "وب‌اپ و پورتال", desc: "پنل مدیریت، پورتال مشتری و ابزار آنلاینی که تیم شما هر روز از آن استفاده می‌کند.", }, {
-            slug: "mobile", title: "اپلیکیشن موبایل", desc: "برنامه برای آیفون و اندروید, برای مشتری یا کارکنان، با به‌روزرسانی و پشتیبانی.", }, {
-            slug: "windows", title: "نرم‌افزار ویندوز", desc: "برنامه دسکتاپ برای کامپیوترهای اداری, سریع، پایدار و نصب آسان.", }, {
-            slug: "ai", title: "هوش مصنوعی", desc: "جستجو، چت‌بات و خودکارسازی برای صرفه‌جویی در وقت, با طراحی امن داخل محصول شما.", }, {
-            slug: "platforms", title: "پلتفرم یکپارچه", desc: "وب‌سایت، اپ، پنل مدیریت و سرور به هم وصل, یک سیستم، یک ورود.", }, ], }, why: {
+            slug: "web", title: "وب‌اپ و پورتال", desc: "پنل مدیریت، پورتال مشتری و ابزار آنلاینی که تیم شما هر روز از آن استفاده می‌کند.", cta: "جزئیات وب‌اپ و پورتال", }, {
+            slug: "mobile", title: "اپلیکیشن موبایل", desc: "برنامه برای آیفون و اندروید, برای مشتری یا کارکنان، با به‌روزرسانی و پشتیبانی.", cta: "جزئیات ساخت اپلیکیشن", }, {
+            slug: "windows", title: "نرم‌افزار ویندوز", desc: "برنامه دسکتاپ برای کامپیوترهای اداری, سریع، پایدار و نصب آسان.", cta: "جزئیات نرم‌افزار ویندوز", }, {
+            slug: "ai", title: "هوش مصنوعی", desc: "جستجو، چت‌بات و خودکارسازی برای صرفه‌جویی در وقت, با طراحی امن داخل محصول شما.", cta: "آشنایی با محصولات هوش مصنوعی", }, {
+            slug: "platforms", title: "پلتفرم یکپارچه", desc: "وب‌سایت، اپ، پنل مدیریت و سرور به هم وصل, یک سیستم، یک ورود.", cta: "جزئیات پلتفرم یکپارچه", }, ], }, why: {
         eyebrow: "چرا اولین دیتا", title: "تیمی که می‌توانید روی آن حساب کنید", subtitle:
           "لازم نیست برنامه‌نویسی بلد باشید. همه چیز را ساده توضیح می‌دهیم و سر وقت تحویل می‌دهیم.", points: [
           {
@@ -1491,12 +1728,48 @@ export const dictionaries: Record<Lang, Dict> = {
         eyebrow: "هر وقت آماده بودید", title: "نیازتان را برایمان بنویسید", subtitle:
           "ایده‌تان را با زبان خودتان بگویید. در یک روز کاری پاسخ می‌دهیم, مشاوره رایگان است.", cta: "تماس با ما", responseNote: "معمولاً در روزهای کاری ظرف ۲۴ ساعت پاسخ داده می‌شود.", }, terminalIntro: {
         title: "ترمینال کوچک ما", subtitle:
-          "اگر به فناوری علاقه دارید، می‌توانید دستور تایپ کنید. اگر نه، رد شوید,!! فقط برای سرگرمی است. 😂", }, }, auth: {
+          "اگر به فناوری علاقه دارید، می‌توانید دستور تایپ کنید. اگر نه، رد شوید,!! فقط برای سرگرمی است. 😂", },     }, assistantChat: {
+      eyebrow: "دستیار اولین دیتا",
+      title: "از اولین دیتا بپرسید",
+      subtitle: "درباره خدمات، بازه قیمت، زمان تحویل یا نحوه شروع بپرسید.",
+      assistantName: "اولین دیتا",
+      online: "آنلاین",
+      thinking: "در حال فکر کردن…",
+      typing: "در حال نوشتن…",
+      placeholder: "پیام خود را بنویسید…",
+      send: "ارسال",
+      stop: "توقف",
+      newChat: "گفتگوی جدید",
+      close: "بستن",
+      collapse: "جمع کردن",
+      miniLabel: "از اولین دیتا بپرسید",
+      expandAria: "باز کردن دستیار اولین دیتا",
+      modalTitle: "دستیار اولین دیتا",
+      composerLabel: "از دستیار بپرسید",
+      contextChip: "دانش اولین دیتا",
+      autoBadge: "Auto",
+      attach: "فوکوس روی ورودی",
+      errorGeneric: "اتصال به دستیار برقرار نشد. کمی بعد دوباره تلاش کنید.",
+      footerHint: "سؤال‌های ناشناخته ذخیره می‌شوند تا بعداً جواب بهتری بسازیم.",
+      disclaimer:
+        "پاسخ‌ها فقط درباره محصولات و خدمات اولین دیتا است. قیمت‌ها تقریبی‌اند؛ قرارداد و پرداخت با تیم انسانی. مشاوره رایگان از فرم تماس.",
+      welcomeLines: [
+        "سلام — من دستیار اولین دیتا هستم.",
+        "از خدمات، بازه قیمت، زمان تحویل یا نحوه شروع پروژه بپرسید.",
+        "نکته: قرارداد و پرداخت از مسیر /contactus با تیم پیگیری می‌شود",
+      ],
+      suggestions: [
+        "چه خدماتی دارید؟",
+        "قیمت طراحی سایت چقدر است؟",
+        "تحویل پروژه چقدر طول می‌کشد؟",
+        "چطور شروع کنیم؟",
+      ],
+    }, auth: {
       login: {
-        eyebrow: "> auth /login...", title: "ورود", subtitle: "با ایمیل و رمز عبور، یا OTP از طریق ایمیل یا پیامک وارد پنل شوید.", tabEmail: "ایمیل", tabOtp: "OTP", labelEmail: "ایمیل", labelPassword: "رمز عبور", labelOtp: "کد تأیید", otpChannelEmail: "OTP ایمیل", otpChannelSms: "OTP پیامک", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", otpSentEmail: "کد به ایمیل شما ارسال شد.", otpSentSms: "کد از طریق پیامک به موبایل شما ارسال شد.", submit: "ورود", sendOtp: "ارسال کد", verifyOtp: "تأیید و ورود", changeContact: "← تغییر اطلاعات تماس", loading: "لطفاً صبر کنید...", toRegister: "حساب ندارید؟ ثبت‌نام →", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", forgotPassword: "رمز را فراموش کردید؟", labelTotp: "کد Authenticator", totpSubtitle: "کد ۶ رقمی اپ Authenticator را وارد کنید.", totpSubmit: "تأیید و ورود", totpBack: "← بازگشت به ورود", }, forgotPassword: {
+        eyebrow: "> auth /login...", title: "ورود", subtitle: "با ایمیل و رمز عبور، یا OTP از طریق ایمیل یا پیامک وارد پنل شوید.", welcomeTitle: "به اولین دیتا خوش آمدید", welcomeSubtitle: "وارد حساب کاربری خود شوید", tabEmail: "ایمیل", tabOtp: "OTP", labelEmail: "ایمیل", labelPassword: "رمز عبور", labelOtp: "کد تأیید", otpChannelEmail: "OTP ایمیل", otpChannelSms: "OTP پیامک", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", emailPlaceholder: "you@company.com", passwordPlaceholder: "رمز عبور خود را وارد کنید", otpSentEmail: "کد به ایمیل شما ارسال شد.", otpSentSms: "کد از طریق پیامک به موبایل شما ارسال شد.", submit: "ورود", sendOtp: "ارسال کد", verifyOtp: "تأیید و ورود", changeContact: "← تغییر اطلاعات تماس", loading: "لطفاً صبر کنید...", toRegister: "حساب ندارید؟ ثبت‌نام →", noAccount: "حساب ندارید؟", createAccount: "ایجاد حساب", rememberDevice: "این دستگاه را به خاطر بسپار", orSignInWith: "یا ورود با", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", forgotPassword: "رمز را فراموش کردید؟", labelTotp: "کد Authenticator", totpSubtitle: "کد ۶ رقمی اپ Authenticator را وارد کنید.", totpSubmit: "تأیید و ورود", totpBack: "← بازگشت به ورود", }, forgotPassword: {
         eyebrow: "> auth /forgot-password...", title: "بازیابی رمز", subtitle: "کد تأیید به ایمیل یا موبایل شما ارسال می‌شود.", tabEmail: "ایمیل", tabSms: "پیامک", labelEmail: "ایمیل", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", submit: "ارسال کد بازیابی", loading: "لطفاً صبر کنید...", sentEmail: "در صورت وجود حساب، کد به ایمیل ارسال شد.", sentSms: "در صورت وجود حساب، کد از طریق پیامک ارسال شد.", continueReset: "ورود کد و رمز جدید →", changeContact: "← تغییر اطلاعات تماس", toLogin: "بازگشت به ورود", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", }, resetPassword: {
         eyebrow: "> auth /reset-password...", title: "رمز جدید", subtitle: "کد ارسال‌شده و رمز جدید را وارد کنید.", labelEmail: "ایمیل", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", labelCode: "کد تأیید", labelPassword: "رمز جدید", labelConfirm: "تکرار رمز", submit: "به‌روزرسانی رمز", loading: "لطفاً صبر کنید...", passwordMismatch: "رمزها یکسان نیستند.", resendCode: "ارسال مجدد کد", toLogin: "بازگشت به ورود", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", }, register: {
-        eyebrow: "> auth /register...", title: "ثبت‌نام", subtitle: "با ایمیل و رمز عبور، یا OTP از طریق ایمیل یا پیامک ثبت‌نام کنید.", tabEmail: "ایمیل", tabOtp: "OTP", labelName: "نام کامل", labelEmail: "ایمیل", labelPassword: "رمز عبور (حداقل ۸ کاراکتر)", labelConfirm: "تکرار رمز عبور", labelOtp: "کد تأیید", otpChannelEmail: "OTP ایمیل", otpChannelSms: "OTP پیامک", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", otpSentEmail: "کد به ایمیل شما ارسال شد.", otpSentSms: "کد از طریق پیامک به موبایل شما ارسال شد.", submit: "ایجاد حساب", sendOtp: "ارسال کد", verifyOtp: "تأیید و ثبت‌نام", changeContact: "← ویرایش اطلاعات", loading: "لطفاً صبر کنید...", toLogin: "حساب دارید؟ ورود →", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", errorPasswordMatch: "رمز عبور و تکرار آن یکسان نیست.", }, panel: {
+        eyebrow: "> auth /register...", title: "ثبت‌نام", subtitle: "با ایمیل و رمز عبور، یا OTP از طریق ایمیل یا پیامک ثبت‌نام کنید.", tabEmail: "ایمیل", tabOtp: "OTP", labelName: "نام کامل", labelEmail: "ایمیل", labelPassword: "رمز عبور (حداقل ۸ کاراکتر)", labelConfirm: "تکرار رمز عبور", labelOtp: "کد تأیید", otpChannelEmail: "OTP ایمیل", otpChannelSms: "OTP پیامک", labelPhone: "شماره موبایل", phonePlaceholder: "09123456789", namePlaceholder: "نام کامل شما", emailPlaceholder: "you@example.com", passwordPlaceholder: "حداقل ۸ کاراکتر", confirmPlaceholder: "تکرار رمز عبور", orSignUpWith: "یا ثبت‌نام با", alreadyHaveAccount: "حساب دارید؟", signIn: "ورود", logoAlt: "فرست دیتا", otpSentEmail: "کد به ایمیل شما ارسال شد.", otpSentSms: "کد از طریق پیامک به موبایل شما ارسال شد.", submit: "ایجاد حساب", sendOtp: "ارسال کد", verifyOtp: "تأیید و ثبت‌نام", changeContact: "← ویرایش اطلاعات", loading: "لطفاً صبر کنید...", toLogin: "حساب دارید؟ ورود →", errorGeneric: "خطایی رخ داد. دوباره تلاش کنید.", errorPasswordMatch: "رمز عبور و تکرار آن یکسان نیست.", }, panel: {
         welcome: "خوش آمدید", signedInAs: "وارد شده به عنوان", logout: "خروج", loggingOut: "در حال خروج...", noPasswordHint: "با OTP ثبت‌نام کردید. در تنظیمات حساب می‌توانید رمز تعیین کنید.", statusLabel: "وضعیت نشست", statusValue: "OPERATIONAL [OK]", linkServices: "مشاهده خدمات", linkPortfolio: "مشاهده نمونه‌کارها", linkContact: "تماس با پشتیبانی", }, }, errors: {
       pages: {
         notFound: {
@@ -1531,7 +1804,7 @@ export const dictionaries: Record<Lang, Dict> = {
           eyebrow: "> خطای بحرانی, layout از دسترس خارج شد", title: "یک خطای عمیق رخ داد", subtitle:
             "پوسته صفحه قبل از بازیابی از کار افتاد. رفرش کنید یا به خانه برگردید, داده‌های شما امن است.", prompt: "root@fd:~$ systemctl restart first-data", ctaHome: "صفحه اصلی", ctaContact: "تماس با ما", ctaRetry: "بارگذاری مجدد", }, }, auth: {
         INVALID_CREDENTIALS: "ایمیل یا رمز عبور اشتباه است.", INVALID_OTP: "کد تأیید نامعتبر یا منقضی شده.", ACCOUNT_NOT_FOUND: "حسابی با این ایمیل یافت نشد.", ACCOUNT_NOT_FOUND_PHONE: "حسابی با این شماره موبایل یافت نشد.", EMAIL_ALREADY_EXISTS: "این ایمیل قبلاً ثبت شده.", PHONE_ALREADY_EXISTS: "این شماره موبایل قبلاً ثبت شده.", RATE_LIMIT: "درخواست‌های زیاد. بعداً تلاش کنید.", VALIDATION: "ورودی را بررسی کنید.", SERVER: "خطایی رخ داد. دوباره تلاش کنید.", LOGOUT_FAILED: "خروج انجام نشد.", SESSION_FAILED: "بررسی نشست ناموفق بود.", OTP_SEND_FAILED: "ارسال کد تأیید ناموفق بود.", }, contact: {
-        nameRequired: "نام الزامی است.", emailRequired: "ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", messageRequired: "پیام الزامی است.", messageMin: "پیام باید حداقل ۱۰ کاراکتر باشد.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, projectRequest: {
+        nameRequired: "نام الزامی است.", emailRequired: "ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", serviceRequired: "یک خدمت انتخاب کنید.", messageRequired: "پیام الزامی است.", messageMin: "پیام باید حداقل ۱۰ کاراکتر باشد.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, projectRequest: {
         nameRequired: "نام و نام خانوادگی الزامی است.", emailRequired: "ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", phoneRequired: "شماره تماس الزامی است.", phoneInvalid: "شماره تماس معتبر وارد کنید.", projectTypeRequired: "حداقل یک نوع پروژه را انتخاب کنید.", budgetRequired: "بودجه تقریبی را انتخاب کنید.", timelineRequired: "زمان مورد انتظار را انتخاب کنید.", descriptionRequired: "توضیحات پروژه الزامی است.", descriptionMin: "توضیحات باید حداقل ۱۰ کاراکتر باشد.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, consultationRequest: {
         nameRequired: "نام الزامی است.", phoneRequired: "شماره تماس الزامی است.", phoneInvalid: "شماره تماس معتبر وارد کنید.", contactMethodRequired: "روش ارتباط را انتخاب کنید.", emailRequired: "وقتی روش ارتباط ایمیل است، وارد کردن ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", contactTimeRequired: "بهترین زمان تماس را انتخاب کنید.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, collaborateRequest: {
         networkError: "خطای شبکه. اتصال را بررسی کنید.", hiring: {
@@ -1543,13 +1816,13 @@ export const dictionaries: Record<Lang, Dict> = {
           "اتصال Wi‑Fi یا داده موبایل را بررسی کنید", "شبکه دیگر امتحان کنید یا VPN را خاموش کنید", "بعد از اتصال، این صفحه را دوباره بارگذاری کنید", ], onlineRestored: "اتصال برقرار شد, می‌توانید دوباره تلاش کنید.", lastSync: "آخرین همگام‌سازی موفق: نامشخص (آفلاین)", }, network: {
         failed: "اتصال برقرار نشد.", timeout: "زمان درخواست تمام شد.", badGateway: "سرور موقتاً در دسترس نیست.", malformed: "پاسخ سرور نامعتبر بود.", }, }, contact: {
       eyebrow: "// تماس", title: "تماس با اولین دیتا", subtitle:
-        "فرم را پر کنید یا مستقیماً با ما در ارتباط باشید. بدون فروش اجباری، فقط یک مکالمه.", labelName: "نام", labelEmail: "ایمیل", labelPhone: "تلفن (اختیاری)", labelService: "خدمات مورد نیاز", labelMessage: "درباره پروژه‌تان بگویید", labelSubmit: "ارسال پیام", submitting: "در حال ارسال...", serviceOptions: [
-        "طراحی و توسعه وب‌سایت", "اپلیکیشن اندروید", "اپلیکیشن iOS", "نرم‌افزار ویندوز", "سئو و بهینه‌سازی", "طراحی UI/UX", "فروشگاه اینترنتی", "پشتیبانی و نگهداری", "سایر", ], success: "> پیام ارسال شد. در یک روز کاری پاسخ می‌دهیم.", directEmail: "info@firstdata.ir", directPhone: "‎+۹۸ ۹۳۳ ۱۲۷ ۴۰۳۹", directAddress: "شیراز - بلوار سرباز - خیابان ایثارگران کوچه ۳", orDirect: "یا مستقیماً با ما تماس بگیرید:", }, projectRequest: {
-      sectionBasic: "اطلاعات اولیه", sectionType: "نوع پروژه", sectionBudget: "بودجه تقریبی", sectionTimeline: "زمان مورد انتظار", sectionDescription: "توضیحات پروژه", sectionFiles: "فایل", labelName: "نام و نام خانوادگی", labelEmail: "ایمیل", labelPhone: "شماره تماس", labelCompany: "نام شرکت", labelCompanyOptional: "اختیاری", labelDescription: "اهداف، امکانات و محدودیت‌های پروژه را بنویسید…", labelUpload: "آپلود", removeFile: "حذف فایل", filesHint: "وایرفریم، PDF، نمونه سایت، لوگو یا فایل برند (حداکثر ۵ فایل، هر کدام ۱۰ مگابایت).", labelSubmit: "ارسال درخواست", submitting: "در حال ارسال…", success: "> درخواست شما ثبت شد. ظرف یک روز کاری بررسی و پاسخ می‌دهیم.", sendAnother: "ارسال درخواست دیگر", projectTypes: {
+        "فرم را پر کنید یا مستقیماً با ما در ارتباط باشید. بدون فروش اجباری، فقط یک مکالمه.", stepContactTitle: "تماس", stepContactDesc: "اطلاعات شما", stepDetailsTitle: "درخواست", stepDetailsDesc: "خدمت و پیام", labelName: "نام", labelEmail: "ایمیل", labelPhone: "تلفن (اختیاری)", labelService: "خدمات مورد نیاز", labelMessage: "درباره پروژه‌تان بگویید", labelSubmit: "ارسال پیام", submitting: "در حال ارسال...", serviceOptions: [
+        "طراحی و توسعه وب‌سایت", "اپلیکیشن اندروید", "اپلیکیشن iOS", "نرم‌افزار ویندوز", "سئو و بهینه‌سازی", "طراحی UI/UX", "فروشگاه اینترنتی", "پشتیبانی و نگهداری", "سایر", ], success: "> پیام ارسال شد. در یک روز کاری پاسخ می‌دهیم.", sendAnother: "ارسال پیام دیگر", directEmail: "info@firstdata.ir", directPhone: "‎+۹۸ ۹۳۳ ۱۲۷ ۴۰۳۹", directAddress: "شیراز - بلوار سرباز - خیابان ایثارگران کوچه ۳", orDirect: "یا مستقیماً با ما تماس بگیرید:", pathsTitle: "مسیر خود را انتخاب کنید", pathRequestTitle: "ساخت", pathRequestDesc: "هدف، بودجه و زمان‌بندی — بررسی توسط مهندس ارشد.", pathConsultationTitle: "تشخیص", pathConsultationDesc: "محصول، استک و قدم بعدی را شفاف کنید — کشف کوتاه، بدون تعهد.", pathCollaborateTitle: "رشد و همکاری", pathCollaborateDesc: "پشتیبانی مداوم، استخدام یا همکاری بلندمدت با تیم ما.", whatsappLabel: "واتساپ", telegramLabel: "تلگرام", mapLabel: "مشاهده روی نقشه", }, projectRequest: {
+      sectionBasic: "اطلاعات اولیه", sectionType: "نوع پروژه", sectionBudget: "بودجه تقریبی", sectionTimeline: "زمان مورد انتظار", sectionDescription: "توضیحات پروژه", sectionFiles: "فایل", stepBasicDesc: "نام و تماس", stepTypeDesc: "نیاز شما", stepPlanTitle: "برنامه", stepPlanDesc: "بودجه و زمان", stepBriefTitle: "شرح", stepBriefDesc: "جزئیات و فایل", labelName: "نام و نام خانوادگی", labelEmail: "ایمیل", labelPhone: "شماره تماس", labelCompany: "نام شرکت", labelCompanyOptional: "اختیاری", labelDescription: "اهداف، امکانات و محدودیت‌های پروژه را بنویسید…", labelUpload: "آپلود", removeFile: "حذف فایل", filesHint: "وایرفریم، PDF، نمونه سایت، لوگو یا فایل برند (حداکثر ۵ فایل، هر کدام ۱۰ مگابایت).", labelSubmit: "ارسال درخواست", submitting: "در حال ارسال…", success: "> درخواست شما ثبت شد. ظرف یک روز کاری بررسی و پاسخ می‌دهیم.", sendAnother: "ارسال درخواست دیگر", projectTypes: {
         web: "طراحی وب‌سایت", ecommerce: "فروشگاه اینترنتی", android: "اپلیکیشن اندروید", ios: "اپلیکیشن iOS", windows: "نرم‌افزار ویندوز", seo: "سئو", support: "پشتیبانی", custom: "محصول اختصاصی", }, budgets: {
         under_30m: "کمتر از ۳۰ میلیون", "30_70m": "۳۰ تا ۷۰ میلیون", "70_150m": "۷۰ تا ۱۵۰ میلیون", over_150m: "بیشتر", unknown: "هنوز مشخص نیست", }, timelines: {
         urgent: "فوری", one_month: "یک ماه", two_three_months: "دو تا سه ماه", flexible: "منعطف", }, }, consultationRequest: {
-      sectionContactMethod: "روش ارتباط", sectionContactTime: "بهترین زمان تماس", labelName: "نام", labelPhone: "تلفن", labelEmail: "ایمیل", labelEmailOptional: "اختیاری (اگر روش ارتباط ایمیل است، الزامی)", labelSubmit: "درخواست مشاوره", submitting: "در حال ارسال…", success: "> درخواست مشاوره ثبت شد. در زمان انتخابی با شما تماس می‌گیریم.", sendAnother: "درخواست مشاوره دیگر", contactMethods: {
+      sectionContactMethod: "روش ارتباط", sectionContactTime: "بهترین زمان تماس", stepIdentityTitle: "شما", stepIdentityDesc: "نام و تلفن", stepMethodDesc: "نحوه ارتباط", stepTimeDesc: "زمان تماس", labelName: "نام", labelPhone: "تلفن", labelEmail: "ایمیل", labelEmailOptional: "اختیاری (اگر روش ارتباط ایمیل است، الزامی)", labelSubmit: "درخواست مشاوره", submitting: "در حال ارسال…", success: "> درخواست مشاوره ثبت شد. در زمان انتخابی با شما تماس می‌گیریم.", sendAnother: "درخواست مشاوره دیگر", contactMethods: {
         call: "تماس", whatsapp: "واتساپ", telegram: "تلگرام", email: "ایمیل", }, contactTimes: {
         morning: "صبح", noon: "ظهر", afternoon: "عصر", }, }, collaborateRequest: {
       branchToggleLabel: "نوع درخواست", branches: {
@@ -1569,16 +1842,23 @@ export const dictionaries: Record<Lang, Dict> = {
           title: "نسخه و changelog", body: "نسخه فعلی سایت در فوتر نمایش داده می‌شود. با کلیک روی شماره نسخه، فهرست تغییرات هر انتشار باز می‌شود. پس از هر به‌روزرسانی معنادار، این فهرست به‌روز می‌شود.", }, {
           title: "دسترسی به سایت", body: "تلاش می‌کنیم سایت پایدار باشد، اما دسترسی بدون وقفه تضمین نمی‌شود. نگهداری یا به‌روزرسانی ممکن است به‌طور موقت دسترسی را محدود کند.", }, {
           title: "تغییر قوانین", body: "ممکن است این قوانین یا نسخه سایت را تغییر دهیم. ادامه استفاده پس از به‌روزرسانی به‌منزله پذیرش قوانین و changelog جاری است.", }, ], changelogTitle: "تاریخچه نسخه‌ها", changelogIntro: "هر نسخه منتشرشده و تغییرات قابل مشاهده آن در اینجا فهرست شده است.", versionNote: "نسخه فعلی در فوتر سایت نمایش داده می‌شود. هر زمان می‌توانید روی آن کلیک کنید تا این فهرست دوباره باز شود.", }, consent: {
-      message: "برای بهبود سایت از کوکی‌های تحلیلی (Google Analytics) استفاده می‌کنیم. پذیرش یا رد, انتخاب با شماست.", accept: "پذیرش", reject: "رد", }, pwa: {
+      message: "برای بهبود سایت از کوکی‌های تحلیلی (Google Analytics) استفاده می‌کنیم. پذیرش یا رد, انتخاب با شماست.", accept: "پذیرش", reject: "رد", }, backToTop: {
+      ariaLabel: "بازگشت به بالا", tooltip: "بازگشت به بالا", }, formStepper: {
+      back: "قبلی", continue: "ادامه", }, liquidSpinner: {
+      words: [
+        "مونتاژ ماژول‌ها...", "کالیبرهٔ تحویل...", "تقریباً آماده...", "بارگذاری پیش‌نمایش...",
+      ], }, alerts: {
+      stackLabel: "اعلان‌ها. برای باز شدن هاور یا ضربه بزنید.", dismiss: "بستن", externalTab: "لینک در تب جدید باز می‌شود", copied: "در کلیپ‌بورد کپی شد", offline: "اتصال اینترنت قطع است", online: "دوباره آنلاین شدید", pageOpened: "صفحه باز شد", formSent: "درخواست با موفقیت ارسال شد", formError: "ارسال نشد — فرم را بررسی کنید", uploadOk: "فایل آپلود شد", uploadFail: "آپلود ناموفق بود", saved: "ذخیره شد", skinAi: "وارد نمای کسب‌وکار شدید", skin56k: "وارد نمای سازنده (۵۶K) شدید", skinSwitchFail: "تغییر نما ممکن نشد — دوباره تلاش کنید", loginOk: "وارد شدید", loginFail: "ورود ناموفق بود", }, crossing: {
+      assemble: "در حال شکل‌گیری هویت فرست‌دیتا", ready: "فرست دیتا آماده است", reconnect: "اتصال دوباره روی ۵۶K", }, pwa: {
       installTitle: "نصب اولین دیتا", installBody: "اپ را به صفحه اصلی اضافه کنید, دسترسی سریع‌تر و پشتیبانی آفلاین.", installAction: "نصب اپ", installDismiss: "فعلاً نه", installSuccess: "اپ نصب شد, خوش آمدید.", pushTitle: "فعال‌سازی اعلان‌ها", pushBody: "از انتشار نسخه‌ها، مقالات وبلاگ و وضعیت سایت باخبر شوید.", pushAction: "فعال‌سازی", pushDismiss: "نه، ممنون", pushSuccess: "اعلان‌ها فعال شد.", pushDenied: "اعلان‌ها در تنظیمات مرورگر مسدود شده‌اند.", pushUnsupported: "اعلان push روی این دستگاه پشتیبانی نمی‌شود.", installedBadge: "PWA, نصب‌شده", }, preloader: {
-      corner: "SYS,INIT v1.0.0", welcome: "به اولین دیتا خوش آمدید", deploying: "در حال استقرار", bottom: "FIRSTDATA.IR", lines: [
+      corner: "SYS,INIT v1.0.0", welcome: "به اولین دیتا خوش آمدید", deploying: "در حال استقرار", ready: "آماده", bottom: "FIRSTDATA.IR", lines: [
         { text: "> در حال نصب رانتایم.............. [ موفق ]", tone: "ok", gap: 1200 }, { text: "> بارگذاری ماژول‌های خدمات [۱/۸..۸/۸].. [ موفق ]", tone: "ok", gap: 100 }, { text: "> مذاکرهٔ دست‌دادن TLS.....", tone: "ok", gap: 100 }, { text: "> [ خطا ]", tone: "error", gap: 300 }, { text: "> [ خطا ]", tone: "error", gap: 100 }, { text: "> [ خطا ]", tone: "error", gap: 100 }, { text: "> [ خطا ]", tone: "error", gap: 100 }, { text: "> [ خطا ]", tone: "error", gap: 100 }, { text: "> [اولین‌دیتا]: ۱۱ خطا در سیستم شما شناسایی شد.", tone: "accent", gap: 300 }, { text: "> [اولین‌دیتا]: تنظیم موتور تحویل.....", tone: "accent", gap: 100 }, { text: "> [اولین‌دیتا]: پیکربندی لایه‌های وب + موبایل + دسکتاپ.....", tone: "accent", gap: 100 }, { text: "> [اولین‌دیتا]: آماده‌باش...", tone: "wait", gap: 100 }, { text: "> [اولین‌دیتا]: راه‌حل کامپایل شد. در حال ارسال.....", tone: "success", gap: 100 }, { text: "> ۰ خطا  ۰ هشدار  [ موفق ]", tone: "success", gap: 1000 }, { text: "> همهٔ سیستم‌ها عادی. وضعیت: آماده", tone: "success", gap: 120 }, ], }, navPreloader: {
       prompt: "root@fd:~$", loading: (path) => `> بارگذاری ${path}...`, steps: [
         "▸ resolve مسیر …", "▸ fetch محتوا …", "▸ render صفحه …", ], }, terminal: {
       title: "ترمینال اولین دیتا نسخه ۱.۰.۰", hint: "برای دیدن فرمان‌ها «راهنما» را تایپ کنید.", prompt: "اولین‌دیتا:~$ ", tabTitle: "اولین‌دیتا ~ تعاملی", clearCmd: "پاک", whoamiCmd: "من‌کیستم", placeholder: "یک فرمان تایپ کنید...", notFound: (cmd) => `فرمان یافت نشد: ${cmd}. «راهنما» را تایپ کنید.`, whoamiLines: (d) => [
         "اسکن هویت:", `  آی‌پی:        ${d.ip}`, `  سیستم‌عامل:   ${d.os}`, `  مرورگر:       ${d.browser}`, `  دستگاه:       ${d.device}`, `  صفحه:         ${d.screen}`, `  ویوپورت:      ${d.viewport}`, `  زبان:         ${d.language}`, `  منطقهٔ زمانی:  ${d.timezone}`, `  هسته‌ها:       ${d.cores}`, "[ اسکن کامل شد ]", ], commands: {
         "راهنما": [
-          "فرمان‌های موجود:", "  راهنما   , نمایش این فهرست", "  خدمات    , فهرست هر ۸ خدمت", "  آمار     , آمار رانتایم", "  رندر     , اجرای اولین‌دیتا.رانتایم", "  من‌کیستم , اسکن دستگاه + آی‌پی شما", "  شماکیستید, دربارهٔ اولین دیتا", "  نسخه     , نسخهٔ رانتایم", "  پاک      , پاک‌کردن ترمینال", ], "خدمات": [
+          "فرمان‌های موجود:", "  راهنما   , نمایش این فهرست", "  شروع     , باز کردن برآورد پروژه (اختیاری: شروع [بریف])", "  بریف     , مثل شروع — پیش‌پر کردن فرم درخواست", "  تماس     , باز کردن مسیر تشخیص / مشاوره", "  خدمات    , فهرست هر ۸ خدمت", "  آمار     , آمار رانتایم", "  رندر     , اجرای اولین‌دیتا.رانتایم", "  من‌کیستم , اسکن دستگاه + آی‌پی شما", "  شماکیستید, دربارهٔ اولین دیتا", "  نسخه     , نسخهٔ رانتایم", "  پاک      , پاک‌کردن ترمینال", ], "خدمات": [
           "اولین دیتا, خدمات بارگذاری‌شده:", "  ۰۱  طراحی و توسعه وب‌سایت", "  ۰۲  توسعه اپلیکیشن اندروید", "  ۰۳  توسعه اپلیکیشن iOS", "  ۰۴  نرم‌افزار ویندوز و دسکتاپ", "  ۰۵  سئو و بهینه‌سازی عملکرد", "  ۰۶  طراحی UI/UX", "  ۰۷  فروشگاه اینترنتی و تجارت الکترونیک", "  ۰۸  پشتیبانی و توسعه مداوم", "  وضعیت: عملیاتی [موفق]", ], "آمار": [
           "آمار اولین‌دیتا.رانتایم:", "  مشتری:     کسب‌وکارهای متنوع", "  خدمات:     ۸", "  پروژه‌ها:   ۱۵۰+", "  آپ‌تایم:    ۹۹.۹٪ SLA", "  کنتراست:   ۲۱:۱ [WCAG AAA]", "  پشته:      هر زبان و فریم‌ورک", "  وضعیت:     عملیاتی [موفق]", ], "رندر": [
           "در حال راه‌اندازی اولین‌دیتا.رانتایم...", "بارگذاری پشتهٔ خدمات [۱/۸..۸/۸]", "سوارکردن موتور تحویل ....... [موفق]", "کالیبراسیون لایهٔ کیفیت ....... [موفق]", "وضعیت ساخت: ارسال‌شده [موفق]", "رانتایم: عملیاتی", ], "شماکیستید": [

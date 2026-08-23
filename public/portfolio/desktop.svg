@@ -1,0 +1,19 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img">
+  <rect width="960" height="600" fill="#0c120c"/>
+  <rect x="40" y="40" width="880" height="36" rx="4" fill="#161c16"/>
+  <text x="56" y="64" fill="#33ff66aa" font-family="ui-monospace,monospace" font-size="14">ERP.Client.exe</text>
+  <rect x="40" y="76" width="200" height="484" fill="#121812"/>
+  <rect x="60" y="100" width="160" height="12" rx="2" fill="#33ff6644"/>
+  <rect x="60" y="130" width="140" height="10" rx="2" fill="#ffffff20"/>
+  <rect x="60" y="156" width="150" height="10" rx="2" fill="#ffffff18"/>
+  <rect x="60" y="182" width="120" height="10" rx="2" fill="#ffffff14"/>
+  <rect x="240" y="76" width="680" height="484" fill="#0f140f"/>
+  <rect x="270" y="110" width="300" height="16" rx="3" fill="#33ff6633"/>
+  <rect x="270" y="150" width="620" height="280" rx="6" fill="#161c16"/>
+  <rect x="290" y="180" width="580" height="12" rx="2" fill="#ffffff18"/>
+  <rect x="290" y="210" width="520" height="12" rx="2" fill="#ffffff14"/>
+  <rect x="290" y="240" width="560" height="12" rx="2" fill="#ffffff10"/>
+  <rect x="690" y="460" width="90" height="32" rx="4" fill="#ffffff18"/>
+  <rect x="790" y="460" width="90" height="32" rx="4" fill="#33ff6644"/>
+  <text x="270" y="540" fill="#33ff6699" font-family="ui-monospace,monospace" font-size="14">firstdata · desktop shell</text>
+</svg>

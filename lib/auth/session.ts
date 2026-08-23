@@ -34,7 +34,7 @@ const PRE_AUTH_MAX_AGE = 60 * 5;
 
 function getSecret(): Uint8Array {
 
-  const secret = process.env.AUTH_SECRET;
+  const secret = process.env.AUTH_SECRET?.trim();
 
   if (!secret) {
 
@@ -45,6 +45,18 @@ function getSecret(): Uint8Array {
     }
 
     return new TextEncoder().encode("fd-dev-secret-change-me");
+
+  }
+
+  if (
+    secret === "change-me-in-production" ||
+    secret === "change-me-to-a-long-random-secret" ||
+    secret.length < 32
+  ) {
+
+    throw new Error(
+      "AUTH_SECRET is too weak. Generate a long random secret (>=32 chars).",
+    );
 
   }
 

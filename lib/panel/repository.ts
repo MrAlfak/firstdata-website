@@ -188,15 +188,31 @@ export function createTicket(
   userId: number,
   subject: string,
   body: string,
-  projectId?: number | null,
-  priority = "normal",
+  options: {
+    projectId?: number | null;
+    contractId?: number | null;
+    department?: string;
+    priority?: string;
+  } = {},
 ): number {
+  const projectId = options.projectId ?? null;
+  const contractId = options.contractId ?? null;
+  const department = options.department?.trim() || "support";
+  const priority = options.priority?.trim() || "normal";
+
+  if (projectId != null && !getProjectForUser(projectId, userId)) {
+    throw new Error("INVALID_PROJECT");
+  }
+  if (contractId != null && !getContractForUser(contractId, userId)) {
+    throw new Error("INVALID_CONTRACT");
+  }
+
   const result = db()
     .prepare(
-      `INSERT INTO tickets (user_id, project_id, subject, priority, status, updated_at)
-       VALUES (?, ?, ?, ?, 'open', datetime('now'))`,
+      `INSERT INTO tickets (user_id, project_id, contract_id, department, subject, priority, status, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'open', datetime('now'))`,
     )
-    .run(userId, projectId ?? null, subject.trim(), priority);
+    .run(userId, projectId, contractId, department, subject.trim(), priority);
   const ticketId = Number(result.lastInsertRowid);
   db()
     .prepare(
@@ -205,6 +221,16 @@ export function createTicket(
     .run(ticketId, body.trim());
   createNotification(userId, "ticket", "Ticket opened", subject, `/panel/tickets/${ticketId}`);
   return ticketId;
+}
+
+export function listTicketFiles(ticketId: number, userId: number): PanelFileRow[] {
+  const ticket = getTicketForUser(ticketId, userId);
+  if (!ticket) return [];
+  return db()
+    .prepare(
+      `SELECT * FROM panel_files WHERE ticket_id = ? AND user_id = ? ORDER BY created_at DESC`,
+    )
+    .all(ticketId, ticket.user_id) as PanelFileRow[];
 }
 
 export function addTicketMessage(
@@ -252,6 +278,7 @@ export function getFileForUser(fileId: number, userId: number): PanelFileRow | u
 export function saveUploadedFile(input: {
   userId: number;
   projectId?: number | null;
+  ticketId?: number | null;
   name: string;
   storagePath: string;
   mime: string | null;
@@ -260,12 +287,13 @@ export function saveUploadedFile(input: {
 }): number {
   const result = db()
     .prepare(
-      `INSERT INTO panel_files (user_id, project_id, direction, name, storage_path, mime, size_bytes, description)
-       VALUES (?, ?, 'upload', ?, ?, ?, ?, ?)`,
+      `INSERT INTO panel_files (user_id, project_id, ticket_id, direction, name, storage_path, mime, size_bytes, description)
+       VALUES (?, ?, ?, 'upload', ?, ?, ?, ?, ?)`,
     )
     .run(
       input.userId,
       input.projectId ?? null,
+      input.ticketId ?? null,
       input.name,
       input.storagePath,
       input.mime,
@@ -570,7 +598,7 @@ export function adminAddDeliverableFile(input: {
       input.sizeBytes ?? null,
       input.description ?? null,
     );
-  createNotification(input.userId, "file", "New file available", input.name, `/panel/files`);
+  createNotification(input.userId, "file", "New document available", input.name, `/panel/documents`);
   return Number(result.lastInsertRowid);
 }
 
@@ -611,7 +639,12 @@ export function resolveFileAbsolute(storagePath: string): string {
 
 export function updateUserProfile(
   userId: number,
-  input: { name?: string; email?: string | null; phone?: string | null },
+  input: {
+    name?: string;
+    email?: string | null;
+    phone?: string | null;
+    panelSkin?: "terminal" | "modern";
+  },
 ): void {
   const fields: string[] = [];
   const values: unknown[] = [];
@@ -626,6 +659,10 @@ export function updateUserProfile(
   if (input.phone !== undefined) {
     fields.push("phone = ?");
     values.push(input.phone ?? null);
+  }
+  if (input.panelSkin !== undefined) {
+    fields.push("panel_skin = ?");
+    values.push(input.panelSkin);
   }
   if (fields.length === 0) return;
   fields.push("updated_at = datetime('now')");

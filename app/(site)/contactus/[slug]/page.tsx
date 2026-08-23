@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CONTACT_SLUGS, CONTACT_SLUG_TO_PAGE } from "@/config/navigation";
+import { CONTACT_SLUGS, CONTACT_SLUG_TO_PAGE, type ContactSubPageKey } from "@/config/navigation";
+import { dictionaries } from "@/i18n/dictionaries";
+import { getRequestLang } from "@/lib/i18n/request-lang";
+import { pageMetadata } from "@/lib/seo/metadata";
 import ContactSubClient from "./ContactSubClient";
 
 type Props = {
@@ -13,24 +16,19 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const pageKey = CONTACT_SLUG_TO_PAGE[slug];
+  const pageKey = CONTACT_SLUG_TO_PAGE[slug] as ContactSubPageKey | undefined;
   if (!pageKey) {
-    return { title: "Not Found" };
+    return { title: "Not Found", robots: { index: false, follow: false } };
   }
 
-  const titles: Record<string, string> = {
-    request: "Submit Project Request",
-    consultation: "Free Consultation",
-    collaborate: "Work With Us",
-  };
+  const lang = await getRequestLang();
+  const page = dictionaries[lang].pages[pageKey];
 
-  const title = titles[slug] ?? "Contact";
-
-  return {
-    title,
-    description: `First Data, ${title}`,
-    alternates: { canonical: `https://firstdata.ir/contactus/${slug}` },
-  };
+  return pageMetadata({
+    path: `/contactus/${slug}`,
+    title: page.title,
+    description: page.subtitle,
+  });
 }
 
 export default async function ContactSubPage({ params }: Props) {
@@ -40,7 +38,7 @@ export default async function ContactSubPage({ params }: Props) {
   }
 
   return (
-    <main className="pt-20">
+    <main>
       <ContactSubClient slug={slug} />
     </main>
   );

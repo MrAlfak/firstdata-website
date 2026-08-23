@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { moduleReveal, itemReveal } from "@/motion/tokens";
 import AboutSectionHeader from "@/components/about/AboutSectionHeader";
+import FaqAccordionList from "@/components/faq/FaqAccordionList";
 import InnerPage from "@/components/layout/InnerPage";
 import FinalCta from "@/components/sales/FinalCta";
 import { useT } from "@/i18n/LangProvider";
@@ -16,7 +16,6 @@ const sectionClass =
 export default function IosServicePage() {
   const { fa, dir, lang } = useT();
   const ios = iosPageDictionaries[lang];
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -286,50 +285,8 @@ export default function IosServicePage() {
       >
         <div className="mx-auto max-w-6xl">
           <AboutSectionHeader eyebrow={ios.faq.eyebrow} title={ios.faq.title} />
-          <motion.div variants={itemReveal} className="divide-y divide-paper/10">
-            {ios.faq.items.map((item, i) => {
-              const isOpen = openFaq === i;
-              return (
-                <div key={item.q} className="py-4 sm:py-5">
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : i)}
-                    dir={dir}
-                    id={`ios-faq-q-${i}`}
-                    aria-expanded={isOpen}
-                    aria-controls={`ios-faq-a-${i}`}
-                    className={`flex w-full items-start justify-between gap-4 text-sm text-paper/80 transition-colors hover:text-paper ${fa ? "font-fa text-right" : "text-left"}`}
-                  >
-                    <span>{item.q}</span>
-                    <span className="mt-0.5 shrink-0 font-mono text-paper/30">
-                      {isOpen ? "[-]" : "[+]"}
-                    </span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        id={`ios-faq-a-${i}`}
-                        role="region"
-                        aria-labelledby={`ios-faq-q-${i}`}
-                        key="panel"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <p
-                          dir={dir}
-                          className={`mt-3 text-sm leading-relaxed text-paper/50 ${fa ? "font-fa" : ""}`}
-                        >
-                          {item.a}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
+          <motion.div variants={itemReveal}>
+            <FaqAccordionList items={ios.faq.items} idPrefix="ios-faq" defaultOpenIndex={0} />
           </motion.div>
         </div>
       </motion.section>

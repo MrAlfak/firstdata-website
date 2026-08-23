@@ -5,7 +5,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
-      AUTH_SECRET: ${AUTH_SECRET:-change-me-in-production}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET is required — generate a long random secret}
       MAINTENANCE_MODE: ${MAINTENANCE_MODE:-false}
       OTP_EMAIL_WEBHOOK: ${OTP_EMAIL_WEBHOOK:-}
       OTP_SMS_WEBHOOK: ${OTP_SMS_WEBHOOK:-}

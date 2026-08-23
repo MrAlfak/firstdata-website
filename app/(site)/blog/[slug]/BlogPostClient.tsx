@@ -10,8 +10,6 @@ import { moduleReveal, itemReveal } from "@/motion/tokens";
 
 import { Decode } from "@/components/Decode";
 
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
-
 import BlogPostCard from "@/components/blog/BlogPostCard";
 
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
@@ -49,7 +47,7 @@ type Props = {
 };
 
 export default function BlogPostClient({ post }: Props) {
-  const { lang, fa, dir, d, fd, t } = useT();
+  const { lang, fa, dir, d, fd } = useT();
 
   const content = lang === "fa" ? post.fa : post.en;
 
@@ -68,11 +66,6 @@ export default function BlogPostClient({ post }: Props) {
   const minutes = getReadMinutes(post, lang);
 
   const shareUrl = `${SITE_URL}/blog/${post.slug}`;
-  const breadcrumbs = [
-    { name: t("nav.home"), href: "/" },
-    { name: d.pages.blog.title, href: "/blog" },
-    { name: content.title },
-  ];
 
   return (
 
@@ -86,21 +79,11 @@ export default function BlogPostClient({ post }: Props) {
 
         animate="show"
 
-        className="border-b border-paper/20 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
+        className="border-b border-paper/20 px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-8 lg:px-8"
 
       >
 
         <div className="mx-auto max-w-3xl">
-
-          {breadcrumbs.length > 0 && (
-
-            <motion.div variants={itemReveal}>
-
-              <BreadcrumbNav items={breadcrumbs} fa={fa} />
-
-            </motion.div>
-
-          )}
 
           <motion.div variants={itemReveal}>
 

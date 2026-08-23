@@ -1,5 +1,6 @@
-import FilesClient from "@/components/panel/FilesClient";
+import { redirect } from "next/navigation";
 
-export default function PanelFilesPage() {
-  return <FilesClient />;
+/** Legacy route — files menu renamed to documents. */
+export default function PanelFilesRedirectPage() {
+  redirect("/panel/documents");
 }

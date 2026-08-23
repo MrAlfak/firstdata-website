@@ -5,13 +5,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useT } from "@/i18n/LangProvider";
 import type { PublicUser } from "@/lib/auth/types";
+import EmptyState from "@/components/shadcn-space/blocks/empty-state-06/empty-state";
+import PanelCommandPalette from "./PanelCommandPalette";
+import { reconcileSkinWithAccount, usePanelSkin } from "./PanelSkinToggle";
+import { PanelGateLoading } from "./PanelGateLoading";
 
 const NAV = [
   { href: "/panel", key: "dashboard" as const, exact: true },
   { href: "/panel/projects", key: "projects" as const },
   { href: "/panel/contracts", key: "contracts" as const },
   { href: "/panel/tickets", key: "tickets" as const },
-  { href: "/panel/files", key: "files" as const },
+  { href: "/panel/documents", key: "documents" as const },
   { href: "/panel/invoices", key: "invoices" as const },
   { href: "/panel/requests", key: "requests" as const },
   { href: "/panel/notifications", key: "notifications" as const },
@@ -27,7 +31,9 @@ export function PanelCard({
   className?: string;
 }) {
   return (
-    <div className={`border border-paper/15 bg-paper/[0.02] p-4 sm:p-5 ${className}`}>{children}</div>
+    <div className={`panel-card border border-paper/15 bg-paper/[0.02] p-4 sm:p-5 ${className}`}>
+      {children}
+    </div>
   );
 }
 
@@ -35,8 +41,64 @@ export function PanelLoading({ label }: { label: string }) {
   return <p className="font-mono text-sm text-paper/40">{label}</p>;
 }
 
-export function PanelEmpty({ label }: { label: string }) {
-  return <p className={`text-sm text-paper/45 ${label.includes("…") ? "font-mono" : ""}`}>{label}</p>;
+export function PanelEmpty({
+  label,
+  href,
+  ctaLabel,
+  title,
+  description,
+  icon,
+  className = "",
+}: {
+  /** Terminal / fallback title when `title` is omitted. */
+  label: string;
+  href?: string;
+  ctaLabel?: string;
+  title?: string;
+  description?: string;
+  icon?: React.ReactNode;
+  className?: string;
+}) {
+  const [skin] = usePanelSkin();
+
+  if (skin === "modern") {
+    return (
+      <EmptyState
+        compact
+        className={className}
+        icon={icon}
+        title={title ?? label}
+        description={description ?? ""}
+        primaryAction={
+          href && ctaLabel
+            ? {
+                label: ctaLabel,
+                href,
+              }
+            : null
+        }
+      />
+    );
+  }
+
+  return (
+    <div className={`space-y-3 ${className}`}>
+      <p className={`text-sm text-paper/45 ${label.includes("…") ? "font-mono" : ""}`}>
+        {title ?? label}
+      </p>
+      {description && description !== label ? (
+        <p className="text-xs text-paper/40">{description}</p>
+      ) : null}
+      {href && ctaLabel ? (
+        <Link
+          href={href}
+          className="inline-flex border border-paper/25 px-3 py-1.5 text-xs text-paper/70 transition-colors hover:border-paper/45 hover:text-paper"
+        >
+          {ctaLabel}
+        </Link>
+      ) : null}
+    </div>
+  );
 }
 
 export function PanelAlert({ message, variant = "error" }: { message: string; variant?: "error" | "success" }) {
@@ -44,7 +106,7 @@ export function PanelAlert({ message, variant = "error" }: { message: string; va
     variant === "success"
       ? "border-term/30 bg-term/5 text-term"
       : "border-red-500/30 bg-red-500/5 text-red-300";
-  return <p className={`border px-3 py-2 text-sm ${cls}`}>{message}</p>;
+  return <p className={`panel-alert border px-3 py-2 text-sm ${cls}`}>{message}</p>;
 }
 
 export default function PanelLayoutClient({ children }: { children: React.ReactNode }) {
@@ -54,6 +116,7 @@ export default function PanelLayoutClient({ children }: { children: React.ReactN
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [skin] = usePanelSkin();
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -63,7 +126,9 @@ export default function PanelLayoutClient({ children }: { children: React.ReactN
           router.replace(`/auth/login?next=${encodeURIComponent(pathname || "/panel")}`);
           return;
         }
-        setUser(data.user);
+        setUser(data.user as PublicUser);
+        /* localStorage wins; account only seeds when local is empty. */
+        reconcileSkinWithAccount(data.user.panelSkin);
       })
       .finally(() => setLoading(false));
   }, [pathname, router]);
@@ -83,14 +148,15 @@ export default function PanelLayoutClient({ children }: { children: React.ReactN
     router.refresh();
   }
 
-  const font = fa ? "font-fa" : "font-mono";
+  const isModern = skin === "modern";
+  const font = isModern ? "font-iran" : fa ? "font-fa" : "font-mono";
 
   return (
-    <div className={`min-h-screen pt-20 ${font}`} dir={dir}>
+    <div className={`panel-shell min-h-screen pt-20 ${font}`} dir={dir}>
       <div className="mx-auto flex w-full max-w-[90rem] flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:px-8 xl:px-10">
         <aside className="shrink-0 lg:w-60">
-          <div className="border border-paper/20 bg-paper/[0.02] p-4">
-            <p className="text-[10px] uppercase tracking-widest text-paper/35">
+          <div className="panel-sidebar border border-paper/20 bg-paper/[0.02] p-4">
+            <p className="text-[10px] tracking-wide text-paper/35">
               {d.pages.panel.title}
             </p>
             {user && (
@@ -136,14 +202,15 @@ export default function PanelLayoutClient({ children }: { children: React.ReactN
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 pb-20">
           {loading ? (
-            <PanelLoading label={p.common.loading} />
+            <PanelGateLoading label={p.common.loading} />
           ) : user ? (
             children
           ) : null}
         </div>
       </div>
+      {user ? <PanelCommandPalette /> : null}
     </div>
   );
 }

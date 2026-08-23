@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { APP_VERSION } from "@/config/changelog";
 import ChangelogList from "@/components/changelog/ChangelogList";
+import TermModalChrome from "@/components/ui/TermModalChrome";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { formatDigits } from "@/lib/i18n/digits";
 import type { Lang } from "@/i18n/dictionaries";
+import { searchDictionaries } from "@/i18n/search";
 
 type Props = {
   open: boolean;
@@ -26,6 +29,10 @@ export default function ChangelogModal({
   closeLabel,
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const [maximized, setMaximized] = useState(false);
+
+  useFocusTrap(open, panelRef);
 
   useEffect(() => {
     if (!open) return;
@@ -43,45 +50,49 @@ export default function ChangelogModal({
     };
   }, [open, onClose]);
 
+  useEffect(() => {
+    if (!open) setMaximized(false);
+  }, [open]);
+
   if (!open) return null;
+
+  const chrome = searchDictionaries[lang];
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-end justify-center p-4 sm:items-center"
+      className="fixed inset-0 z-[120] flex items-end justify-center p-3 sm:items-center sm:p-4"
       role="presentation"
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" aria-hidden />
+      <div className="absolute inset-0 bg-ink/85 backdrop-blur-sm" aria-hidden />
 
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="changelog-title"
+        aria-labelledby={titleId}
         dir={dir}
-        className="relative z-10 flex max-h-[min(85vh,720px)] w-full max-w-2xl flex-col border border-paper/20 bg-ink shadow-2xl"
+        className={`relative z-10 flex w-full flex-col overflow-hidden border border-term/25 bg-ink shadow-[0_24px_80px_rgba(0,0,0,0.65)] transition-[max-width,max-height] duration-200 ${
+          maximized
+            ? "max-h-[min(96vh,960px)] max-w-4xl"
+            : "max-h-[min(85vh,720px)] max-w-2xl"
+        }`}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-paper/15 px-4 py-3 sm:px-5">
-          <div>
-            <p className={`text-[10px] text-paper/35 ${fa ? "font-fa" : "font-mono uppercase"}`}>
-              v{formatDigits(APP_VERSION, fa)}
-            </p>
-            <h2
-              id="changelog-title"
-              className={`text-sm text-paper sm:text-base ${fa ? "font-fa" : "font-pixel tracking-wide"}`}
-            >
-              {title}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className={`shrink-0 border border-paper/25 px-3 py-1.5 text-[10px] uppercase tracking-wider text-paper/60 transition-colors hover:border-paper/40 hover:text-paper ${fa ? "font-fa" : "font-mono"}`}
-          >
-            {closeLabel}
-          </button>
-        </div>
+        <TermModalChrome
+          title={`${title} · v${formatDigits(APP_VERSION, fa)}`}
+          titleId={titleId}
+          prompt="fd@changelog:~$"
+          fa={fa}
+          onClose={onClose}
+          onMinimize={onClose}
+          onMaximize={() => setMaximized((v) => !v)}
+          maximized={maximized}
+          closeLabel={closeLabel}
+          minimizeLabel={chrome.minimize}
+          maximizeLabel={chrome.maximize}
+          restoreLabel={chrome.restore}
+        />
 
         <div className="overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
           <ChangelogList lang={lang} fa={fa} compact />

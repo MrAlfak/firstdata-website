@@ -6,6 +6,7 @@ import { requireStaffOrError } from "@/lib/panel/admin-api";
 import { adminGetProjectDetail } from "@/lib/panel/admin-repository";
 import { getUploadsRoot } from "@/lib/panel/auth";
 import { adminAddDeliverableFile } from "@/lib/panel/repository";
+import { validateUploadFile } from "@/lib/panel/file-upload";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,9 @@ export async function POST(req: NextRequest) {
     return jsonError("file, userId, projectId required", 400);
   }
   if (file.size > MAX_BYTES) return jsonError("File too large (max 25 MB)", 400);
+
+  const typeError = validateUploadFile(file.name, file.type, "deliverable");
+  if (typeError) return jsonError(typeError, 400);
 
   const detail = adminGetProjectDetail(projectId);
   if (!detail || detail.project.user_id !== userId) {

@@ -10,6 +10,8 @@ export type PortfolioProject = {
   category: PortfolioCategory;
   featured?: boolean;
   year?: string;
+  /** Public path under /portfolio — SVG shell or future PNG screenshot */
+  cover?: string;
   title: { fa: string; en: string };
   description: { fa: string; en: string };
   outcome: { fa: string; en: string };
@@ -38,6 +40,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "corp-brand-site",
     category: "websites",
     featured: true,
+    cover: "/portfolio/websites.svg",
     year: "2024",
     title: {
       fa: "وب‌سایت معرفی شرکت صنعتی",
@@ -57,6 +60,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "cms-editorial",
     category: "websites",
     featured: true,
+    cover: "/portfolio/websites.svg",
     year: "2023",
     title: {
       fa: "پرتال محتوایی با CMS اختصاصی",
@@ -114,6 +118,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "b2c-fashion",
     category: "ecommerce",
     featured: true,
+    cover: "/portfolio/ecommerce.svg",
     year: "2024",
     title: {
       fa: "فروشگاه B2C پوشاک",
@@ -151,6 +156,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "digital-marketplace",
     category: "ecommerce",
     featured: true,
+    cover: "/portfolio/ecommerce.svg",
     year: "2023",
     title: {
       fa: "بازارچه محصولات دیجیتال",
@@ -190,6 +196,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "field-service-android",
     category: "mobile-apps",
     featured: true,
+    cover: "/portfolio/mobile-apps.svg",
     year: "2024",
     title: {
       fa: "اپ اندروید سرویس میدانی",
@@ -265,6 +272,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "windows-erp",
     category: "desktop",
     featured: true,
+    cover: "/portfolio/desktop.svg",
     year: "2023",
     title: {
       fa: "کلاینت ویندوز ERP",
@@ -340,6 +348,7 @@ const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: "api-integration-hub",
     category: "other",
     featured: true,
+    cover: "/portfolio/other.svg",
     year: "2024",
     title: {
       fa: "هاب یکپارچه‌سازی API",
@@ -421,4 +430,8 @@ export function getFeaturedProjects(): PortfolioProject[] {
 
 export function getAllProjects(): PortfolioProject[] {
   return PORTFOLIO_PROJECTS;
+}
+
+export function getProjectById(id: string): PortfolioProject | undefined {
+  return PORTFOLIO_PROJECTS.find((p) => p.id === id);
 }

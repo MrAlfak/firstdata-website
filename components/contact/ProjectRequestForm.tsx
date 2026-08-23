@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BUDGET_KEYS,
   PROJECT_REQUEST_MAX_FILES,
@@ -15,9 +15,16 @@ import InlineError from "@/components/errors/InlineError";
 import { useT } from "@/i18n/LangProvider";
 import { submitProjectRequestForm } from "@/lib/contact/submit-project-request";
 import {
+  clearLeadPrefill,
+  readLeadPrefill,
+} from "@/lib/contact/lead-prefill";
+import {
   validateProjectRequestForm,
   type ProjectRequestErrors,
 } from "@/lib/errors/validate-project-request";
+import { useContactFormClasses } from "@/components/contact/useContactFormClasses";
+import FileDropzone from "@/components/ui/FileDropzone";
+import { ModernFormStepper, type ModernFormStep } from "@/components/ui/modern-form-stepper";
 
 const EMPTY_FORM = {
   name: "",
@@ -30,10 +37,19 @@ const EMPTY_FORM = {
   description: "",
 };
 
+function pickErrors(errors: ProjectRequestErrors, keys: (keyof ProjectRequestErrors)[]) {
+  const out: ProjectRequestErrors = {};
+  for (const key of keys) {
+    if (errors[key]) out[key] = errors[key];
+  }
+  return out;
+}
+
 export default function ProjectRequestForm() {
   const { fa, dir, d } = useT();
   const pr = d.projectRequest;
   const err = d.errors.projectRequest;
+  const cls = useContactFormClasses();
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [files, setFiles] = useState<File[]>([]);
@@ -41,13 +57,33 @@ export default function ProjectRequestForm() {
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [step, setStep] = useState(0);
 
-  const inputClass = `w-full border border-paper/20 bg-paper/[0.03] px-4 py-3 text-xs text-paper placeholder:text-paper/25 outline-none focus:border-paper/50 transition-colors duration-200 ${fa ? "font-fa text-right" : "font-mono"}`;
-  const labelClass = `mb-2 block text-[10px] uppercase tracking-widest text-paper/40 ${fa ? "font-fa" : ""}`;
-  const sectionClass = `text-sm text-paper/70 ${fa ? "font-fa" : "font-mono uppercase tracking-wider"}`;
+  useEffect(() => {
+    const draft = readLeadPrefill();
+    if (!draft) return;
+    setForm((prev) => ({
+      ...prev,
+      name: draft.name?.trim() || prev.name,
+      email: draft.email?.trim() || prev.email,
+      phone: draft.phone?.trim() || prev.phone,
+      companyName: draft.companyName?.trim() || prev.companyName,
+      projectTypes: draft.projectTypes?.length ? draft.projectTypes : prev.projectTypes,
+      budget: draft.budget || prev.budget,
+      timeline: draft.timeline || prev.timeline,
+      description: draft.description?.trim() || prev.description,
+    }));
+    if (draft.description?.trim()) setStep(3);
+    clearLeadPrefill();
+  }, []);
+
+  const inputClass = cls.input();
+  const labelClass = cls.label();
+  const sectionClass = cls.section();
   const inputErrorClass = (field: keyof ProjectRequestErrors) =>
-    fieldErrors[field] ? inputClass.replace("border-paper/20", "border-terr/40") : inputClass;
+    fieldErrors[field]
+      ? cls.input("border-terr/40 focus:border-terr/50 focus:ring-terr/15")
+      : cls.input();
 
   function toggleType(key: ProjectTypeKey) {
     setForm((prev) => ({
@@ -58,22 +94,21 @@ export default function ProjectRequestForm() {
     }));
   }
 
-  function onFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const picked = Array.from(e.target.files ?? []);
-    setFiles((prev) => [...prev, ...picked].slice(0, PROJECT_REQUEST_MAX_FILES));
-    e.target.value = "";
-  }
-
   function removeFile(index: number) {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function submit() {
     setSubmitError("");
     const errors = validateProjectRequestForm(form, err);
     setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) {
+      if (errors.name || errors.email || errors.phone) setStep(0);
+      else if (errors.projectTypes) setStep(1);
+      else if (errors.budget || errors.timeline) setStep(2);
+      else setStep(3);
+      return;
+    }
 
     setSubmitting(true);
     const fd = new FormData();
@@ -101,127 +136,143 @@ export default function ProjectRequestForm() {
     setSubmitted(true);
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await submit();
+  }
+
   function resetForm() {
     setForm(EMPTY_FORM);
     setFiles([]);
     setFieldErrors({});
     setSubmitError("");
     setSubmitted(false);
+    setStep(0);
+  }
+
+  function advanceModern() {
+    const all = validateProjectRequestForm(form, err);
+    if (step === 0) {
+      const partial = pickErrors(all, ["name", "email", "phone"]);
+      setFieldErrors(partial);
+      if (Object.keys(partial).length) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const partial = pickErrors(all, ["projectTypes"]);
+      setFieldErrors(partial);
+      if (Object.keys(partial).length) return;
+      setStep(2);
+      return;
+    }
+    if (step === 2) {
+      const partial = pickErrors(all, ["budget", "timeline"]);
+      setFieldErrors(partial);
+      if (Object.keys(partial).length) return;
+      setStep(3);
+      return;
+    }
+    void submit();
   }
 
   if (submitted) {
     return (
-      <div dir={dir} className="border border-term/30 bg-term/5 p-8">
-        <p className={`text-sm text-term ${fa ? "font-fa" : "font-mono"}`}>{pr.success}</p>
-        <button
-          type="button"
-          onClick={resetForm}
-          className={`mt-6 border border-paper/30 px-4 py-2 text-[11px] uppercase tracking-wider text-paper/70 transition-colors duration-200 hover:border-paper hover:text-paper ${fa ? "font-fa" : ""}`}
-        >
+      <div dir={dir} className={cls.successBox()}>
+        <p className={cls.successText()}>{cls.ai ? cls.cleanSuccess(pr.success) : pr.success}</p>
+        <button type="button" onClick={resetForm} className={cls.secondaryBtn()}>
           {pr.sendAnother}
         </button>
       </div>
     );
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-8" dir={dir} noValidate>
-      {submitError && <InlineError message={submitError} dir={dir} fa={fa} />}
-      <input
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        className="absolute left-[-9999px] h-0 w-0 opacity-0"
-      />
-
-      <fieldset className="space-y-4 border border-paper/10 bg-paper/[0.015] p-5">
-        <legend className={sectionClass}>{pr.sectionBasic}</legend>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <label className={labelClass}>{pr.labelName}</label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className={inputErrorClass("name")}
-              placeholder={pr.labelName}
-              aria-invalid={Boolean(fieldErrors.name)}
-            />
-            <FormFieldError message={fieldErrors.name ?? ""} />
-          </div>
-          <div>
-            <label className={labelClass}>{pr.labelPhone}</label>
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className={inputErrorClass("phone")}
-              placeholder={pr.labelPhone}
-              dir="ltr"
-              aria-invalid={Boolean(fieldErrors.phone)}
-            />
-            <FormFieldError message={fieldErrors.phone ?? ""} />
-          </div>
-          <div>
-            <label className={labelClass}>{pr.labelEmail}</label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className={inputErrorClass("email")}
-              placeholder={pr.labelEmail}
-              dir="ltr"
-              aria-invalid={Boolean(fieldErrors.email)}
-            />
-            <FormFieldError message={fieldErrors.email ?? ""} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={labelClass}>{pr.labelCompany}</label>
-            <input
-              type="text"
-              value={form.companyName}
-              onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-              className={inputClass}
-              placeholder={pr.labelCompanyOptional}
-            />
-          </div>
+  const basicFields = (
+    <fieldset className={cls.fieldset()}>
+      {!cls.ai ? <legend className={sectionClass}>{pr.sectionBasic}</legend> : null}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label className={labelClass}>{pr.labelName}</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className={inputErrorClass("name")}
+            placeholder={pr.labelName}
+            aria-invalid={Boolean(fieldErrors.name)}
+          />
+          <FormFieldError message={fieldErrors.name ?? ""} />
         </div>
-      </fieldset>
-
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
-        <legend className={sectionClass}>{pr.sectionType}</legend>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {PROJECT_TYPE_KEYS.map((key) => {
-            const checked = form.projectTypes.includes(key);
-            return (
-              <label
-                key={key}
-                className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm transition-colors ${checked ? "border-term/40 bg-term/5 text-paper" : "border-paper/15 text-paper/60 hover:border-paper/30"} ${fa ? "font-fa" : ""}`}
-              >
-                <input
-                  type="checkbox"
-                  className="accent-term"
-                  checked={checked}
-                  onChange={() => toggleType(key)}
-                />
-                {pr.projectTypes[key]}
-              </label>
-            );
-          })}
+        <div>
+          <label className={labelClass}>{pr.labelPhone}</label>
+          <input
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className={inputErrorClass("phone")}
+            placeholder={pr.labelPhone}
+            dir="ltr"
+            aria-invalid={Boolean(fieldErrors.phone)}
+          />
+          <FormFieldError message={fieldErrors.phone ?? ""} />
         </div>
-        <FormFieldError message={fieldErrors.projectTypes ?? ""} />
-      </fieldset>
+        <div>
+          <label className={labelClass}>{pr.labelEmail}</label>
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className={inputErrorClass("email")}
+            placeholder={pr.labelEmail}
+            dir="ltr"
+            aria-invalid={Boolean(fieldErrors.email)}
+          />
+          <FormFieldError message={fieldErrors.email ?? ""} />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelClass}>{pr.labelCompany}</label>
+          <input
+            type="text"
+            value={form.companyName}
+            onChange={(e) => setForm({ ...form, companyName: e.target.value })}
+            className={inputClass}
+            placeholder={pr.labelCompanyOptional}
+          />
+        </div>
+      </div>
+    </fieldset>
+  );
 
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
+  const typeFields = (
+    <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
+      {!cls.ai ? <legend className={sectionClass}>{pr.sectionType}</legend> : null}
+      <div className="grid gap-2 sm:grid-cols-2">
+        {PROJECT_TYPE_KEYS.map((key) => {
+          const checked = form.projectTypes.includes(key);
+          return (
+            <label key={key} className={cls.chip(checked)}>
+              <input
+                type="checkbox"
+                className="accent-term"
+                checked={checked}
+                onChange={() => toggleType(key)}
+              />
+              {pr.projectTypes[key]}
+            </label>
+          );
+        })}
+      </div>
+      <FormFieldError message={fieldErrors.projectTypes ?? ""} />
+    </fieldset>
+  );
+
+  const planFields = (
+    <>
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
         <legend className={sectionClass}>{pr.sectionBudget}</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {BUDGET_KEYS.map((key) => (
-            <label
-              key={key}
-              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm transition-colors ${form.budget === key ? "border-term/40 bg-term/5 text-paper" : "border-paper/15 text-paper/60 hover:border-paper/30"} ${fa ? "font-fa" : ""}`}
-            >
+            <label key={key} className={cls.chip(form.budget === key)}>
               <input
                 type="radio"
                 name="budget"
@@ -235,15 +286,11 @@ export default function ProjectRequestForm() {
         </div>
         <FormFieldError message={fieldErrors.budget ?? ""} />
       </fieldset>
-
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
         <legend className={sectionClass}>{pr.sectionTimeline}</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {TIMELINE_KEYS.map((key) => (
-            <label
-              key={key}
-              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm transition-colors ${form.timeline === key ? "border-term/40 bg-term/5 text-paper" : "border-paper/15 text-paper/60 hover:border-paper/30"} ${fa ? "font-fa" : ""}`}
-            >
+            <label key={key} className={cls.chip(form.timeline === key)}>
               <input
                 type="radio"
                 name="timeline"
@@ -257,8 +304,12 @@ export default function ProjectRequestForm() {
         </div>
         <FormFieldError message={fieldErrors.timeline ?? ""} />
       </fieldset>
+    </>
+  );
 
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
+  const briefFields = (
+    <>
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
         <legend className={sectionClass}>{pr.sectionDescription}</legend>
         <textarea
           rows={6}
@@ -270,55 +321,93 @@ export default function ProjectRequestForm() {
         />
         <FormFieldError message={fieldErrors.description ?? ""} />
       </fieldset>
-
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
         <legend className={sectionClass}>{pr.sectionFiles}</legend>
-        <p className={`text-xs text-paper/45 ${fa ? "font-fa" : ""}`}>{pr.filesHint}</p>
-        <input
-          ref={fileInputRef}
-          type="file"
+        <p className={`text-xs text-paper/45 ${cls.face}`}>{pr.filesHint}</p>
+        <FileDropzone
           multiple
           accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.zip"
-          className="hidden"
-          onChange={onFilesChange}
-        />
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
           disabled={files.length >= PROJECT_REQUEST_MAX_FILES}
-          className={`border border-paper/30 px-4 py-2 text-xs text-paper/75 transition-colors hover:border-paper disabled:opacity-40 ${fa ? "font-fa" : ""}`}
-        >
-          {pr.labelUpload}
-        </button>
-        {files.length > 0 && (
-          <ul className="space-y-2">
-            {files.map((file, i) => (
-              <li
-                key={`${file.name}-${i}`}
-                className="flex items-center justify-between gap-2 border border-paper/10 px-3 py-2 text-xs text-paper/65"
-              >
-                <span className="truncate" dir="ltr">
-                  {file.name}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => removeFile(i)}
-                  className="shrink-0 text-paper/40 hover:text-terr"
-                  aria-label={pr.removeFile}
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+          buttonLabel={pr.labelUpload}
+          hint={pr.filesHint}
+          removeLabel={pr.removeFile}
+          files={files.map((file, i) => ({ key: `${file.name}-${i}`, name: file.name }))}
+          onFilesSelected={(picked) =>
+            setFiles((prev) => [...prev, ...picked].slice(0, PROJECT_REQUEST_MAX_FILES))
+          }
+          onRemoveFile={removeFile}
+          buttonClassName={cls.uploadBtn()}
+          faceClassName={cls.face}
+          panelClassName={
+            cls.ai
+              ? "rounded-2xl border border-paper/10 bg-paper/[0.02] p-4"
+              : "border border-paper/10 bg-paper/[0.02] p-4"
+          }
+          listItemClassName={`flex items-center justify-between gap-2 border border-paper/10 px-3 py-2 text-xs text-paper/65 ${cls.ai ? "rounded-xl" : ""}`}
+        />
       </fieldset>
+    </>
+  );
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className={`group w-full border border-paper px-5 py-3 text-xs uppercase tracking-wider transition-colors duration-200 hover:bg-paper hover:text-ink disabled:opacity-50 ${fa ? "font-fa" : ""}`}
+  const honeypot = (
+    <input
+      type="text"
+      name="website"
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      className="absolute left-[-9999px] h-0 w-0 opacity-0"
+    />
+  );
+
+  if (cls.ai) {
+    const steps: ModernFormStep[] = [
+      { id: "basic", title: pr.sectionBasic, description: pr.stepBasicDesc, content: basicFields },
+      { id: "type", title: pr.sectionType, description: pr.stepTypeDesc, content: typeFields },
+      { id: "plan", title: pr.stepPlanTitle, description: pr.stepPlanDesc, content: planFields },
+      { id: "brief", title: pr.stepBriefTitle, description: pr.stepBriefDesc, content: briefFields },
+    ];
+
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          advanceModern();
+        }}
+        dir={dir}
+        noValidate
+        className="relative"
       >
+        {honeypot}
+        <ModernFormStepper
+          steps={steps}
+          activeStepIdx={step}
+          onStepChange={setStep}
+          onBack={() => setStep((s) => Math.max(0, s - 1))}
+          onContinue={advanceModern}
+          labels={{
+            back: d.formStepper.back,
+            continue: d.formStepper.continue,
+            submit: pr.labelSubmit,
+            submitting: pr.submitting,
+          }}
+          dir={dir}
+          banner={submitError ? <InlineError message={submitError} dir={dir} fa={fa} /> : null}
+          submitting={submitting}
+        />
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-8" dir={dir} noValidate>
+      {submitError && <InlineError message={submitError} dir={dir} fa={fa} />}
+      {honeypot}
+      {basicFields}
+      {typeFields}
+      {planFields}
+      {briefFields}
+      <button type="submit" disabled={submitting} className={`group ${cls.btn()}`}>
         {submitting ? pr.submitting : pr.labelSubmit}
         <span className="mx-1 inline-block transition-transform duration-200 group-hover:translate-x-1">
           {fa ? "←" : "->"}

@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Users } from "lucide-react";
 import { useT } from "@/i18n/LangProvider";
 import type { UserOrganization } from "@/lib/panel/org";
-import { PanelCard, PanelEmpty, PanelLoading } from "./PanelLayoutClient";
+import { PanelCard, PanelEmpty } from "./PanelLayoutClient";
+import { PanelGateLoading } from "./PanelGateLoading";
+import { usePanelSkin } from "./PanelSkinToggle";
+import PanelDataTable from "./PanelDataTable";
 
 function orgRoleLabel(role: string, o: Record<string, string>): string {
   if (role === "owner") return o.roleOwner;
@@ -14,6 +18,8 @@ function orgRoleLabel(role: string, o: Record<string, string>): string {
 export default function OrgClient() {
   const { dir, p } = useT();
   const o = p.org;
+  const [skin] = usePanelSkin();
+  const isModern = skin === "modern";
   const [orgs, setOrgs] = useState<UserOrganization[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +32,46 @@ export default function OrgClient() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <PanelLoading label={p.common.loading} />;
+  if (loading) return <PanelGateLoading label={p.common.loading} />;
+
+  if (isModern) {
+    return (
+      <div dir={dir}>
+        <h1 className="text-2xl text-paper">{o.title}</h1>
+        <p className="mt-2 text-sm text-paper/45">{o.subtitle}</p>
+        {orgs.length === 0 ? (
+          <div className="mt-6">
+            <PanelEmpty label={o.empty} title={o.empty} description={o.emptyHint} />
+          </div>
+        ) : (
+          <div className="mt-6 space-y-6">
+            {orgs.map((org) => (
+              <PanelDataTable
+                key={org.id}
+                title={org.name}
+                description={`${o.yourRole}: ${orgRoleLabel(org.role, o)}`}
+                primaryHeader={p.common.member}
+                columnHeaders={[p.common.role]}
+                showCheckbox
+                empty={<PanelEmpty label={p.common.empty} />}
+                rows={org.members.map((m) => ({
+                  id: String(m.userId),
+                  icon: Users,
+                  iconClassName: "text-blue-500",
+                  iconBgClassName: "bg-blue-500/20",
+                  title: m.name,
+                  subtitle: (
+                    <span dir="ltr">{m.email ?? m.phone ?? "—"}</span>
+                  ),
+                  cells: [orgRoleLabel(m.role, o)],
+                }))}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div dir={dir}>
@@ -34,9 +79,9 @@ export default function OrgClient() {
       <p className="mt-2 text-sm text-paper/45">{o.subtitle}</p>
 
       {orgs.length === 0 ? (
-        <PanelCard className="mt-6">
-          <PanelEmpty label={o.empty} />
-        </PanelCard>
+        <div className="mt-6">
+          <PanelEmpty label={o.empty} title={o.empty} description={o.emptyHint} />
+        </div>
       ) : (
         <div className="mt-6 space-y-6">
           {orgs.map((org) => (

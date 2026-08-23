@@ -1,22 +1,28 @@
 import type { Metadata } from "next";
-import ServiceSection from "@/components/ServiceSection";
-import Process from "@/components/sales/Process";
-import Testimonials from "@/components/sales/Testimonials";
-import Faq from "@/components/sales/Faq";
-import FinalCta from "@/components/sales/FinalCta";
+import ServicesLandingPage from "@/components/services/ServicesLandingPage";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { dictionaries } from "@/i18n/dictionaries";
+import { servicesPageDictionaries } from "@/i18n/services-page";
 import { buildBilingualFaqJsonLd } from "@/lib/seo/faq-jsonld";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/services", title: "Services", description:
-    "Web design, Android, iOS, Windows software, SEO, UI/UX, consulting, e-commerce, and support, First Data services.", });
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getRequestLang();
+  const ui = servicesPageDictionaries[lang];
+  return pageMetadata({
+    path: "/services",
+    title: ui.metaTitle,
+    description: ui.metaDescription,
+  });
+}
 
 const faqSchemas = buildBilingualFaqJsonLd(dictionaries.en.faq.items, dictionaries.fa.faq.items);
 
 const breadcrumbs = [
-  { name: "Home", href: "/" }, { name: "Services" }, ];
+  { name: "Home", href: "/" },
+  { name: "Services" },
+];
 
 export default function ServicesPage() {
   return (
@@ -29,21 +35,7 @@ export default function ServicesPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
-      <article aria-label="Services">
-        <ServiceSection number="01" />
-        <ServiceSection number="02" />
-        <ServiceSection number="03" />
-        <ServiceSection number="04" />
-        <ServiceSection number="05" />
-        <ServiceSection number="06" />
-        <ServiceSection number="07" />
-        <ServiceSection number="08" />
-        <ServiceSection number="09" />
-      </article>
-      <Process />
-      <Testimonials />
-      <Faq />
-      <FinalCta />
+      <ServicesLandingPage />
     </main>
   );
 }

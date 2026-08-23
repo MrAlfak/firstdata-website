@@ -15,12 +15,38 @@ function ensureRateLimitTable(): void {
   `);
 }
 
+/** Match SQLite `datetime('now')` format: `YYYY-MM-DD HH:MM:SS` (UTC). */
+function sinceSqlite(windowMs: number): string {
+  return new Date(Date.now() - windowMs)
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+}
+
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
   const realIp = req.headers.get("x-real-ip");
   if (realIp) return realIp.trim();
-  return "unknown";
+  // Dev / direct Node often has no proxy headers — isolate per-process bucket
+  return "local";
+}
+
+let lastCleanupAt = 0;
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // run at most every 5 minutes
+
+/** Deterministic, time-based cleanup instead of a random 2% chance per request. */
+function maybeCleanup(): void {
+  const now = Date.now();
+  if (now - lastCleanupAt < CLEANUP_INTERVAL_MS) return;
+  lastCleanupAt = now;
+  try {
+    getDb()
+      .prepare(`DELETE FROM ${RATE_LIMIT_TABLE} WHERE created_at < datetime('now', '-2 days')`)
+      .run();
+  } catch {
+    /* non-fatal: cleanup is best-effort */
+  }
 }
 
 export function checkRateLimit(
@@ -29,8 +55,9 @@ export function checkRateLimit(
   windowMs: number,
 ): boolean {
   ensureRateLimitTable();
+  maybeCleanup();
   const db = getDb();
-  const since = new Date(Date.now() - windowMs).toISOString();
+  const since = sinceSqlite(windowMs);
 
   const row = db
     .prepare(

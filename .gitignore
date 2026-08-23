@@ -8,3 +8,9 @@ build
 .vercel
 next-env.d.ts
 data/
+
+# Visual testing capture artifacts (keep local)
+visual-tests/reference/
+visual-tests/local/
+visual-tests/diff/
+visual-tests/overlay/

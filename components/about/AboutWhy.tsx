@@ -32,7 +32,7 @@ export default function AboutWhy() {
                 name={pt.icon}
                 plain
                 size="md"
-                className="shrink-0 [&_svg]:h-9 [&_svg]:w-9"
+                className="shrink-0 [&_i]:text-[1.75rem]"
               />
               <div>
                 <p className="text-base text-paper/90">{pt.label}</p>

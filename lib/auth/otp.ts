@@ -6,7 +6,14 @@ import {
   OTP_TTL_MS,
 } from "./constants";
 import { hashOtp, verifyOtp } from "./password";
+import { checkRateLimit, recordRateLimitHit } from "@/lib/rate-limit/ip";
 import type { OtpChannel, OtpPurpose } from "./types";
+
+// Brute-force protection: cap verification attempts per destination/window,
+// independent of the send rate-limit. Enforced inside verifyStoredOtp so every
+// caller (login, register, reset_password, verify_email, delete_account, ...) is covered.
+const OTP_VERIFY_MAX_ATTEMPTS = 5;
+const OTP_VERIFY_WINDOW_MS = 15 * 60 * 1000;
 
 function generateCode(): string {
   const max = 10 ** OTP_LENGTH;
@@ -51,6 +58,13 @@ export async function verifyStoredOtp(
   purpose: OtpPurpose,
 ): Promise<boolean> {
   const db = getDb();
+
+  // Rate-limit verification attempts per destination to stop brute-force.
+  const verifyBucket = `otp:verify:${channel}:${destination}`;
+  if (!checkRateLimit(verifyBucket, OTP_VERIFY_MAX_ATTEMPTS, OTP_VERIFY_WINDOW_MS)) {
+    return false;
+  }
+
   const now = new Date().toISOString();
 
   const rows = db
@@ -74,5 +88,6 @@ export async function verifyStoredOtp(
     }
   }
 
+  recordRateLimitHit(verifyBucket);
   return false;
 }

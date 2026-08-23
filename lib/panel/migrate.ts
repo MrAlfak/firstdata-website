@@ -32,6 +32,7 @@ function addColumnIfMissing(
 
 function runPanelMigration(db: Database.Database): void {
   addColumnIfMissing(db, "users", "role", "TEXT NOT NULL DEFAULT 'client'");
+  addColumnIfMissing(db, "users", "panel_skin", "TEXT NOT NULL DEFAULT 'modern'");
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS projects (
@@ -204,21 +205,40 @@ function runPanelMigration(db: Database.Database): void {
   addColumnIfMissing(db, "invoices", "payment_authority", "TEXT");
   addColumnIfMissing(db, "invoices", "payment_ref_id", "TEXT");
   addColumnIfMissing(db, "invoices", "payment_gateway", "TEXT DEFAULT 'manual'");
-
   if (columnExists(db, "contact_leads", "id")) {
     addColumnIfMissing(db, "contact_leads", "user_id", "INTEGER REFERENCES users(id)");
     addColumnIfMissing(db, "contact_leads", "status", "TEXT NOT NULL DEFAULT 'received'");
   }
 }
 
+function applyTicketFormColumns(db: Database.Database): void {
+  addColumnIfMissing(db, "tickets", "contract_id", "INTEGER");
+  addColumnIfMissing(db, "tickets", "department", "TEXT NOT NULL DEFAULT 'support'");
+  addColumnIfMissing(db, "panel_files", "ticket_id", "INTEGER");
+}
+
+// Cache the additive ticket-form columns so long-lived workers don't re-run
+// PRAGMA/ALTER checks on every request once the schema is known-good.
+let ticketFormColumnsReady = false;
+
 /** Run panel schema migrations once per process; safe under parallel Next.js build workers. */
 export function ensurePanelSchema(): void {
-  if (schemaReady) return;
-
   const db = getDb();
+
+  if (schemaReady) {
+    // Idempotent additive columns so hot-reload / long-lived workers still pick up new fields.
+    if (!ticketFormColumnsReady) {
+      applyTicketFormColumns(db);
+      ticketFormColumnsReady = true;
+    }
+    return;
+  }
+
   db.exec("BEGIN IMMEDIATE");
   try {
     runPanelMigration(db);
+    applyTicketFormColumns(db);
+    ticketFormColumnsReady = true;
     db.exec("COMMIT");
     schemaReady = true;
   } catch (err) {

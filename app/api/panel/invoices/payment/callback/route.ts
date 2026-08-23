@@ -31,6 +31,13 @@ export async function GET(req: Request) {
   }
   if (!invoice) return NextResponse.redirect(failRedirect);
 
+  // Ensure the invoice resolved via invoiceId belongs to the same user/authority
+  // as the verified transaction (prevents cross-account payment confusion).
+  const authorityInvoice = adminGetInvoiceByAuthority(authority);
+  if (authorityInvoice && invoice.id !== authorityInvoice.id) {
+    return NextResponse.redirect(failRedirect);
+  }
+
   const verified = await zarinpalVerifyPayment({
     amountRial: invoice.amount_rial,
     authority,

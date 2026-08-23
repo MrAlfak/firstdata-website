@@ -1,4 +1,5 @@
 import type { ProductSlug } from "@/i18n/product-page";
+import type { Lang } from "@/i18n/dictionaries";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://firstdata.ir";
 
@@ -6,7 +7,7 @@ type ProductJsonLdInput = {
   slug: ProductSlug;
   name: string;
   description: string;
-  lang?: "fa" | "en";
+  lang?: Lang;
 };
 
 export function buildProductJsonLd({ slug, name, description, lang = "en" }: ProductJsonLdInput) {

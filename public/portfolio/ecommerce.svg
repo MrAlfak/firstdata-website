@@ -1,0 +1,20 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img">
+  <rect width="960" height="600" fill="#0c120c"/>
+  <rect x="40" y="36" width="880" height="44" rx="8" fill="#161c16"/>
+  <circle cx="64" cy="58" r="6" fill="#ff5a5a"/><circle cx="86" cy="58" r="6" fill="#ffb020"/><circle cx="108" cy="58" r="6" fill="#33ff66"/>
+  <rect x="40" y="100" width="580" height="460" rx="8" fill="#121812"/>
+  <rect x="70" y="130" width="220" height="220" rx="8" fill="#1a221a"/>
+  <rect x="310" y="130" width="280" height="24" rx="4" fill="#33ff6633"/>
+  <rect x="310" y="170" width="200" height="14" rx="3" fill="#ffffff22"/>
+  <rect x="310" y="200" width="160" height="36" rx="6" fill="#33ff6644"/>
+  <rect x="70" y="370" width="160" height="160" rx="8" fill="#1a221a"/>
+  <rect x="250" y="370" width="160" height="160" rx="8" fill="#1a221a"/>
+  <rect x="430" y="370" width="160" height="160" rx="8" fill="#1a221a"/>
+  <rect x="640" y="100" width="280" height="460" rx="8" fill="#141a14"/>
+  <rect x="660" y="130" width="240" height="18" rx="4" fill="#33ff6640"/>
+  <rect x="660" y="170" width="240" height="80" rx="6" fill="#ffffff10"/>
+  <rect x="660" y="270" width="240" height="14" rx="3" fill="#ffffff18"/>
+  <rect x="660" y="300" width="240" height="14" rx="3" fill="#ffffff14"/>
+  <rect x="660" y="360" width="240" height="48" rx="8" fill="#33ff6633"/>
+  <text x="70" y="560" fill="#33ff6699" font-family="ui-monospace,monospace" font-size="14">firstdata · commerce shell</text>
+</svg>

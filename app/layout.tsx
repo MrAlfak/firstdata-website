@@ -11,9 +11,17 @@ import Preloader from "@/components/Preloader";
 import PageNavPreloader from "@/components/navigation/PageNavPreloader";
 import DocumentTitle from "@/components/seo/DocumentTitle";
 import ScrollProgress from "@/components/ScrollProgress";
+import SiteSkinRoot from "@/components/SiteSkinRoot";
+import { AlertProvider } from "@/components/alerts/AlertProvider";
+import AlertStack from "@/components/alerts/AlertStack";
+import AlertWatchers from "@/components/alerts/AlertWatchers";
 import { LangProvider } from "@/i18n/LangProvider";
 import { ThemeProvider } from "@/i18n/ThemeProvider";
+import { getRequestLang } from "@/lib/i18n/request-lang";
+import { getRequestPanelSkin } from "@/lib/i18n/request-panel-skin";
+import { PanelSkinProvider } from "@/components/panel/PanelSkinToggle";
 import { ORG_GEO, ORG_OPENING_HOURS_JSON_LD, SITE_URL } from "@/lib/seo/site";
+import { buildWebsiteJsonLd } from "@/lib/seo/website-jsonld";
 import "./globals.css";
 // Self-hosted (no Google fetch), same faces, served from /public/fonts.
 // Both are variable woff2 covering the 400,700 weight range.
@@ -51,39 +59,63 @@ const organizationJsonLd = {
     "@type": "OfferCatalog", name: "Digital Development Services", itemListElement: [
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Web Design & Development", description: "Custom websites built with Next.js, React, and Laravel." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Android App Development", description: "Native Android apps built with Kotlin and Jetpack Compose." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "iOS App Development", description: "Premium iOS apps built with Swift and SwiftUI." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Windows & Desktop Software", description: "Professional desktop applications with C#, WPF, and WinUI 3." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "SEO & Performance Optimization", description: "Technical SEO, Core Web Vitals, and keyword strategy." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "UI/UX Design", description: "User research, Figma prototypes, and design systems." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "E-Commerce & Online Stores", description: "Custom storefronts with Zarinpal and Stripe payment gateways." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Support & Ongoing Development", description: "SLA-backed maintenance and continuous feature development." } }, ], }, };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/* Query → SSR html[lang] → cookie → localStorage → fa. Never let stale storage override SSR.
+   Skin: ?skin=terminal|modern (or ?view=builder|business) wins, else localStorage, else modern. */
+const LANG_BOOT_SCRIPT =
+  "(function(){try{var e=document.documentElement;var q=new URLSearchParams(location.search);var l=q.get('lang');var cookie=((document.cookie.split('; ').find(function(r){return r.indexOf('fd-lang=')===0;})||'').split('=')[1]||'').trim().toLowerCase();var stored=(localStorage.getItem('fd-lang')||'').trim().toLowerCase();var ssr=(e.lang||'').trim().toLowerCase();var lang=(l==='fa'||l==='en')?l:(ssr==='fa'||ssr==='en')?ssr:(cookie==='en'||cookie==='fa')?cookie:(stored==='en'||stored==='fa')?stored:'fa';localStorage.setItem('fd-lang',lang);document.cookie='fd-lang='+lang+';path=/;max-age=31536000;SameSite=Lax';e.dir=lang==='fa'?'rtl':'ltr';e.lang=lang;var t=localStorage.getItem('fd-theme');e.setAttribute('data-theme',t==='light'?'light':'dark');var qSkin=(q.get('skin')||'').trim().toLowerCase();var qView=(q.get('view')||'').trim().toLowerCase();var sk;if(qSkin==='terminal'||qSkin==='modern'){sk=qSkin;}else if(qView==='builder'||qView==='56k'||qView==='terminal'){sk='terminal';}else if(qView==='business'||qView==='ai'||qView==='modern'){sk='modern';}else{sk=localStorage.getItem('fd-panel-skin');sk=sk==='terminal'?'terminal':'modern';}localStorage.setItem('fd-panel-skin',sk);e.setAttribute('data-panel-skin',sk);document.cookie='fd-panel-skin='+sk+';path=/;max-age=31536000;SameSite=Lax';}catch(x){}})();";
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = await getRequestLang();
+  const panelSkin = await getRequestPanelSkin();
+  const dir = lang === "fa" ? "rtl" : "ltr";
+
   return (
-    <html lang="en" dir="ltr" data-theme="dark" data-scroll-behavior="smooth" suppressHydrationWarning className={`${mono.variable} ${pixel.variable}`}>
+    <html lang={lang} dir={dir} data-theme="dark" data-panel-skin={panelSkin} data-scroll-behavior="smooth" suppressHydrationWarning className={`${mono.variable} ${pixel.variable}`}>
       <head>
-        {/* Pre-paint: locale + theme (no flash) */}
+        {/* Pre-paint: locale + theme + skin (no flash) */}
         <link rel="alternate" type="application/rss+xml" hrefLang="en" title="First Data Blog (English)" href={`${SITE_URL}/blog/rss.xml`} />
         <link rel="alternate" type="application/rss+xml" hrefLang="fa" title="وبلاگ اولین دیتا (فارسی)" href={`${SITE_URL}/blog/rss/fa.xml`} />
+        <link rel="alternate" type="application/atom+xml" hrefLang="en" title="First Data Blog Atom (English)" href={`${SITE_URL}/blog/atom.xml`} />
+        <link rel="alternate" type="application/atom+xml" hrefLang="fa" title="وبلاگ اولین دیتا Atom (فارسی)" href={`${SITE_URL}/blog/atom/fa.xml`} />
+        <link rel="author" href={`${SITE_URL}/humans.txt`} />
+        <link rel="describedby" href={`${SITE_URL}/llms.txt`} />
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var e=document.documentElement;var q=new URLSearchParams(location.search);var l=q.get('lang');if(l==='fa'||l==='en'){localStorage.setItem('fd-lang',l);document.cookie='fd-lang='+l+';path=/;max-age=31536000;SameSite=Lax';e.dir=l==='fa'?'rtl':'ltr';e.lang=l;}else if(localStorage.getItem('fd-lang')==='fa'){e.dir='rtl';e.lang='fa';}var t=localStorage.getItem('fd-theme');e.setAttribute('data-theme',t==='light'?'light':'dark');}catch(x){}})();", }}
+            __html: LANG_BOOT_SCRIPT,
+          }}
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd()) }}
+        />
       </head>
       <body className="font-mono bg-ink text-paper antialiased">
         <ThemeProvider>
-          <LangProvider>
-            <DocumentTitle />
-            <Preloader />
-            <PageNavPreloader />
-            <ScrollProgress />
-            <AmbientLayer />
-            <SystemWatchers />
-            <ServiceWorkerRegistrar />
-            <PwaPrompts />
-            <ConsoleBrand />
-            <ClientErrorReporter />
-            <CookieBanner />
-            <SiteAnalytics />
-            {children}
+          <LangProvider initialLang={lang}>
+            <PanelSkinProvider initialSkin={panelSkin}>
+              <AlertProvider>
+                <DocumentTitle />
+                <Preloader />
+                <PageNavPreloader />
+                <ScrollProgress />
+                <AmbientLayer />
+                <SiteSkinRoot />
+                <AlertWatchers />
+                <AlertStack />
+                <SystemWatchers />
+                <ServiceWorkerRegistrar />
+                <PwaPrompts />
+                <ConsoleBrand />
+                <ClientErrorReporter />
+                <CookieBanner />
+                <SiteAnalytics />
+                {children}
+              </AlertProvider>
+            </PanelSkinProvider>
           </LangProvider>
         </ThemeProvider>
       </body>

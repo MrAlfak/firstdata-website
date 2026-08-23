@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Deploy firstdata-website to Dokploy from this machine (no drop zip of full source)."""
+"""Deploy firstdata-website to Dokploy from this machine (local source zip, not GitHub)."""
 
 from __future__ import annotations
 
+import io
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -20,13 +22,18 @@ API_KEY = os.environ.get(
 APPLICATION_ID = "OdaijD3VSsluMRvU4NQQ_"
 ROOT = Path(__file__).resolve().parents[1]
 
-GITHUB_OWNER = "MrAlfak"
-GITHUB_REPO = "firstdata-website"
-GITHUB_BRANCH = "main"
-GITHUB_TOKEN = os.environ.get(
-    "GITHUB_TOKEN",
-    "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",
-)
+EXCLUDE_DIRS = {
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    ".git",
+    "data",
+    ".vercel",
+    ".cursor",
+    "agent-transcripts",
+}
+EXCLUDE_FILES = {".env", ".env.local", ".deploy-source.zip", ".deploy-stub.zip", ".dl-test.zip"}
 
 
 def api(method: str, path: str, data: dict | None = None) -> dict | list:
@@ -47,22 +54,56 @@ def api(method: str, path: str, data: dict | None = None) -> dict | list:
         return json.loads(raw) if raw else {}
 
 
-def github_archive_url() -> str:
-    base = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/archive/refs/heads/{GITHUB_BRANCH}.zip"
-    if GITHUB_TOKEN:
-        return base.replace(
-            "https://",
-            f"https://x-access-token:{GITHUB_TOKEN}@",
-            1,
+def app_version() -> str:
+    pkg = ROOT / "package.json"
+    match = re.search(r'"version"\s*:\s*"([^"]+)"', pkg.read_text(encoding="utf-8"))
+    return match.group(1) if match else "unknown"
+
+
+def make_zipball() -> bytes:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for path in ROOT.rglob("*"):
+            rel = path.relative_to(ROOT)
+            if any(part in EXCLUDE_DIRS for part in rel.parts):
+                continue
+            if rel.name in EXCLUDE_FILES or rel.name.startswith(".env."):
+                continue
+            if path.is_dir():
+                continue
+            zf.write(path, arcname=str(rel).replace("\\", "/"))
+    return buf.getvalue()
+
+
+def upload_zipball(data: bytes) -> str:
+    zip_path = ROOT / ".deploy-source.zip"
+    zip_path.write_bytes(data)
+    try:
+        result = subprocess.check_output(
+            [
+                "curl.exe",
+                "-s",
+                "-F",
+                f"file=@{zip_path}",
+                "https://tmpfiles.org/api/v1/upload",
+            ],
+            text=True,
         )
-    return base
+        payload = json.loads(result)
+        if payload.get("status") != "success":
+            raise RuntimeError(f"tmpfiles upload failed: {payload}")
+        page_url = payload["data"]["url"]
+        parts = page_url.replace("https://tmpfiles.org/", "").split("/", 1)
+        return f"https://tmpfiles.org/dl/{parts[0]}/{parts[1]}"
+    finally:
+        zip_path.unlink(missing_ok=True)
 
 
 def upload_drop_stub() -> None:
     stub = ROOT / ".deploy-stub.zip"
     with zipfile.ZipFile(stub, "w", zipfile.ZIP_DEFLATED) as zf:
         zf.write(ROOT / "Dockerfile.dokploy", arcname="Dockerfile.dokploy")
-        zf.writestr(".dokploy-local", "Local deploy stub — source from GitHub archive URL.")
+        zf.writestr(".dokploy-local", "Local deploy — source zip uploaded from this machine.")
     try:
         result = subprocess.run(
             [
@@ -147,18 +188,34 @@ def wait_for_deploy(timeout_sec: int = 1200) -> str:
         latest = items[0]
         status = latest.get("status", "")
         title = latest.get("title", "")
+        deployment_id = latest.get("deploymentId", "")
         if status != last_status:
-            print(f"deployment: {title!r} -> {status}")
+            print(f"deployment {deployment_id}: {title!r} -> {status}")
             last_status = status
         if status in {"done", "error"}:
+            if status == "error":
+                logs = api(
+                    "GET",
+                    f"deployment.readLogs?deploymentId={deployment_id}&tail=120",
+                )
+                print(logs)
             return status
         time.sleep(20)
     raise TimeoutError("deployment did not finish in time")
 
 
 def main() -> int:
-    source_url = github_archive_url()
-    print(f"Source: GitHub archive ({GITHUB_OWNER}/{GITHUB_REPO}@{GITHUB_BRANCH})")
+    version = app_version()
+    print(f"Source: local workspace ({ROOT})")
+    print(f"Version: v{version}")
+
+    print("Creating source zip...")
+    zip_bytes = make_zipball()
+    print(f"Zip size: {len(zip_bytes) / 1024 / 1024:.1f} MB")
+
+    print("Uploading source zip...")
+    source_url = upload_zipball(zip_bytes)
+    print(f"Source URL: {source_url}")
 
     print("Configuring Dokploy...")
     configure(source_url)
@@ -172,8 +229,8 @@ def main() -> int:
         "application.deploy",
         {
             "applicationId": APPLICATION_ID,
-            "title": f"Local deploy v1.4.11 from {GITHUB_OWNER}/{GITHUB_REPO}",
-            "description": f"GitHub archive: {GITHUB_BRANCH}",
+            "title": f"Local deploy v{version} from workspace",
+            "description": source_url,
         },
     )
 

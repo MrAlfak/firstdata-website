@@ -3,11 +3,8 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import AuthShell, {
-  authBtnClass,
-  authInputClass,
-  authLabelClass,
-} from "@/components/auth/AuthShell";
+import AuthShell from "@/components/auth/AuthShell";
+import { useAuthClasses } from "@/components/auth/useAuthClasses";
 import InlineError from "@/components/errors/InlineError";
 import { useT } from "@/i18n/LangProvider";
 import { fetchJson } from "@/lib/errors/fetch-json";
@@ -15,6 +12,7 @@ import { resolveAuthError } from "@/lib/errors/resolve-auth-error";
 
 export default function ResetPasswordClient() {
   const { fa, dir, d } = useT();
+  const ac = useAuthClasses();
   const copy = d.auth.resetPassword;
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,33 +77,33 @@ export default function ResetPasswordClient() {
       <form onSubmit={handleReset} className="space-y-5" dir={dir}>
         {channel === "email" ? (
           <div>
-            <label className={authLabelClass(fa)}>{copy.labelEmail}</label>
+            <label className={ac.label()}>{copy.labelEmail}</label>
             <input
               type="email"
               required
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={authInputClass(fa)}
+              className={ac.input()}
             />
           </div>
         ) : (
           <div>
-            <label className={authLabelClass(fa)}>{copy.labelPhone}</label>
+            <label className={ac.label()}>{copy.labelPhone}</label>
             <input
               type="tel"
               required
               autoComplete="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={authInputClass(fa)}
+              className={ac.input()}
               placeholder={copy.phonePlaceholder}
               dir="ltr"
             />
           </div>
         )}
         <div>
-          <label className={authLabelClass(fa)}>{copy.labelCode}</label>
+          <label className={ac.label()}>{copy.labelCode}</label>
           <input
             type="text"
             required
@@ -115,13 +113,13 @@ export default function ResetPasswordClient() {
             autoComplete="one-time-code"
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-            className={`${authInputClass(fa)} tracking-[0.4em]`}
+            className={ac.input("tracking-[0.4em]")}
             placeholder="000000"
             dir="ltr"
           />
         </div>
         <div>
-          <label className={authLabelClass(fa)}>{copy.labelPassword}</label>
+          <label className={ac.label()}>{copy.labelPassword}</label>
           <input
             type="password"
             required
@@ -129,11 +127,11 @@ export default function ResetPasswordClient() {
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={authInputClass(fa)}
+            className={ac.input()}
           />
         </div>
         <div>
-          <label className={authLabelClass(fa)}>{copy.labelConfirm}</label>
+          <label className={ac.label()}>{copy.labelConfirm}</label>
           <input
             type="password"
             required
@@ -141,10 +139,10 @@ export default function ResetPasswordClient() {
             autoComplete="new-password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className={authInputClass(fa)}
+            className={ac.input()}
           />
         </div>
-        <button type="submit" disabled={loading} className={authBtnClass(fa)}>
+        <button type="submit" disabled={loading} className={ac.btn()}>
           {loading ? copy.loading : copy.submit}
         </button>
       </form>

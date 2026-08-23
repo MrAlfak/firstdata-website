@@ -7,6 +7,7 @@ export const accountPatchSchema = z
     password: z.string().min(8).max(128).optional(),
     confirmPassword: z.string().min(8).max(128).optional(),
     currentPassword: z.string().min(1).max(128).optional(),
+    panelSkin: z.enum(["terminal", "modern"]).optional(),
   })
   .refine(
     (data) => {

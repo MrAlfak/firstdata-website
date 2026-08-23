@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useT } from "@/i18n/LangProvider";
 import type { AdminProjectDetail } from "@/lib/panel/admin-repository";
 import { PanelAlert, PanelCard, PanelLoading } from "@/components/panel/PanelLayoutClient";
+import FileDropzone from "@/components/ui/FileDropzone";
 
 const PHASES = ["consult", "design", "build", "launch", "support"] as const;
 const STATUSES = ["inquiry", "contract", "active", "delivered", "support", "closed"] as const;
@@ -246,11 +247,19 @@ export default function AdminProjectDetailClient({ projectId }: { projectId: str
         <PanelCard className="lg:col-span-2">
           <h2 className="text-sm text-paper/65">{pd.uploadFile}</h2>
           <form onSubmit={uploadFile} className="mt-3 grid gap-2 sm:grid-cols-2">
-            <input
-              type="file"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="text-xs text-paper/60 sm:col-span-2"
-            />
+            <div className="sm:col-span-2">
+              <FileDropzone
+                buttonLabel={a.common.upload}
+                hint={pd.uploadFile}
+                removeLabel={pd.uploadFile}
+                files={file ? [{ key: `${file.name}-${file.size}`, name: file.name }] : []}
+                onFilesSelected={(picked) => setFile(picked[0] ?? null)}
+                onRemoveFile={() => setFile(null)}
+                buttonClassName="border border-accent/50 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10"
+                panelClassName="border border-dashed border-paper/25 bg-paper/[0.02] px-4 py-5"
+                listItemClassName="flex items-center justify-between gap-2 border border-paper/10 px-3 py-2 text-xs text-paper/60"
+              />
+            </div>
             <input
               value={fileDesc}
               onChange={(e) => setFileDesc(e.target.value)}

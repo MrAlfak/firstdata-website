@@ -147,9 +147,9 @@ export default function AdminContractsPage() {
       {!contracts ? (
         <PanelLoading label={a.common.loading} />
       ) : contracts.length === 0 ? (
-        <PanelCard className="mt-6">
-          <PanelEmpty label={a.common.empty} />
-        </PanelCard>
+        <div className="mt-6">
+          <PanelEmpty label={a.common.empty} title={a.common.empty} description={a.common.emptyHint} />
+        </div>
       ) : (
         <PanelCard className="mt-6">
           <h2 className="text-sm text-paper/60">{c.listTitle}</h2>

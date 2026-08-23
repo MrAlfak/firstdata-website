@@ -1,0 +1,19 @@
+@import "../public/vendors/keenicons/outline.css";
+@import "../public/vendors/keenicons/solid.css";
+@import "../public/vendors/keenicons/filled.css";
+@import "../public/vendors/keenicons/duotone.css";
+
+/* Keenicons — inherit currentColor */
+.ki-outline,
+.ki-solid,
+.ki-filled,
+.ki-duotone {
+  color: inherit;
+}
+
+html[data-panel-skin="modern"] .ki-outline,
+html[data-panel-skin="modern"] .ki-solid,
+html[data-panel-skin="modern"] .ki-filled,
+html[data-panel-skin="modern"] .ki-duotone {
+  -webkit-font-smoothing: antialiased;
+}

@@ -14,6 +14,8 @@ import ProductStatsStrip from "@/components/product/ProductStatsStrip";
 import FinalCta from "@/components/sales/FinalCta";
 import { itemReveal, moduleReveal } from "@/motion/tokens";
 import { useT } from "@/i18n/LangProvider";
+import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
+import { ModernIconButton } from "@/components/ui/modern-icon-button";
 import { productLandingExtensions } from "@/i18n/product-page-extensions";
 import { productPageDictionaries } from "@/i18n/product-page";
 import { productPhase3Landing } from "@/i18n/product-phase3";
@@ -22,6 +24,8 @@ const sectionClass = "border-b border-paper/20 px-4 py-12 sm:px-6 sm:py-16 lg:px
 
 export default function ProductLandingPage() {
   const { fa, dir, lang } = useT();
+  const [skin] = usePanelSkin();
+  const ai = skin === "modern";
   const ui = productPageDictionaries[lang];
   const ext = productLandingExtensions[lang];
   const p3 = productPhase3Landing[lang];
@@ -39,14 +43,20 @@ export default function ProductLandingPage() {
 
       <div className={bootDone ? "" : "pointer-events-none opacity-50"}>
         <InnerPage eyebrow={ui.hero.eyebrow} title={ui.hero.title} subtitle={ui.hero.lead} lines={[ui.hero.body]}>
-          <Link
-            href="/contactus/request"
-            dir={dir}
-            className={`group inline-flex items-center gap-2 border border-term/40 px-5 py-2.5 text-xs uppercase tracking-wider text-term transition-colors duration-200 hover:bg-term/10 ${fa ? "font-fa" : ""}`}
-          >
-            {ui.hero.cta}
-            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">{fa ? "←" : "→"}</span>
-          </Link>
+          {ai ? (
+            <ModernIconButton href="/contactus/request" className={fa ? "font-iran" : ""}>
+              {ui.hero.cta}
+            </ModernIconButton>
+          ) : (
+            <Link
+              href="/contactus/request"
+              dir={dir}
+              className={`group inline-flex items-center gap-2 border border-term/40 px-5 py-2.5 text-xs uppercase tracking-wider text-term transition-colors duration-200 hover:bg-term/10 ${fa ? "font-fa" : ""}`}
+            >
+              {ui.hero.cta}
+              <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">{fa ? "←" : "→"}</span>
+            </Link>
+          )}
         </InnerPage>
 
         <ProductStatsStrip eyebrow={ext.stats.eyebrow} items={ext.stats.items} accentText="text-term" />

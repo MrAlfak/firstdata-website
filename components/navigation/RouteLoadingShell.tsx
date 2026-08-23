@@ -4,6 +4,9 @@ import { motion } from "motion/react";
 import { getPreloaderCorner } from "@/lib/siteVersion";
 import { formatDigits } from "@/lib/i18n/digits";
 import type { Lang } from "@/i18n/dictionaries";
+import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
+import { useT } from "@/i18n/LangProvider";
+import { LiquidWaveSpinner } from "@/components/shadcn-space/spinner/spinner-10";
 
 type Props = {
   lang: Lang;
@@ -31,9 +34,27 @@ export default function RouteLoadingShell({
   exiting = false,
   mode = "overlay",
 }: Props) {
+  const [skin] = usePanelSkin();
+  const { d } = useT();
+  const ai = skin === "modern";
   const pct = Math.min(100, Math.max(0, progress));
   const filled = Math.round((pct / 100) * BAR_W);
   const bar = "█".repeat(filled) + "░".repeat(BAR_W - filled);
+
+  const modernBody = (
+    <div
+      className={`relative w-full max-w-sm px-6 text-center ${fa ? "font-iran" : "font-iran"}`}
+      dir={dir}
+    >
+      <LiquidWaveSpinner
+        size="md"
+        words={d.liquidSpinner.words}
+        className="bg-transparent"
+        aria-label={routeLine}
+      />
+      <p className="mt-2 text-xs text-paper/40">{formatDigits(pct, fa)}%</p>
+    </div>
+  );
 
   const terminal = (
     <div
@@ -51,9 +72,7 @@ export default function RouteLoadingShell({
           <div
             key={i}
             className={
-              i === steps.length - 1 && revealed >= steps.length
-                ? "text-term"
-                : "text-paper/65"
+              i === steps.length - 1 && revealed >= steps.length ? "text-term" : "text-paper/65"
             }
           >
             {line}
@@ -68,18 +87,20 @@ export default function RouteLoadingShell({
     </div>
   );
 
+  const body = ai ? modernBody : terminal;
+
   if (mode === "inline") {
     return (
-      <main className="flex min-h-[50vh] items-center justify-center px-4 py-16">
-        {terminal}
-      </main>
+      <main className="flex min-h-[50vh] items-center justify-center px-4 py-16">{body}</main>
     );
   }
 
   return (
     <>
       <motion.div
-        className="pointer-events-none fixed inset-x-0 top-0 z-[110] h-[2px] origin-left bg-term shadow-[0_0_12px_rgb(var(--c-accent)/0.45)]"
+        className={`pointer-events-none fixed inset-x-0 top-0 z-[110] h-[2px] origin-left bg-term ${
+          ai ? "" : "shadow-[0_0_12px_rgb(var(--c-accent)/0.45)]"
+        }`}
         initial={{ scaleX: 0, opacity: 1 }}
         animate={
           exiting
@@ -95,17 +116,16 @@ export default function RouteLoadingShell({
         animate={{ opacity: exiting ? 0 : 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.18 }}
-        className="fixed inset-0 z-[109] flex items-center justify-center bg-ink/88 backdrop-blur-[2px]"
+        className={`fixed inset-0 z-[109] flex items-center justify-center backdrop-blur-[2px] ${
+          ai ? "bg-ink/70" : "bg-ink/88"
+        }`}
         aria-live="polite"
         aria-busy="true"
         role="status"
       >
-        <div className="scanlines pointer-events-none absolute inset-0" />
-        <motion.div
-          animate={{ opacity: exiting ? 0.6 : 1 }}
-          transition={{ duration: 0.18 }}
-        >
-          {terminal}
+        {!ai ? <div className="scanlines pointer-events-none absolute inset-0" /> : null}
+        <motion.div animate={{ opacity: exiting ? 0.6 : 1 }} transition={{ duration: 0.18 }}>
+          {body}
         </motion.div>
       </motion.div>
     </>

@@ -15,7 +15,13 @@ export type NavItem = {
 };
 
 export const ABOUTUS_CHILDREN: NavChild[] = [
-  { slug: "team", href: "/aboutus/team", labelKey: "nav.aboutTeam" }, { slug: "partners", href: "/aboutus/partners", labelKey: "nav.aboutPartners" }, { slug: "honors", href: "/aboutus/honors", labelKey: "nav.aboutHonors" }, { slug: "vision", href: "/aboutus/vision", labelKey: "nav.aboutVision" }, { slug: "mission", href: "/aboutus/mission", labelKey: "nav.aboutMission" }, ];
+  { slug: "team", href: "/aboutus/team", labelKey: "nav.aboutTeam" },
+  { slug: "partners", href: "/aboutus/partners", labelKey: "nav.aboutPartners" },
+  { slug: "honors", href: "/aboutus/honors", labelKey: "nav.aboutHonors" },
+  { slug: "vision", href: "/aboutus/vision", labelKey: "nav.aboutVision" },
+  { slug: "mission", href: "/aboutus/mission", labelKey: "nav.aboutMission" },
+  { slug: "method", href: "/method", labelKey: "nav.method" },
+];
 
 export type AboutSubPageKey =
 | "aboutTeam"
@@ -27,7 +33,7 @@ export type AboutSubPageKey =
 export const ABOUTUS_SLUG_TO_PAGE: Record<string, AboutSubPageKey> = {
   team: "aboutTeam", partners: "aboutPartners", honors: "aboutHonors", vision: "aboutVision", mission: "aboutMission", };
 
-export const ABOUTUS_SLUGS = ABOUTUS_CHILDREN.map((c) => c.slug);
+export const ABOUTUS_SLUGS = ABOUTUS_CHILDREN.filter((c) => c.slug !== "method").map((c) => c.slug);
 
 export const CONTACT_CHILDREN: NavChild[] = [
   { slug: "request", href: "/contactus/request", labelKey: "nav.contactRequest" }, { slug: "consultation", href: "/contactus/consultation", labelKey: "nav.contactConsultation" }, { slug: "collaborate", href: "/contactus/collaborate", labelKey: "nav.contactCollaborate" }, ];

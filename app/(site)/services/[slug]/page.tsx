@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { SERVICES_SLUGS, SERVICES_SLUG_TO_NUMBER } from "@/config/navigation";
 import { androidPageDictionaries } from "@/i18n/android-page";
 import { consultingPageDictionaries } from "@/i18n/consulting-page";
@@ -82,9 +81,6 @@ export default async function ServiceSubPage({ params }: Props) {
   return (
     <main>
       <BreadcrumbJsonLd items={breadcrumbs} />
-      <div className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
-        <BreadcrumbNav items={breadcrumbs} />
-      </div>
       <ServiceSubClient slug={slug} />
     </main>
   );

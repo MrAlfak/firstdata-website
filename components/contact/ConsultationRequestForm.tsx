@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   CONTACT_METHOD_KEYS,
   CONTACT_TIME_KEYS,
@@ -15,6 +15,8 @@ import {
   validateConsultationForm,
   type ConsultationErrors,
 } from "@/lib/errors/validate-consultation";
+import { useContactFormClasses } from "@/components/contact/useContactFormClasses";
+import { ModernFormStepper, type ModernFormStep } from "@/components/ui/modern-form-stepper";
 
 const EMPTY_FORM = {
   name: "",
@@ -24,31 +26,45 @@ const EMPTY_FORM = {
   contactTime: "" as ContactTimeKey | "",
 };
 
+function pickErrors(errors: ConsultationErrors, keys: (keyof ConsultationErrors)[]) {
+  const out: ConsultationErrors = {};
+  for (const key of keys) {
+    if (errors[key]) out[key] = errors[key];
+  }
+  return out;
+}
+
 export default function ConsultationRequestForm() {
   const { fa, dir, d } = useT();
   const c = d.consultationRequest;
   const err = d.errors.consultationRequest;
+  const cls = useContactFormClasses();
+  const ids = { name: useId(), phone: useId(), email: useId() };
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [fieldErrors, setFieldErrors] = useState<ConsultationErrors>({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState(0);
 
-  const inputClass = `w-full border border-paper/20 bg-paper/[0.03] px-4 py-3 text-xs text-paper placeholder:text-paper/25 outline-none focus:border-paper/50 transition-colors duration-200 ${fa ? "font-fa text-right" : "font-mono"}`;
-  const labelClass = `mb-2 block text-[10px] uppercase tracking-widest text-paper/40 ${fa ? "font-fa" : ""}`;
-  const sectionClass = `text-sm text-paper/70 ${fa ? "font-fa" : "font-mono uppercase tracking-wider"}`;
-  const inputErrorClass = (field: keyof ConsultationErrors) =>
-    fieldErrors[field] ? inputClass.replace("border-paper/20", "border-terr/40") : inputClass;
+  const inputError = (field: keyof ConsultationErrors) =>
+    fieldErrors[field]
+      ? cls.input("border-terr/40 focus:border-terr/50 focus:ring-terr/15")
+      : cls.input();
 
   const emailRequired = form.contactMethod === "email";
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function submit() {
     setSubmitError("");
     const errors = validateConsultationForm(form, err);
     setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) {
+      if (errors.name || errors.phone) setStep(0);
+      else if (errors.contactMethod || errors.email) setStep(1);
+      else setStep(2);
+      return;
+    }
 
     setSubmitting(true);
     const result = await submitConsultationForm({
@@ -71,76 +87,90 @@ export default function ConsultationRequestForm() {
     setSubmitted(true);
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await submit();
+  }
+
   function resetForm() {
     setForm(EMPTY_FORM);
     setFieldErrors({});
     setSubmitError("");
     setSubmitted(false);
+    setStep(0);
+  }
+
+  function advanceModern() {
+    const all = validateConsultationForm(form, err);
+    if (step === 0) {
+      const partial = pickErrors(all, ["name", "phone"]);
+      setFieldErrors(partial);
+      if (Object.keys(partial).length) return;
+      setStep(1);
+      return;
+    }
+    if (step === 1) {
+      const partial = pickErrors(all, ["contactMethod", "email"]);
+      setFieldErrors(partial);
+      if (Object.keys(partial).length) return;
+      setStep(2);
+      return;
+    }
+    void submit();
   }
 
   if (submitted) {
     return (
-      <div dir={dir} className="border border-term/30 bg-term/5 p-8">
-        <p className={`text-sm text-term ${fa ? "font-fa" : "font-mono"}`}>{c.success}</p>
-        <button
-          type="button"
-          onClick={resetForm}
-          className={`mt-6 border border-paper/30 px-4 py-2 text-[11px] uppercase tracking-wider text-paper/70 transition-colors duration-200 hover:border-paper hover:text-paper ${fa ? "font-fa" : ""}`}
-        >
+      <div dir={dir} className={cls.successBox()}>
+        <p className={cls.successText()}>{cls.ai ? cls.cleanSuccess(c.success) : c.success}</p>
+        <button type="button" onClick={resetForm} className={cls.secondaryBtn()}>
           {c.sendAnother}
         </button>
       </div>
     );
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-8" dir={dir} noValidate>
-      {submitError && <InlineError message={submitError} dir={dir} fa={fa} />}
-      <input
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        className="absolute left-[-9999px] h-0 w-0 opacity-0"
-      />
+  const identityFields = (
+    <fieldset className={cls.fieldset()}>
+      <div>
+        <label htmlFor={ids.name} className={cls.label()}>
+          {c.labelName}
+        </label>
+        <input
+          id={ids.name}
+          type="text"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          className={inputError("name")}
+          aria-invalid={Boolean(fieldErrors.name)}
+        />
+        <FormFieldError message={fieldErrors.name ?? ""} />
+      </div>
+      <div>
+        <label htmlFor={ids.phone} className={cls.label()}>
+          {c.labelPhone}
+        </label>
+        <input
+          id={ids.phone}
+          type="tel"
+          value={form.phone}
+          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+          className={inputError("phone")}
+          dir="ltr"
+          aria-invalid={Boolean(fieldErrors.phone)}
+        />
+        <FormFieldError message={fieldErrors.phone ?? ""} />
+      </div>
+    </fieldset>
+  );
 
-      <fieldset className="space-y-4 border border-paper/10 bg-paper/[0.015] p-5">
-        <div>
-          <label className={labelClass}>{c.labelName}</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className={inputErrorClass("name")}
-            placeholder={c.labelName}
-            aria-invalid={Boolean(fieldErrors.name)}
-          />
-          <FormFieldError message={fieldErrors.name ?? ""} />
-        </div>
-        <div>
-          <label className={labelClass}>{c.labelPhone}</label>
-          <input
-            type="tel"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className={inputErrorClass("phone")}
-            placeholder={c.labelPhone}
-            dir="ltr"
-            aria-invalid={Boolean(fieldErrors.phone)}
-          />
-          <FormFieldError message={fieldErrors.phone ?? ""} />
-        </div>
-      </fieldset>
-
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
-        <legend className={sectionClass}>{c.sectionContactMethod}</legend>
+  const methodFields = (
+    <>
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
+        <legend className={cls.section()}>{c.sectionContactMethod}</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {CONTACT_METHOD_KEYS.map((key) => (
-            <label
-              key={key}
-              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm transition-colors ${form.contactMethod === key ? "border-term/40 bg-term/5 text-paper" : "border-paper/15 text-paper/60 hover:border-paper/30"} ${fa ? "font-fa" : ""}`}
-            >
+            <label key={key} className={cls.chip(form.contactMethod === key)}>
               <input
                 type="radio"
                 name="contactMethod"
@@ -154,14 +184,14 @@ export default function ConsultationRequestForm() {
         </div>
         <FormFieldError message={fieldErrors.contactMethod ?? ""} />
       </fieldset>
-
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
-        <legend className={sectionClass}>{c.labelEmail}</legend>
+      <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
+        <legend className={cls.section()}>{c.labelEmail}</legend>
         <input
+          id={ids.email}
           type="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className={inputErrorClass("email")}
+          className={inputError("email")}
           placeholder={emailRequired ? c.labelEmail : c.labelEmailOptional}
           dir="ltr"
           aria-invalid={Boolean(fieldErrors.email)}
@@ -169,34 +199,102 @@ export default function ConsultationRequestForm() {
         />
         <FormFieldError message={fieldErrors.email ?? ""} />
       </fieldset>
+    </>
+  );
 
-      <fieldset className="space-y-3 border border-paper/10 bg-paper/[0.015] p-5">
-        <legend className={sectionClass}>{c.sectionContactTime}</legend>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {CONTACT_TIME_KEYS.map((key) => (
-            <label
-              key={key}
-              className={`flex cursor-pointer items-center gap-3 border px-3 py-2.5 text-sm transition-colors ${form.contactTime === key ? "border-term/40 bg-term/5 text-paper" : "border-paper/15 text-paper/60 hover:border-paper/30"} ${fa ? "font-fa" : ""}`}
-            >
-              <input
-                type="radio"
-                name="contactTime"
-                className="accent-term"
-                checked={form.contactTime === key}
-                onChange={() => setForm({ ...form, contactTime: key })}
-              />
-              {c.contactTimes[key]}
-            </label>
-          ))}
-        </div>
-        <FormFieldError message={fieldErrors.contactTime ?? ""} />
-      </fieldset>
+  const timeFields = (
+    <fieldset className={`space-y-3 ${cls.fieldset().replace("space-y-4 ", "")}`}>
+      <legend className={cls.section()}>{c.sectionContactTime}</legend>
+      <div className="grid gap-2 sm:grid-cols-3">
+        {CONTACT_TIME_KEYS.map((key) => (
+          <label key={key} className={cls.chip(form.contactTime === key)}>
+            <input
+              type="radio"
+              name="contactTime"
+              className="accent-term"
+              checked={form.contactTime === key}
+              onChange={() => setForm({ ...form, contactTime: key })}
+            />
+            {c.contactTimes[key]}
+          </label>
+        ))}
+      </div>
+      <FormFieldError message={fieldErrors.contactTime ?? ""} />
+    </fieldset>
+  );
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className={`group w-full border border-paper px-5 py-3 text-xs uppercase tracking-wider transition-colors duration-200 hover:bg-paper hover:text-ink disabled:opacity-50 ${fa ? "font-fa" : ""}`}
+  const honeypot = (
+    <input
+      type="text"
+      name="website"
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      className="absolute left-[-9999px] h-0 w-0 opacity-0"
+    />
+  );
+
+  if (cls.ai) {
+    const steps: ModernFormStep[] = [
+      {
+        id: "identity",
+        title: c.stepIdentityTitle,
+        description: c.stepIdentityDesc,
+        content: identityFields,
+      },
+      {
+        id: "method",
+        title: c.sectionContactMethod,
+        description: c.stepMethodDesc,
+        content: methodFields,
+      },
+      {
+        id: "time",
+        title: c.sectionContactTime,
+        description: c.stepTimeDesc,
+        content: timeFields,
+      },
+    ];
+
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          advanceModern();
+        }}
+        dir={dir}
+        noValidate
+        className="relative"
       >
+        {honeypot}
+        <ModernFormStepper
+          steps={steps}
+          activeStepIdx={step}
+          onStepChange={setStep}
+          onBack={() => setStep((s) => Math.max(0, s - 1))}
+          onContinue={advanceModern}
+          labels={{
+            back: d.formStepper.back,
+            continue: d.formStepper.continue,
+            submit: c.labelSubmit,
+            submitting: c.submitting,
+          }}
+          dir={dir}
+          banner={submitError ? <InlineError message={submitError} dir={dir} fa={fa} /> : null}
+          submitting={submitting}
+        />
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-8" dir={dir} noValidate>
+      {submitError && <InlineError message={submitError} dir={dir} fa={fa} />}
+      {honeypot}
+      {identityFields}
+      {methodFields}
+      {timeFields}
+      <button type="submit" disabled={submitting} className={`group ${cls.btn()}`}>
         {submitting ? c.submitting : c.labelSubmit}
         <span className="mx-1 inline-block transition-transform duration-200 group-hover:translate-x-1">
           {fa ? "←" : "->"}

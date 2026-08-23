@@ -8,7 +8,7 @@ export const metadata: Metadata = pageMetadata({
 
 export default function TermsPage() {
   return (
-    <main className="pt-20">
+    <main>
       <TermsClient />
     </main>
   );

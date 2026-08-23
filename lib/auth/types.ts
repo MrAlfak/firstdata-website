@@ -22,13 +22,15 @@ export type UserRecord = {
 
   totp_enabled?: number;
 
+  panel_skin?: string | null;
+
   created_at: string;
 
   updated_at: string;
 
 };
 
-
+export type PanelSkinPreference = "terminal" | "modern";
 
 export type PublicUser = {
 
@@ -53,6 +55,9 @@ export type PublicUser = {
   createdAt: string;
 
   role: string;
+
+  /** Panel UI skin preference (AI modern vs 56K terminal). */
+  panelSkin: PanelSkinPreference;
 
 };
 
@@ -80,6 +85,10 @@ export type OtpChannel = "email" | "sms";
 
 
 
+function normalizePanelSkin(value: string | null | undefined): PanelSkinPreference {
+  return value === "terminal" ? "terminal" : "modern";
+}
+
 export function toPublicUser(user: UserRecord): PublicUser {
 
   return {
@@ -105,6 +114,8 @@ export function toPublicUser(user: UserRecord): PublicUser {
     createdAt: user.created_at,
 
     role: user.role ?? "client",
+
+    panelSkin: normalizePanelSkin(user.panel_skin),
 
   };
 

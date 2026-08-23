@@ -46,7 +46,7 @@ export default function ProductChangelogTeaser({ data }: Props) {
                 </span>
                 {entry.version === APP_VERSION ? (
                   <span className="border border-term/30 px-1.5 py-0.5 font-mono text-[8px] uppercase text-term/80">
-                    current
+                    {fa ? "فعلی" : "current"}
                   </span>
                 ) : null}
               </div>

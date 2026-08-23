@@ -7,8 +7,8 @@ import {
   useRef,
   useState,
   useCallback,
+  type ReactNode,
 } from "react";
-import { scheduleUpdate } from "@/lib/react/schedule-update";
 import { AnimatePresence } from "motion/react";
 import { dictionaries, type Lang } from "./dictionaries";
 import { localizedDictionaries } from "./localized";
@@ -17,6 +17,7 @@ import { adminDictionaries, type AdminUi } from "./admin";
 import { formatDigits } from "@/lib/i18n/digits";
 import LangTransition from "@/components/LangTransition";
 import { LANG_CHANGE_EVENT } from "@/lib/console-brand";
+import { LANG_STORAGE_KEY } from "@/lib/i18n/lang-cookie";
 
 type DictType = (typeof dictionaries)[Lang];
 
@@ -39,7 +40,6 @@ type Ctx = {
 };
 
 const LangContext = createContext<Ctx | null>(null);
-const STORAGE_KEY = "fd-lang";
 
 function resolve(lang: Lang, key: string): string {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,25 +51,34 @@ function resolve(lang: Lang, key: string): string {
   return typeof node === "string" ? node : key;
 }
 
-export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+function persistLang(l: Lang) {
+  localStorage.setItem(LANG_STORAGE_KEY, l);
+  document.cookie = `${LANG_STORAGE_KEY}=${l};path=/;max-age=31536000;SameSite=Lax`;
+}
+
+type Props = {
+  children: ReactNode;
+  /** Server-resolved language (cookie / default fa) — SSR is source of truth */
+  initialLang?: Lang;
+};
+
+export function LangProvider({ children, initialLang = "fa" }: Props) {
+  const [lang, setLangState] = useState<Lang>(initialLang);
   const [switching, setSwitching] = useState(false);
   const [txKey, setTxKey] = useState(0);
   const txTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Hydrate from cookie / localStorage after mount
+  // Keep client storage aligned with SSR — never override UI from stale localStorage
+  // (that was causing English→Persian / Persian→English flashes on first paint).
   useEffect(() => {
-    const fromCookie = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith(`${STORAGE_KEY}=`))
-      ?.split("=")[1] as Lang | undefined;
-    const saved = (fromCookie || localStorage.getItem(STORAGE_KEY)) as Lang | null;
-    if (saved === "en" || saved === "fa") {
-      scheduleUpdate(() => setLangState(saved));
+    persistLang(initialLang);
+    if (lang !== initialLang) {
+      setLangState(initialLang);
     }
-  }, []);
+    // Only re-sync when the server seed changes (navigation with new cookie)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialLang]);
 
-  // Plays the terminal overlay; only fired by explicit user switches below
   const playTransition = useCallback(() => {
     const reduce =
       typeof window !== "undefined" &&
@@ -81,30 +90,35 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     txTimer.current = setTimeout(() => setSwitching(false), 1700);
   }, []);
 
-  useEffect(() => () => { if (txTimer.current) clearTimeout(txTimer.current); }, []);
+  useEffect(
+    () => () => {
+      if (txTimer.current) clearTimeout(txTimer.current);
+    },
+    [],
+  );
 
-  // Reflect on <html>: lang for a11y, dir for full RTL layout in Persian
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
   }, [lang]);
 
-  const setLang = useCallback((l: Lang) => {
-    setLangState((prev) => {
-      if (prev !== l) playTransition();
-      return l;
-    });
-    localStorage.setItem(STORAGE_KEY, l);
-    document.cookie = `${STORAGE_KEY}=${l};path=/;max-age=31536000;SameSite=Lax`;
-    window.dispatchEvent(new CustomEvent(LANG_CHANGE_EVENT, { detail: { fa: l === "fa" } }));
-  }, [playTransition]);
+  const setLang = useCallback(
+    (l: Lang) => {
+      setLangState((prev) => {
+        if (prev !== l) playTransition();
+        return l;
+      });
+      persistLang(l);
+      window.dispatchEvent(new CustomEvent(LANG_CHANGE_EVENT, { detail: { fa: l === "fa" } }));
+    },
+    [playTransition],
+  );
 
   const toggle = useCallback(() => {
     playTransition();
     setLangState((prev) => {
       const next: Lang = prev === "en" ? "fa" : "en";
-      localStorage.setItem(STORAGE_KEY, next);
-      document.cookie = `${STORAGE_KEY}=${next};path=/;max-age=31536000;SameSite=Lax`;
+      persistLang(next);
       window.dispatchEvent(new CustomEvent(LANG_CHANGE_EVENT, { detail: { fa: next === "fa" } }));
       return next;
     });

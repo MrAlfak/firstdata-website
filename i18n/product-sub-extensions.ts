@@ -28,6 +28,8 @@ export type ProductSubExtensions = {
   portfolio: {
     eyebrow: string;
     title: string;
+    subtitle: string;
+    callout: string;
     linkLabel: string;
     href: string;
   };
@@ -36,6 +38,11 @@ export type ProductSubExtensions = {
     title: string;
     items: { q: string; a: string }[];
   };
+};
+
+const portfolioCallout: Record<Lang, string> = {
+  fa: "هر کارت خلاصه یک پروژه واقعی است — نه بسته نرم‌افزاری آماده. برای جزئیات بیشتر به portfolio بروید.",
+  en: "Each card summarizes a real delivered project — not a ready-made product bundle. See portfolio for full case details.",
 };
 
 const sharedNav: Record<Lang, ProductSubExtensions["nav"]> = {
@@ -74,7 +81,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// نمونه‌های مرتبط",
-        title: "پروژه‌های وب مشابه",
+        title: "نمونه از پروژه‌های وب تحویل‌شده",
+        subtitle: "پروژه‌های واقعی portfolio — محصول آماده نیست؛ هر قرارداد سفارشی است.",
+        callout: portfolioCallout.fa,
         linkLabel: "همه نمونه‌کارهای وب",
         href: "/portfolio/websites",
       },
@@ -118,7 +127,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// نمونه‌های مرتبط",
-        title: "پروژه‌های موبایل مشابه",
+        title: "نمونه از پروژه‌های موبایل تحویل‌شده",
+        subtitle: "پروژه‌های واقعی portfolio — محصول آماده نیست؛ هر قرارداد سفارشی است.",
+        callout: portfolioCallout.fa,
         linkLabel: "همه نمونه‌کارهای موبایل",
         href: "/portfolio/mobile-apps",
       },
@@ -162,7 +173,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// نمونه‌های مرتبط",
-        title: "پروژه‌های دسکتاپ مشابه",
+        title: "نمونه از پروژه‌های دسکتاپ تحویل‌شده",
+        subtitle: "پروژه‌های واقعی portfolio — محصول آماده نیست؛ هر قرارداد سفارشی است.",
+        callout: portfolioCallout.fa,
         linkLabel: "همه نمونه‌کارهای دسکتاپ",
         href: "/portfolio/desktop",
       },
@@ -206,7 +219,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// نمونه‌های مرتبط",
-        title: "پروژه‌های AI و اتوماسیون",
+        title: "نمونه از پروژه‌های AI تحویل‌شده",
+        subtitle: "پروژه‌های واقعی portfolio — محصول آماده نیست؛ هر قرارداد سفارشی است.",
+        callout: portfolioCallout.fa,
         linkLabel: "نمونه‌کارهای مرتبط",
         href: "/portfolio/other",
       },
@@ -250,7 +265,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// نمونه‌های مرتبط",
-        title: "پروژه‌های پلتفرم و یکپارچه‌سازی",
+        title: "نمونه از پروژه‌های پلتفرم تحویل‌شده",
+        subtitle: "پروژه‌های واقعی portfolio — محصول آماده نیست؛ هر قرارداد سفارشی است.",
+        callout: portfolioCallout.fa,
         linkLabel: "نمونه‌کارهای یکپارچه‌سازی",
         href: "/portfolio/other",
       },
@@ -296,7 +313,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// related samples",
-        title: "Similar web projects",
+        title: "Sample delivered web projects",
+        subtitle: "Real portfolio work — not off-the-shelf products. Every engagement is tailored.",
+        callout: portfolioCallout.en,
         linkLabel: "All web portfolio",
         href: "/portfolio/websites",
       },
@@ -340,7 +359,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// related samples",
-        title: "Similar mobile projects",
+        title: "Sample delivered mobile projects",
+        subtitle: "Real portfolio work — not off-the-shelf products. Every engagement is tailored.",
+        callout: portfolioCallout.en,
         linkLabel: "All mobile portfolio",
         href: "/portfolio/mobile-apps",
       },
@@ -384,7 +405,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// related samples",
-        title: "Similar desktop projects",
+        title: "Sample delivered desktop projects",
+        subtitle: "Real portfolio work — not off-the-shelf products. Every engagement is tailored.",
+        callout: portfolioCallout.en,
         linkLabel: "All desktop portfolio",
         href: "/portfolio/desktop",
       },
@@ -428,7 +451,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// related samples",
-        title: "AI & automation projects",
+        title: "Sample delivered AI projects",
+        subtitle: "Real portfolio work — not off-the-shelf products. Every engagement is tailored.",
+        callout: portfolioCallout.en,
         linkLabel: "Related portfolio",
         href: "/portfolio/other",
       },
@@ -472,7 +497,9 @@ export const productSubExtensions: Record<Lang, Record<ProductSlug, ProductSubEx
       },
       portfolio: {
         eyebrow: "// related samples",
-        title: "Platform & integration projects",
+        title: "Sample delivered platform projects",
+        subtitle: "Real portfolio work — not off-the-shelf products. Every engagement is tailored.",
+        callout: portfolioCallout.en,
         linkLabel: "Integration portfolio",
         href: "/portfolio/other",
       },

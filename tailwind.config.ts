@@ -33,6 +33,7 @@ const config: Config = {
         ],
         pixel: ["RooyinDigits", "Rooyin", "var(--font-pixel)", "var(--font-mono)", "monospace"],
         fa: ["Rooyin", "Tahoma", "sans-serif"],
+        iran: ["IRANSansXFaNum", "IRANSansX", "Tahoma", "sans-serif"],
       },
       keyframes: {
         blink: {

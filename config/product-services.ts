@@ -15,6 +15,7 @@ export const PRODUCT_SERVICE_LINKS: Record<ProductSlug, { href: string; labelKey
   windows: [
     { href: "/services/consulting", labelKey: "nav.serviceConsulting" },
     { href: "/services/support", labelKey: "nav.serviceSupport" },
+    { href: "/portfolio/desktop", labelKey: "nav.portfolioDesktop" },
   ],
   ai: [
     { href: "/services/consulting", labelKey: "nav.serviceConsulting" },

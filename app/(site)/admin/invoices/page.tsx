@@ -173,9 +173,9 @@ export default function AdminInvoicesPage() {
       </div>
 
       {invoices.length === 0 ? (
-        <PanelCard className="mt-6">
-          <PanelEmpty label={a.common.empty} />
-        </PanelCard>
+        <div className="mt-6">
+          <PanelEmpty label={a.common.empty} title={a.common.empty} description={a.common.emptyHint} />
+        </div>
       ) : (
         <ul className="mt-6 space-y-2">
           {invoices.map((row) => (

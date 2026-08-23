@@ -27,6 +27,7 @@ export type ProductPhase3Sub = {
   pricing: {
     eyebrow: string;
     title: string;
+    subtitle: string;
     note: string;
     tiers: ProductPricingTier[];
     compareRows: { label: string; values: [string, string, string] }[];
@@ -76,6 +77,7 @@ const serviceLinksFa: Record<ProductSlug, ProductServiceLink[]> = {
   windows: [
     { href: "/services/consulting", title: "مشاوره", body: "تحلیل legacy و roadmap" },
     { href: "/services/support", title: "پشتیبانی", body: "به‌روزرسانی و MSI" },
+    { href: "/portfolio/desktop", title: "نمونه‌کار دسکتاپ", body: "پروژه‌های LOB و ابزار داخلی" },
   ],
   ai: [
     { href: "/services/consulting", title: "مشاوره", body: "انتخاب use case و ارزیابی ریسک" },
@@ -102,6 +104,7 @@ const serviceLinksEn: Record<ProductSlug, ProductServiceLink[]> = {
   windows: [
     { href: "/services/consulting", title: "Consulting", body: "Legacy analysis and roadmap" },
     { href: "/services/support", title: "Support", body: "Updates and MSI packaging" },
+    { href: "/portfolio/desktop", title: "Desktop portfolio", body: "LOB tools and internal apps" },
   ],
   ai: [
     { href: "/services/consulting", title: "Consulting", body: "Use case selection and risk review" },
@@ -114,47 +117,95 @@ const serviceLinksEn: Record<ProductSlug, ProductServiceLink[]> = {
   ],
 };
 
-function pricingBlock(
-  badges: string[],
-  bootLines: string[],
-  demoCaption: string,
-  onePagerSections: { heading: string; bullets: string[] }[],
-  compareRows: { label: string; values: [string, string, string] }[],
-  quoteName: string,
-  lang: Lang,
-  slug: ProductSlug,
-): ProductPhase3Sub {
+function tiersForSlug(slug: ProductSlug, lang: Lang): ProductPricingTier[] {
   const fa = lang === "fa";
-  const services = fa ? serviceLinksFa[slug] : serviceLinksEn[slug];
 
-  const tiersFa: ProductPricingTier[] = [
-    {
-      id: "mvp",
-      title: "Discovery + MVP",
-      timeline: "۴–۸ هفته",
-      summary: "شروع سریع با scope محدود و قابل اندازه‌گیری",
-      bullets: ["Workshop و wireframe", "MVP قابل لانچ", "بازخورد هفتگی", "مستندات تحویل"],
-      cta: "درخواست MVP",
-    },
-    {
-      id: "full",
-      title: "Full product",
-      timeline: "۳–۶ ماه",
-      summary: "محصول کامل با یکپارچه‌سازی و پنل",
-      bullets: ["CMS / پنل مدیریت", "API و integration", "QA و performance", "آموزش تیم"],
-      cta: "درخواست محصول کامل",
-    },
-    {
-      id: "enterprise",
-      title: "Enterprise",
-      timeline: "قرارداد بلندمدت",
-      summary: "مقیاس، SLA، governance و rollout",
-      bullets: ["SSO / RBAC پیشرفته", "Monitoring و SLA", "Rollout مرحله‌ای", "تیم اختصاصی"],
-      cta: "گفتگو با تیم فروش",
-    },
-  ];
+  if (slug === "windows") {
+    return fa
+      ? [
+          {
+            id: "mvp",
+            title: "کشف نیاز + MVP",
+            timeline: "۴–۸ هفته",
+            summary: "شروع سریع با یک workflow عملیاتی محدود",
+            bullets: ["workshop عملیات", "MVP روی یک فرایند", "نصب pilot (MSI)", "مستندات تحویل"],
+            cta: "درخواست MVP",
+          },
+          {
+            id: "full",
+            title: "محصول کامل",
+            timeline: "۳–۶ ماه",
+            summary: "LOB کامل با سخت‌افزار و sync",
+            bullets: ["MSI و GPO", "چاپ، POS و بارکد", "sync با HQ", "آموزش تیم"],
+            cta: "درخواست محصول کامل",
+          },
+          {
+            id: "enterprise",
+            title: "سازمانی",
+            timeline: "قرارداد بلندمدت",
+            summary: "Rollout چند شعبه، audit و SLA",
+            bullets: ["کانال auto-update", "audit و RBAC", "Rollout مرحله‌ای", "SLA پشتیبانی"],
+            cta: "گفتگو با تیم فروش",
+          },
+        ]
+      : [
+          {
+            id: "mvp",
+            title: "Discovery + MVP",
+            timeline: "4–8 weeks",
+            summary: "Fast start with one bounded operational workflow",
+            bullets: ["Ops workshop", "MVP on one process", "Pilot MSI install", "Handover docs"],
+            cta: "Request MVP",
+          },
+          {
+            id: "full",
+            title: "Full product",
+            timeline: "3–6 months",
+            summary: "Complete LOB with hardware and HQ sync",
+            bullets: ["MSI and GPO", "Print, POS, barcode", "HQ sync", "Team training"],
+            cta: "Request full product",
+          },
+          {
+            id: "enterprise",
+            title: "Enterprise",
+            timeline: "Long-term engagement",
+            summary: "Multi-branch rollout, audit, and SLA",
+            bullets: ["Auto-update channel", "Audit and RBAC", "Staged rollout", "Support SLA"],
+            cta: "Talk to sales",
+          },
+        ];
+  }
 
-  const tiersEn: ProductPricingTier[] = [
+  if (fa) {
+    return [
+      {
+        id: "mvp",
+        title: "کشف + MVP",
+        timeline: "۴–۸ هفته",
+        summary: "شروع سریع با scope محدود و قابل اندازه‌گیری",
+        bullets: ["Workshop و wireframe", "MVP قابل لانچ", "بازخورد هفتگی", "مستندات تحویل"],
+        cta: "درخواست MVP",
+      },
+      {
+        id: "full",
+        title: "محصول کامل",
+        timeline: "۳–۶ ماه",
+        summary: "محصول کامل با یکپارچه‌سازی و پنل",
+        bullets: ["CMS / پنل مدیریت", "API و integration", "QA و performance", "آموزش تیم"],
+        cta: "درخواست محصول کامل",
+      },
+      {
+        id: "enterprise",
+        title: "سازمانی",
+        timeline: "قرارداد بلندمدت",
+        summary: "مقیاس، SLA، governance و rollout",
+        bullets: ["SSO / RBAC پیشرفته", "Monitoring و SLA", "Rollout مرحله‌ای", "تیم اختصاصی"],
+        cta: "گفتگو با تیم فروش",
+      },
+    ];
+  }
+
+  return [
     {
       id: "mvp",
       title: "Discovery + MVP",
@@ -180,38 +231,68 @@ function pricingBlock(
       cta: "Talk to sales",
     },
   ];
+}
+
+function pricingBlock(
+  badges: string[],
+  bootLines: string[],
+  demoCaption: string,
+  onePagerSections: { heading: string; bullets: string[] }[],
+  compareRows: { label: string; values: [string, string, string] }[],
+  quoteName: string,
+  lang: Lang,
+  slug: ProductSlug,
+): ProductPhase3Sub {
+  const fa = lang === "fa";
+  const services = fa ? serviceLinksFa[slug] : serviceLinksEn[slug];
+  const deployDemo = slug === "windows";
 
   return {
     badges,
     bootLines,
     demo: {
-      eyebrow: "// live preview",
-      title: fa ? "پیش‌نمایش تعاملی" : "Interactive preview",
+      eyebrow: fa
+        ? deployDemo
+          ? "// پیش‌نمایش استقرار"
+          : "// پیش‌نمایش زنده"
+        : deployDemo
+          ? "// deploy preview"
+          : "// live preview",
+      title: fa
+        ? deployDemo
+          ? "مسیر استقرار MSI"
+          : "پیش‌نمایش تعاملی"
+        : deployDemo
+          ? "MSI deploy path"
+          : "Interactive preview",
       caption: demoCaption,
     },
     pricing: {
-      eyebrow: "// engagement tiers",
+      eyebrow: fa ? "// سطوح همکاری" : "// engagement tiers",
       title: fa ? "سطوح همکاری و تحویل" : "Engagement tiers and delivery",
+      subtitle: fa
+        ? "از MVP عملیاتی تا محصول enterprise — بسته‌ای که با scope و محیط اجرای شما هم‌خوان است."
+        : "From operational MVP to enterprise rollout — pick the engagement that matches your scope and runtime.",
       note: fa
         ? "اعداد timeline راهنما هستند — scope دقیق پس از discovery تعیین می‌شود."
         : "Timelines are indicative — exact scope is set after discovery.",
-      tiers: fa ? tiersFa : tiersEn,
+      tiers: tiersForSlug(slug, lang),
       compareRows,
     },
     services: {
-      eyebrow: "// related services",
+      eyebrow: fa ? "// خدمات مرتبط" : "// related services",
       title: fa ? "خدمات مکمل این خط محصول" : "Services that complement this product line",
       links: services,
     },
     changelog: {
-      eyebrow: "// product updates",
+      eyebrow: fa ? "// به‌روزرسانی محصول" : "// product updates",
       title: fa ? "این خط محصول زنده است" : "This product line is actively maintained",
       body: fa
         ? "آخرین به‌روزرسانی‌های First Data — شامل بهبود صفحات محصول و قابلیت‌های پنل."
         : "Recent First Data releases — including product pages and panel capabilities.",
     },
     onePager: {
-      eyebrow: "// one-pager",
+      eyebrow: fa ? "// یک‌صفحه‌ای" : "// one-pager",
       title: fa ? "معرفی یک‌صفحه‌ای" : "One-page overview",
       body: fa
         ? "نسخه چاپ/PDF برای اشتراک با تیم یا مدیران — شامل خلاصه، stack و مسیر همکاری."
@@ -221,7 +302,7 @@ function pricingBlock(
       sections: onePagerSections,
     },
     nav: {
-      demo: fa ? "پیش‌نمایش" : "Preview",
+      demo: fa ? (deployDemo ? "استقرار" : "پیش‌نمایش") : deployDemo ? "Deploy" : "Preview",
       pricing: fa ? "سطوح" : "Tiers",
       services: fa ? "خدمات" : "Services",
       changelog: fa ? "به‌روزرسانی" : "Updates",
@@ -267,15 +348,17 @@ export const productPhase3Sub: Record<Lang, Record<ProductSlug, ProductPhase3Sub
     ),
     windows: pricingBlock(
       ["MSI deploy", "Auto-update", "LOB"],
-      ["> boot /product/windows...", "> load .net runtime...", "> device bridge ok...", "> ready."],
-      "پنجره دسکتاپ با sidebar و فرم عملیاتی",
+      ["> بارگذاری /product/windows...", "> runtime .net...", "> پل دستگاه ok...", "> آماده."],
+      "مسیر استقرار MSI از build تا rollout در Active Directory",
       [
         { heading: "مسیر محصول", bullets: ["نرم‌افزار LOB", "MSI و GPO", "چاپ و POS", "sync با HQ"] },
         { heading: "Stack", bullets: [".NET", "WPF", "C#", "MSI"] },
       ],
       [
-        { label: "MSI", values: ["—", "✓", "✓"] },
-        { label: "Hardware", values: ["MVP", "✓", "✓"] },
+        { label: "MSI / updater", values: ["—", "✓", "✓"] },
+        { label: "سخت‌افزار (چاپ/POS)", values: ["MVP", "✓", "✓"] },
+        { label: "GPO / AD", values: ["—", "MVP", "✓"] },
+        { label: "SLA پشتیبانی", values: ["—", "اختیاری", "✓"] },
       ],
       "محصولات ویندوز — First Data",
       "fa",
@@ -352,14 +435,16 @@ export const productPhase3Sub: Record<Lang, Record<ProductSlug, ProductPhase3Sub
     windows: pricingBlock(
       ["MSI deploy", "Auto-update", "LOB"],
       ["> boot /product/windows...", "> load .net runtime...", "> device bridge ok...", "> ready."],
-      "Desktop window with ops sidebar and form area",
+      "MSI deploy path from build to AD/GPO rollout",
       [
         { heading: "Product path", bullets: ["LOB software", "MSI and GPO", "Print and POS", "HQ sync"] },
         { heading: "Stack", bullets: [".NET", "WPF", "C#", "MSI"] },
       ],
       [
-        { label: "MSI", values: ["—", "✓", "✓"] },
-        { label: "Hardware", values: ["MVP", "✓", "✓"] },
+        { label: "MSI / updater", values: ["—", "✓", "✓"] },
+        { label: "Hardware (print/POS)", values: ["MVP", "✓", "✓"] },
+        { label: "GPO / AD", values: ["—", "MVP", "✓"] },
+        { label: "Support SLA", values: ["—", "Optional", "✓"] },
       ],
       "Windows products — First Data",
       "en",

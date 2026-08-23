@@ -52,17 +52,16 @@ function readStoredTheme(): Theme {
 
 
 function applyTheme(theme: Theme): void {
-
   document.documentElement.setAttribute("data-theme", theme);
-
   const meta = document.querySelector('meta[name="theme-color"]');
-
   if (meta) {
-
-    meta.setAttribute("content", theme === "light" ? "#eef4e8" : "#080c08");
-
+    const skin = document.documentElement.getAttribute("data-panel-skin");
+    if (skin === "modern") {
+      meta.setAttribute("content", theme === "light" ? "#f5f7f6" : "#0f1211");
+    } else {
+      meta.setAttribute("content", theme === "light" ? "#eef4e8" : "#080c08");
+    }
   }
-
 }
 
 

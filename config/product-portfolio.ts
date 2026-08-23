@@ -1,6 +1,7 @@
 import type { ProductSlug } from "@/i18n/product-page";
 import {
   getAllProjects,
+  getProjectById,
   type PortfolioCategory,
   type PortfolioProject,
 } from "./portfolio";
@@ -25,4 +26,14 @@ export function getProjectsForProduct(slug: ProductSlug, limit = 3): PortfolioPr
     .filter((p) => categories.includes(p.category))
     .sort(sortFeaturedFirst)
     .slice(0, limit);
+}
+
+export function getFlagshipProjectForProduct(slug: ProductSlug, projectId: string): PortfolioProject | undefined {
+  const project = getProjectById(projectId);
+  if (!project) return undefined;
+  const categories = SLUG_CATEGORIES[slug];
+  if (!categories.includes(project.category)) {
+    return getProjectsForProduct(slug, 1)[0];
+  }
+  return project;
 }

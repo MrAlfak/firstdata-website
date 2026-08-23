@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
-import BreadcrumbNav from "@/components/seo/BreadcrumbNav";
 import { ABOUTUS_SLUGS, ABOUTUS_SLUG_TO_PAGE } from "@/config/navigation";
 import { aboutHonorsPageDictionaries } from "@/i18n/about-honors-page";
 import { aboutPartnersPageDictionaries } from "@/i18n/about-partners-page";
@@ -59,9 +58,6 @@ export default async function AboutSubPage({ params }: Props) {
   return (
     <main>
       <BreadcrumbJsonLd items={breadcrumbs} />
-      <div className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
-        <BreadcrumbNav items={breadcrumbs} />
-      </div>
       <AboutSubClient slug={slug} />
     </main>
   );

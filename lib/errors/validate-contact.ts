@@ -14,6 +14,7 @@ type ContactMessages = {
   nameRequired: string;
   emailRequired: string;
   emailInvalid: string;
+  serviceRequired: string;
   messageRequired: string;
   messageMin: string;
 };
@@ -29,6 +30,7 @@ export function validateContactForm(
   if (!form.name.trim()) errors.name = messages.nameRequired;
   if (!form.email.trim()) errors.email = messages.emailRequired;
   else if (!EMAIL_RE.test(form.email.trim())) errors.email = messages.emailInvalid;
+  if (!form.service.trim()) errors.service = messages.serviceRequired;
   if (!form.message.trim()) errors.message = messages.messageRequired;
   else if (form.message.trim().length < 10) errors.message = messages.messageMin;
 

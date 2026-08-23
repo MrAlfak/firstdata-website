@@ -4,6 +4,7 @@ import { jsonError, jsonOk } from "@/lib/auth/api";
 import { getPanelUserOrError } from "@/lib/panel/api";
 import { getUploadsRoot } from "@/lib/panel/auth";
 import { listFiles, listProjects, saveUploadedFile } from "@/lib/panel/repository";
+import { validateUploadFile } from "@/lib/panel/file-upload";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,9 @@ export async function POST(req: Request) {
   const file = form.get("file");
   if (!(file instanceof File)) return jsonError("File required", 400);
   if (file.size > MAX_BYTES) return jsonError("File too large (max 10 MB)", 400);
+
+  const typeError = validateUploadFile(file.name, file.type, "document");
+  if (typeError) return jsonError(typeError, 400);
 
   const projectIdRaw = form.get("projectId");
   const projectId = projectIdRaw ? Number(projectIdRaw) : null;

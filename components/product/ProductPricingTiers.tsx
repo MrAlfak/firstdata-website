@@ -26,7 +26,7 @@ export default function ProductPricingTiers({ data, accentBorder = "border-term/
       className="scroll-mt-24 border-b border-paper/20 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
     >
       <div className="mx-auto max-w-6xl">
-        <AboutSectionHeader eyebrow={data.eyebrow} title={data.title} />
+        <AboutSectionHeader eyebrow={data.eyebrow} title={data.title} subtitle={data.subtitle} />
 
         <motion.div variants={itemReveal} className="grid gap-4 lg:grid-cols-3">
           {data.tiers.map((tier) => (
@@ -58,33 +58,6 @@ export default function ProductPricingTiers({ data, accentBorder = "border-term/
               </Link>
             </article>
           ))}
-        </motion.div>
-
-        <motion.div variants={itemReveal} className="mt-10 overflow-x-auto">
-          <table className={`w-full min-w-[480px] border-collapse text-sm ${fa ? "font-fa" : ""}`} dir={dir}>
-            <thead>
-              <tr className="border-b border-paper/15">
-                <th className="py-2 pe-4 text-start font-mono text-[10px] text-paper/40" />
-                {data.tiers.map((t) => (
-                  <th key={t.id} className="px-2 py-2 text-start text-paper/75">
-                    {t.title}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.compareRows.map((row) => (
-                <tr key={row.label} className="border-b border-paper/10">
-                  <td className="py-2 pe-4 text-paper/65">{row.label}</td>
-                  {row.values.map((val, i) => (
-                    <td key={i} className="px-2 py-2 font-mono text-xs text-paper/55">
-                      {val}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </motion.div>
 
         <p dir={dir} className={`mt-6 text-[11px] text-paper/40 ${fa ? "font-fa" : "font-mono"}`}>

@@ -42,6 +42,16 @@ export type PortfolioPageUi = {
   tagsAria: string;
   backToPortfolio: string;
   categoryLabels: Record<PortfolioCategory, string>;
+  caseFile: {
+    sample: string;
+    featured: string;
+    stack: string;
+    open: string;
+    challenge: string;
+    alsoShipped: string;
+    statusOk: string;
+    openCase: string;
+  };
 };
 
 export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
@@ -153,7 +163,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
       title: "یادداشت حریم خصوصی",
       body: "مطالب این بخش ناشناس‌سازی شده‌اند. برای مشاهده جزئیات فنی، دمو زنده یا تماس با مرجع پروژه، از فرم درخواست استفاده کنید.",
     },
-    outcomeLabel: "نتیجه: ",
+    outcomeLabel: "نتیجه",
     tagsAria: "برچسب‌ها",
     backToPortfolio: "بازگشت به نمونه‌کارها",
     categoryLabels: {
@@ -162,6 +172,16 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
       "mobile-apps": "موبایل",
       desktop: "دسکتاپ",
       other: "سایر",
+    },
+    caseFile: {
+      sample: "SAMPLE",
+      featured: "FEATURED",
+      stack: "STACK",
+      open: "باز کردن",
+      challenge: "چالش",
+      alsoShipped: "نمونهٔ دیگر از همین دسته",
+      statusOk: "تحویل‌شده",
+      openCase: "مشاهدهٔ نمونه‌کارهای مشابه",
     },
   },
   en: {
@@ -272,7 +292,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
       title: "Privacy note",
       body: "Content in this section is anonymized. For technical details, live demos, or project references, use the request form.",
     },
-    outcomeLabel: "Outcome: ",
+    outcomeLabel: "Outcome",
     tagsAria: "Tags",
     backToPortfolio: "Back to portfolio",
     categoryLabels: {
@@ -281,6 +301,16 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
       "mobile-apps": "Mobile",
       desktop: "Desktop",
       other: "Other",
+    },
+    caseFile: {
+      sample: "SAMPLE",
+      featured: "FEATURED",
+      stack: "STACK",
+      open: "Open",
+      challenge: "Challenge",
+      alsoShipped: "Another case in this category",
+      statusOk: "shipped",
+      openCase: "See similar portfolio work",
     },
   },
 };

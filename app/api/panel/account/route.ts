@@ -45,8 +45,11 @@ export async function PATCH(req: Request) {
   const full = findUserById(user.id);
   if (!full) return jsonError("Not found", 404);
 
-  if (parsed.data.name) {
-    updateUserProfile(user.id, { name: parsed.data.name });
+  if (parsed.data.name || parsed.data.panelSkin) {
+    updateUserProfile(user.id, {
+      ...(parsed.data.name ? { name: parsed.data.name } : {}),
+      ...(parsed.data.panelSkin ? { panelSkin: parsed.data.panelSkin } : {}),
+    });
   }
 
   if (parsed.data.password) {

@@ -9,3 +9,7 @@ Phone: +98 933 127 4039
 We build custom web, mobile, and desktop software.
 Open the browser console for a surprise.
 Interested in working with us? info@firstdata.ir
+
+/* credits */
+Terminal-skin pixel icons: Streamline Pixel (CC BY 4.0) — https://www.streamlinehq.com/icons/pixel
+Modern-skin line icons: Streamline Core (CC BY 4.0) — https://www.streamlinehq.com/icons/streamline-core

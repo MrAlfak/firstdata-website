@@ -84,9 +84,9 @@ export default function AdminLeadsPage() {
       </div>
 
       {leads.length === 0 ? (
-        <PanelCard className="mt-6">
-          <PanelEmpty label={a.common.empty} />
-        </PanelCard>
+        <div className="mt-6">
+          <PanelEmpty label={a.common.empty} title={a.common.empty} description={a.common.emptyHint} />
+        </div>
       ) : (
         <ul className="mt-6 space-y-3">
           {leads.map((lead) => (

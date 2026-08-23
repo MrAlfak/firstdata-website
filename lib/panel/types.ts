@@ -74,10 +74,19 @@ export type ContractRow = {
   created_at: string;
 };
 
+export type TicketDepartment =
+  | "support"
+  | "technical"
+  | "billing"
+  | "sales"
+  | "contracts";
+
 export type TicketRow = {
   id: number;
   user_id: number;
   project_id: number | null;
+  contract_id: number | null;
+  department: TicketDepartment | string;
   subject: string;
   priority: TicketPriority;
   status: TicketStatus;
@@ -98,6 +107,7 @@ export type PanelFileRow = {
   id: number;
   user_id: number;
   project_id: number | null;
+  ticket_id?: number | null;
   direction: FileDirection;
   name: string;
   storage_path: string;
