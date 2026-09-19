@@ -19,7 +19,7 @@ export type StatusPageUi = {
 
 export const statusPageDictionaries: Record<Lang, StatusPageUi> = {
   en: {
-    metaTitle: "System status | First Data",
+    metaTitle: "System status",
     metaDescription: "Live health of First Data site services — API and auth database.",
     title: "System status",
     lead: "Lightweight checks for the public site and client panel auth store.",
@@ -35,7 +35,7 @@ export const statusPageDictionaries: Record<Lang, StatusPageUi> = {
     down: "Unavailable",
   },
   fa: {
-    metaTitle: "وضعیت سیستم | اولین دیتا",
+    metaTitle: "وضعیت سیستم",
     metaDescription: "وضعیت زنده سرویس‌های سایت اولین دیتا — API و پایگاه احراز هویت.",
     title: "وضعیت سیستم",
     lead: "بررسی سبک سرویس‌های عمومی سایت و ذخیره‌سازی احراز هویت پنل.",

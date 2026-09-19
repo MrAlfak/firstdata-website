@@ -6,6 +6,7 @@ import { aboutHonorsPageDictionaries } from "@/i18n/about-honors-page";
 import { aboutPartnersPageDictionaries } from "@/i18n/about-partners-page";
 import { aboutTeamPageDictionaries } from "@/i18n/about-team-page";
 import { dictionaries } from "@/i18n/dictionaries";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 import { pageMetadata } from "@/lib/seo/metadata";
 import AboutSubClient from "./AboutSubClient";
 
@@ -24,21 +25,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Not Found" };
   }
 
-  const page = dictionaries.en.pages[pageKey];
+  const lang = await getRequestLang();
+  const page = dictionaries[lang].pages[pageKey];
   const path = `/aboutus/${slug}`;
   const description =
     slug === "team"
-      ? aboutTeamPageDictionaries.en.hero.body
+      ? aboutTeamPageDictionaries[lang].hero.body
       : slug === "partners"
-        ? aboutPartnersPageDictionaries.en.hero.body
+        ? aboutPartnersPageDictionaries[lang].hero.body
         : slug === "honors"
-          ? aboutHonorsPageDictionaries.en.hero.body
+          ? aboutHonorsPageDictionaries[lang].hero.body
           : `${page.subtitle} ${page.lines[0] ?? ""}`.trim();
 
   return pageMetadata({
     path,
     title: page.title,
     description,
+    lang,
   });
 }
 
@@ -48,10 +51,11 @@ export default async function AboutSubPage({ params }: Props) {
     notFound();
   }
 
-  const pageTitle = dictionaries.en.pages[ABOUTUS_SLUG_TO_PAGE[slug]].title;
+  const lang = await getRequestLang();
+  const pageTitle = dictionaries[lang].pages[ABOUTUS_SLUG_TO_PAGE[slug]].title;
   const breadcrumbs = [
-    { name: "Home", href: "/" },
-    { name: dictionaries.en.pages.aboutus.title, href: "/aboutus" },
+    { name: dictionaries[lang].nav.home, href: "/" },
+    { name: dictionaries[lang].pages.aboutus.title, href: "/aboutus" },
     { name: pageTitle },
   ];
 

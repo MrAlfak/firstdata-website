@@ -8,7 +8,7 @@
  *   pages & APIs (e.g. /auth/login, /api/auth/me) compile but still render app/not-found.
  *   Fix: `npm run clean` then restart, or `FD_CLEAN_NEXT=1 npm run dev:4000`.
  */
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -106,4 +106,13 @@ if (isPortListening(devPort)) {
     "[dev] If /auth/* or /api/auth/* suddenly 404 while other pages work, run: npm run clean",
   );
   process.exit(1);
+}
+
+const stt = spawnSync(process.execPath, [path.join(root, "scripts", "fetch-stt-model.mjs")], {
+  cwd: root,
+  stdio: "inherit",
+  env: process.env,
+});
+if (stt.status !== 0) {
+  console.warn("[dev] Speech model not ready. Assistant voice input may be unavailable.");
 }

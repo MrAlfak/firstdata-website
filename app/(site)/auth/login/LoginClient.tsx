@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AuthShell from "@/components/auth/AuthShell";
 import { useAuthClasses } from "@/components/auth/useAuthClasses";
@@ -32,13 +32,12 @@ function FirstDataMark({ className }: { className?: string }) {
   );
 }
 
-export default function LoginClient() {
+export default function LoginClient({ nextPath }: { nextPath: string }) {
   const { fa, dir, d } = useT();
   const ac = useAuthClasses();
   const copy = d.auth.login;
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/panel";
+  const next = nextPath;
 
   const [mode, setMode] = useState<Mode>("email");
   const [otpChannel, setOtpChannel] = useState<OtpChannel>("email");

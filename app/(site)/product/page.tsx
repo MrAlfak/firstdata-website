@@ -14,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     path: "/product",
     title: meta.title,
     description: meta.description,
+    lang,
   });
 }
 

@@ -1,28 +1,26 @@
-"use client";
+import type { Metadata } from "next";
+import SessionExpiredClient from "./SessionExpiredClient";
+import { dictionaries } from "@/i18n/dictionaries";
+import { safeNextPath } from "@/lib/auth/safe-next";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 
-import { Suspense, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import SiteErrorPage from "@/components/errors/SiteErrorPage";
+type Props = {
+  searchParams: Promise<{ next?: string }>;
+};
 
-function SessionExpiredInner() {
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/panel";
-
-  useEffect(() => {
-    fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
-  }, []);
-
-  return (
-    <SiteErrorPage pageKey="sessionExpired" code="401" tone="warn" loginNext={next} />
-  );
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getRequestLang();
+  return {
+    title: dictionaries[lang].errors.pages.sessionExpired.title,
+    robots: { index: false, follow: false },
+  };
 }
 
-export default function SessionExpiredPage() {
+export default async function SessionExpiredPage({ searchParams }: Props) {
+  const { next } = await searchParams;
   return (
     <main>
-      <Suspense>
-        <SessionExpiredInner />
-      </Suspense>
+      <SessionExpiredClient nextPath={safeNextPath(next)} />
     </main>
   );
 }

@@ -86,6 +86,73 @@ export async function parspackChatCompletion(input: {
   return { ok: true, content, model };
 }
 
+/** OpenAI-compatible speech-to-text via ParsPack (`POST /audio/transcriptions`). */
+export async function parspackTranscribe(input: {
+  file: Blob;
+  filename: string;
+  language?: "fa" | "en";
+  signal?: AbortSignal;
+}): Promise<{ ok: true; text: string } | { ok: false; error: string; status?: number }> {
+  const apiKey = env("PARSPACK_AI_API_KEY");
+  if (!apiKey) {
+    return { ok: false, error: "PARSPACK_AI_API_KEY is not configured" };
+  }
+
+  const base = env(
+    "PARSPACK_AI_BASE_URL",
+    "https://my.parspack.com/api/aistudio/api/v1",
+  ).replace(/\/+$/, "");
+  const model = env("PARSPACK_AI_STT_MODEL", "whisper-1");
+
+  const form = new FormData();
+  form.append("file", input.file, input.filename);
+  form.append("model", model);
+  form.append("response_format", "json");
+  if (input.language) form.append("language", input.language);
+
+  let res: Response;
+  try {
+    res = await fetch(`${base}/audio/transcriptions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: "application/json",
+      },
+      body: form,
+      signal: input.signal,
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "network error";
+    return { ok: false, error: msg };
+  }
+
+  const raw = await res.text();
+  let parsed: { text?: string; error?: { message?: string } } = {};
+  try {
+    parsed = JSON.parse(raw) as typeof parsed;
+  } catch {
+    return {
+      ok: false,
+      error: raw.slice(0, 240) || `HTTP ${res.status}`,
+      status: res.status,
+    };
+  }
+
+  if (!res.ok) {
+    return {
+      ok: false,
+      error: parsed.error?.message || raw.slice(0, 240) || `HTTP ${res.status}`,
+      status: res.status,
+    };
+  }
+
+  const text = (parsed.text ?? "").trim();
+  if (!text) {
+    return { ok: false, error: "Empty transcript", status: res.status };
+  }
+  return { ok: true, text };
+}
+
 export function splitAssistantAnswer(content: string): string[] {
   return content
     .split(/\r?\n/)

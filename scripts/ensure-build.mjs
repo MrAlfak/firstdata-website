@@ -3,8 +3,10 @@
  * Concurrent dev + build corrupts .next and breaks both processes.
  * Skipped in CI/Docker where other services may legitimately bind common ports.
  */
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const PORTS = [3000, 4000];
 
@@ -41,5 +43,16 @@ if (busy.length > 0) {
     `[build] Refusing to build: dev server appears to be running on port(s) ${busy.join(", ")}.`,
   );
   console.error("[build] Stop dev first (Ctrl+C), then run npm run build again.");
+  process.exit(1);
+}
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const stt = spawnSync(process.execPath, [path.join(root, "scripts", "fetch-stt-model.mjs")], {
+  cwd: root,
+  stdio: "inherit",
+  env: process.env,
+});
+if (stt.status !== 0) {
+  console.error("[build] Persian speech model is required for assistant voice input.");
   process.exit(1);
 }

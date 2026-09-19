@@ -8,7 +8,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Field,
@@ -162,9 +161,9 @@ export default function LoginForm({
               </Link>
             </div>
             <div className="flex flex-col gap-1">
-              <CardTitle className="text-2xl font-medium text-card-foreground">
+              <h1 className="text-2xl font-medium text-card-foreground">
                 {t.title}
-              </CardTitle>
+              </h1>
               <CardDescription className="text-sm font-normal text-muted-foreground">
                 {t.description}
               </CardDescription>

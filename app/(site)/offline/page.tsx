@@ -3,8 +3,12 @@ import OfflinePageClient from "@/components/errors/OfflinePageClient";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata({
-  path: "/offline", title: "Offline, First Data", description:
-    "No internet connection detected. Retry when you are back online or contact First Data support.", });
+  path: "/offline",
+  title: "Offline",
+  description:
+    "No internet connection detected. Retry when you are back online or contact First Data support.",
+  noIndex: true,
+});
 
 export const dynamic = "force-static";
 

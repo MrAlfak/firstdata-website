@@ -3,21 +3,15 @@ import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { SLUG_TO_CATEGORY } from "@/config/portfolio";
 import { PORTFOLIO_SLUGS } from "@/config/navigation";
+import { dictionaries } from "@/i18n/dictionaries";
 import { portfolioPageDictionaries } from "@/i18n/portfolio-page";
 import { portfolioSubPageDictionaries } from "@/i18n/portfolio-sub-page";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 import { pageMetadata } from "@/lib/seo/metadata";
 import PortfolioSubClient from "./PortfolioSubClient";
 
 type Props = {
   params: Promise<{ slug: string }>;
-};
-
-const TITLES: Record<string, string> = {
-  websites: "Websites",
-  ecommerce: "Online Stores",
-  "mobile-apps": "Mobile Apps",
-  desktop: "Desktop Software",
-  other: "Other Projects",
 };
 
 export function generateStaticParams() {
@@ -31,13 +25,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Not Found" };
   }
 
-  const title = TITLES[slug] ?? "Portfolio";
-  const description = portfolioSubPageDictionaries.fa[category].hero.body;
+  const lang = await getRequestLang();
+  const ui = portfolioSubPageDictionaries[lang][category];
 
   return pageMetadata({
     path: `/portfolio/${slug}`,
-    title,
-    description,
+    title: ui.hero.title,
+    description: ui.hero.body,
+    lang,
   });
 }
 
@@ -47,12 +42,13 @@ export default async function PortfolioSubPage({ params }: Props) {
     notFound();
   }
 
+  const lang = await getRequestLang();
   const category = SLUG_TO_CATEGORY[slug];
-  const title = category ? portfolioPageDictionaries.en.categoryLabels[category] : slug;
+  const ui = category ? portfolioSubPageDictionaries[lang][category] : null;
   const breadcrumbs = [
-    { name: "Home", href: "/" },
-    { name: portfolioPageDictionaries.en.hero.title, href: "/portfolio" },
-    { name: TITLES[slug] ?? title },
+    { name: dictionaries[lang].nav.home, href: "/" },
+    { name: portfolioPageDictionaries[lang].hero.title, href: "/portfolio" },
+    { name: ui?.hero.title ?? slug },
   ];
 
   return (

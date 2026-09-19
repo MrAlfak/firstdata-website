@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AuthShell from "@/components/auth/AuthShell";
 import { useAuthClasses } from "@/components/auth/useAuthClasses";
@@ -10,16 +10,20 @@ import { useT } from "@/i18n/LangProvider";
 import { fetchJson } from "@/lib/errors/fetch-json";
 import { resolveAuthError } from "@/lib/errors/resolve-auth-error";
 
-export default function ResetPasswordClient() {
+export default function ResetPasswordClient({
+  initialChannel,
+  initialEmail,
+  initialPhone,
+}: {
+  initialChannel: "email" | "sms";
+  initialEmail: string;
+  initialPhone: string;
+}) {
   const { fa, dir, d } = useT();
   const ac = useAuthClasses();
   const copy = d.auth.resetPassword;
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const channel = (searchParams.get("channel") === "sms" ? "sms" : "email") as "email" | "sms";
-  const initialEmail = searchParams.get("email") ?? "";
-  const initialPhone = searchParams.get("phone") ?? "";
+  const channel = initialChannel;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

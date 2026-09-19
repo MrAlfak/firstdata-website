@@ -70,6 +70,7 @@ export function CrossingPortal({
       className={[
         "fd-crossing-overlay fixed inset-0 z-[10000] isolate overflow-hidden",
         "bg-ink text-paper",
+        exiting ? "pointer-events-none" : "",
         className ?? "",
       ].join(" ")}
       initial={{ opacity: 0 }}

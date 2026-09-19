@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/product/${slug}`,
     title: meta.title,
     description: meta.description,
+    lang,
   });
 }
 

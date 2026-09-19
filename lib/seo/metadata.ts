@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { absoluteUrl, langAlternates, SITE_URL } from "@/lib/seo/site";
+import type { Lang } from "@/i18n/dictionaries";
 
 type PageMetaInput = {
   path: string;
@@ -9,6 +10,9 @@ type PageMetaInput = {
   /** Absolute or site-relative image path */
   image?: string;
   noIndex?: boolean;
+  lang?: Lang;
+  /** Skip the root title template (home / branded slogans). */
+  absoluteTitle?: boolean;
 };
 
 export function pageMetadata({
@@ -18,6 +22,8 @@ export function pageMetadata({
   openGraphType = "website",
   image,
   noIndex = false,
+  lang = "fa",
+  absoluteTitle = false,
 }: PageMetaInput): Metadata {
   const alternates = langAlternates(path);
   const ogImage = image
@@ -27,7 +33,7 @@ export function pageMetadata({
     : absoluteUrl("/opengraph-image");
 
   return {
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates,
     robots: noIndex
@@ -39,8 +45,8 @@ export function pageMetadata({
       type: openGraphType,
       url: alternates.canonical,
       siteName: "First Data",
-      locale: "fa_IR",
-      alternateLocale: ["en_US"],
+      locale: lang === "en" ? "en_US" : "fa_IR",
+      alternateLocale: lang === "en" ? ["fa_IR"] : ["en_US"],
       images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {

@@ -59,7 +59,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
     hero: {
       eyebrow: "> بارگذاری /portfolio...",
       title: "نمونه‌کارها",
-      lead: "پروژه‌هایی که با تیم‌های مختلف ساخته‌ایم — بدون نام مشتری، با تمرکز بر مسئله و نتیجه.",
+      lead: "نمونه‌های ناشناس‌سازی‌شده از نوع پروژه‌هایی که می‌سازیم — نه اثبات مشتری با نام واقعی.",
       body: "از وب‌سایت و فروشگاه آنلاین تا اپ موبایل، نرم‌افزار دسکتاپ و یکپارچه‌سازی؛ هر مورد نمایانگر نوع چالشی است که معمولاً حل می‌کنیم. جزئیات کامل و مراجع در جلسه معرفی در دسترس است.",
       cta: "ثبت درخواست پروژه",
     },
@@ -161,7 +161,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
     },
     privacy: {
       title: "یادداشت حریم خصوصی",
-      body: "مطالب این بخش ناشناس‌سازی شده‌اند. برای مشاهده جزئیات فنی، دمو زنده یا تماس با مرجع پروژه، از فرم درخواست استفاده کنید.",
+      body: "این صفحات نمونه‌های ناشناس هستند، نه کیس‌استادی عمومی از مشتریان مشخص. برای جزئیات فنی، دمو زنده یا مرجع پروژه از فرم درخواست استفاده کنید.",
     },
     outcomeLabel: "نتیجه",
     tagsAria: "برچسب‌ها",
@@ -188,7 +188,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
     hero: {
       eyebrow: "> loading /portfolio...",
       title: "Portfolio",
-      lead: "Work we have shipped with different teams — no client names, focus on problems and outcomes.",
+      lead: "Anonymized sample case files of the work we ship — not named-client proofs.",
       body: "From websites and online stores to mobile apps, desktop software, and integrations; each entry represents a type of challenge we typically solve. Full details and references are available on request.",
       cta: "Submit a project request",
     },
@@ -290,7 +290,7 @@ export const portfolioPageDictionaries: Record<Lang, PortfolioPageUi> = {
     },
     privacy: {
       title: "Privacy note",
-      body: "Content in this section is anonymized. For technical details, live demos, or project references, use the request form.",
+      body: "These pages are anonymized samples, not public case studies of named clients. For technical details, live demos, or references, use the request form.",
     },
     outcomeLabel: "Outcome",
     tagsAria: "Tags",

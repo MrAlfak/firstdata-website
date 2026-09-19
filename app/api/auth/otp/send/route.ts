@@ -1,6 +1,5 @@
 import { jsonError, jsonOk } from "@/lib/auth/api";
-
-import { deliverOtp } from "@/lib/auth/deliver-otp";
+import { deliverOtp, jsonOtpDeliveryFailure } from "@/lib/auth/deliver-otp";
 
 import { canSendOtp, createOtp } from "@/lib/auth/otp";
 
@@ -161,11 +160,8 @@ export async function POST(req: Request) {
 
 
     return jsonOk(payload);
-
-  } catch {
-
-    return jsonError("Failed to send verification code", 500, AUTH_ERROR_CODES.OTP_SEND_FAILED);
-
+  } catch (err) {
+    return jsonOtpDeliveryFailure(err);
   }
 
 }

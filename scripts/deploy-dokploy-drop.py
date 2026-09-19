@@ -14,12 +14,20 @@ import zipfile
 from pathlib import Path
 
 API_BASE = "https://blob.firstdata.ir/api"
-API_KEY = os.environ.get(
-    "DOKPLOY_API_KEY",
-    "TGhDmuUDkJacphxVZjXubVhNvnvvbVqcEGTonfzqWYYdcSQcalfvOBkFRmxLqIHR",
-)
 APPLICATION_ID = "OdaijD3VSsluMRvU4NQQ_"
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def require_env(name: str, *, min_len: int = 1) -> str:
+    value = os.environ.get(name, "").strip()
+    if len(value) < min_len:
+        suffix = f" (at least {min_len} characters)" if min_len > 1 else ""
+        print(f"{name} is required{suffix}", file=sys.stderr)
+        sys.exit(1)
+    return value
+
+
+API_KEY = require_env("DOKPLOY_API_KEY")
 
 EXCLUDE_DIRS = {
     "node_modules",

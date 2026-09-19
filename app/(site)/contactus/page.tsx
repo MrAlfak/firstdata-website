@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     path: "/contactus",
     title: c.title,
     description: c.subtitle,
+    lang,
   });
 }
 

@@ -20,7 +20,8 @@ import { ThemeProvider } from "@/i18n/ThemeProvider";
 import { getRequestLang } from "@/lib/i18n/request-lang";
 import { getRequestPanelSkin } from "@/lib/i18n/request-panel-skin";
 import { PanelSkinProvider } from "@/components/panel/PanelSkinToggle";
-import { ORG_GEO, ORG_OPENING_HOURS_JSON_LD, SITE_URL } from "@/lib/seo/site";
+import { SITE_URL } from "@/lib/seo/site";
+import { buildOrganizationJsonLd } from "@/lib/seo/organization-jsonld";
 import { buildWebsiteJsonLd } from "@/lib/seo/website-jsonld";
 import "./globals.css";
 // Self-hosted (no Google fetch), same faces, served from /public/fonts.
@@ -33,31 +34,87 @@ const pixel = localFont({
 
 export const viewport: Viewport = { themeColor: "#080c08" };
 
-export const metadata: Metadata = {  metadataBase: new URL(SITE_URL), title: {
-    default: "First Data, We Build. You Grow.", template: "%s, First Data", }, description:
-    "First Data builds custom websites, Android apps, iOS apps, Windows software, and SEO optimization for businesses. طراحی سایت، اپلیکیشن موبایل، نرم‌افزار ویندوز و سئو حرفه‌ای.", keywords: [
-    // English keywords
-    "web design", "web development", "Android app development", "iOS app development", "Windows software", "desktop application", "SEO optimization", "UI/UX design", "e-commerce development", "Next.js developer", "React developer", "mobile app", "enterprise software", "first data", "firstdata.ir", // Persian keywords
-    "طراحی سایت", "توسعه وب", "اپلیکیشن اندروید", "اپلیکیشن iOS", "نرم‌افزار ویندوز", "سئو", "بهینه‌سازی سایت", "فروشگاه اینترنتی", "طراحی UI UX", "برنامه‌نویسی موبایل", "اولین دیتا", ], authors: [{ name: "First Data", url: SITE_URL }], creator: "First Data", publisher: "First Data", robots: {
-    index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" }, }, alternates: {
-    canonical: SITE_URL, languages: {
-      fa: `${SITE_URL}?lang=fa`, en: `${SITE_URL}?lang=en`, "x-default": SITE_URL, }, }, openGraph: {
-    title: "First Data, We Build. You Grow.", description:
-      "Custom websites, Android & iOS apps, Windows software, and SEO, engineered to drive real business results.", url: SITE_URL, siteName: "First Data", type: "website", locale: "fa_IR", alternateLocale: ["en_US"], // OG image is generated dynamically by app/opengraph-image.tsx
-  }, twitter: {
-    card: "summary_large_image", title: "First Data, We Build. You Grow.", description:
-      "Custom websites, Android & iOS apps, Windows software, and SEO.", // Twitter image inherits from app/opengraph-image.tsx
-  }, // Favicon (app/icon.svg) and apple-touch icon (app/apple-icon.tsx) are
-  // auto-detected by Next.js file conventions, no explicit paths needed.
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getRequestLang();
+  const fa = lang === "fa";
+  const defaultTitle = fa
+    ? "اولین دیتا | ما می‌سازیم. شما رشد می‌کنید."
+    : "First Data | We Build. You Grow.";
+  const description = fa
+    ? "اولین دیتا وب‌سایت سفارشی، اپلیکیشن اندروید و iOS، نرم‌افزار ویندوز و سئو حرفه‌ای می‌سازد."
+    : "First Data builds custom websites, Android apps, iOS apps, Windows software, and SEO optimization for businesses. طراحی سایت، اپلیکیشن موبایل، نرم‌افزار ویندوز و سئو حرفه‌ای.";
 
-const organizationJsonLd = {
-  "@context": "https://schema.org", "@type": ["ProfessionalService", "LocalBusiness"], "@id": `${SITE_URL}/#organization`, name: "First Data", alternateName: ["اولین دیتا", "FirstData"], url: SITE_URL, logo: `${SITE_URL}/icon.svg`, image: `${SITE_URL}/opengraph-image`, description:
-    "First Data engineers custom websites, Android apps, iOS apps, Windows software, and SEO optimization for businesses of all sizes.", email: "info@firstdata.ir", telephone: "+989331274039", priceRange: "$$", areaServed: { "@type": "Country", name: "Iran" }, address: {
-    "@type": "PostalAddress", addressLocality: "Tehran", addressCountry: "IR", }, geo: {
-    "@type": "GeoCoordinates", latitude: ORG_GEO.latitude, longitude: ORG_GEO.longitude, }, openingHoursSpecification: ORG_OPENING_HOURS_JSON_LD, sameAs: [], hasOfferCatalog: {
-    "@type": "OfferCatalog", name: "Digital Development Services", itemListElement: [
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Web Design & Development", description: "Custom websites built with Next.js, React, and Laravel." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Android App Development", description: "Native Android apps built with Kotlin and Jetpack Compose." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "iOS App Development", description: "Premium iOS apps built with Swift and SwiftUI." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Windows & Desktop Software", description: "Professional desktop applications with C#, WPF, and WinUI 3." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "SEO & Performance Optimization", description: "Technical SEO, Core Web Vitals, and keyword strategy." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "UI/UX Design", description: "User research, Figma prototypes, and design systems." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "E-Commerce & Online Stores", description: "Custom storefronts with Zarinpal and Stripe payment gateways." } }, { "@type": "Offer", itemOffered: { "@type": "Service", name: "Support & Ongoing Development", description: "SLA-backed maintenance and continuous feature development." } }, ], }, };
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: defaultTitle,
+      template: fa ? "%s | اولین دیتا" : "%s | First Data",
+    },
+    description,
+    keywords: [
+      "web design",
+      "web development",
+      "Android app development",
+      "iOS app development",
+      "Windows software",
+      "desktop application",
+      "SEO optimization",
+      "UI/UX design",
+      "e-commerce development",
+      "Next.js developer",
+      "React developer",
+      "mobile app",
+      "enterprise software",
+      "first data",
+      "firstdata.ir",
+      "طراحی سایت",
+      "توسعه وب",
+      "اپلیکیشن اندروید",
+      "اپلیکیشن iOS",
+      "نرم‌افزار ویندوز",
+      "سئو",
+      "بهینه‌سازی سایت",
+      "فروشگاه اینترنتی",
+      "طراحی UI UX",
+      "برنامه‌نویسی موبایل",
+      "اولین دیتا",
+    ],
+    authors: [{ name: "First Data", url: SITE_URL }],
+    creator: "First Data",
+    publisher: "First Data",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    },
+    alternates: {
+      canonical: SITE_URL,
+      languages: {
+        fa: `${SITE_URL}?lang=fa`,
+        en: `${SITE_URL}?lang=en`,
+        "x-default": SITE_URL,
+      },
+    },
+    openGraph: {
+      title: defaultTitle,
+      description: fa
+        ? "وب‌سایت، اپ اندروید و iOS، نرم‌افزار ویندوز و سئو — مهندسی‌شده برای نتیجه واقعی کسب‌وکار."
+        : "Custom websites, Android & iOS apps, Windows software, and SEO, engineered to drive real business results.",
+      url: SITE_URL,
+      siteName: "First Data",
+      type: "website",
+      locale: fa ? "fa_IR" : "en_US",
+      alternateLocale: fa ? ["en_US"] : ["fa_IR"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description: fa
+        ? "وب‌سایت، اپ موبایل، نرم‌افزار ویندوز و سئو."
+        : "Custom websites, Android & iOS apps, Windows software, and SEO.",
+    },
+  };
+}
 
 /* Query → SSR html[lang] → cookie → localStorage → fa. Never let stale storage override SSR.
    Skin: ?skin=terminal|modern (or ?view=builder|business) wins, else localStorage, else modern. */
@@ -86,7 +143,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationJsonLd()) }}
         />
         <script
           type="application/ld+json"

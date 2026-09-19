@@ -1,8 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { scheduleUpdate } from "@/lib/react/schedule-update";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import InnerPage from "@/components/layout/InnerPage";
 import BlogCategoryFilter, { type BlogFilter } from "@/components/blog/BlogCategoryFilter";
 import BlogFeaturedPost from "@/components/blog/BlogFeaturedPost";
@@ -15,7 +13,6 @@ import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 import {
   BLOG_POSTS,
   getFeaturedPosts,
-  isBlogCategory,
   type BlogCategorySlug,
 } from "@/config/blog";
 import { useT } from "@/i18n/LangProvider";
@@ -28,8 +25,7 @@ function sortPosts(posts: typeof BLOG_POSTS) {
   );
 }
 
-function BlogClientInner() {
-  const searchParams = useSearchParams();
+export default function BlogClient({ initialFilter }: { initialFilter: BlogFilter }) {
   const { fa, dir, d, t, fd } = useT();
   const [skin] = usePanelSkin();
   const modern = skin === "modern";
@@ -41,17 +37,11 @@ function BlogClientInner() {
     [t, page.title],
   );
 
-  const initialFilter = useMemo((): BlogFilter => {
-    const cat = searchParams.get("category");
-    if (cat && isBlogCategory(cat)) return cat;
-    return "all";
-  }, [searchParams]);
-
   const [filter, setFilter] = useState<BlogFilter>(initialFilter);
   const [pageIndex, setPageIndex] = useState(1);
 
   useEffect(() => {
-    scheduleUpdate(() => setFilter(initialFilter));
+    setFilter(initialFilter);
   }, [initialFilter]);
 
   useEffect(() => {
@@ -175,13 +165,5 @@ function BlogClientInner() {
 
       <FinalCta plain />
     </>
-  );
-}
-
-export default function BlogClient() {
-  return (
-    <Suspense fallback={null}>
-      <BlogClientInner />
-    </Suspense>
   );
 }

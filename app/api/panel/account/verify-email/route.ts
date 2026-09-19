@@ -1,5 +1,5 @@
 import { jsonError, jsonOk } from "@/lib/auth/api";
-import { deliverOtp } from "@/lib/auth/deliver-otp";
+import { deliverOtp, jsonOtpDeliveryFailure } from "@/lib/auth/deliver-otp";
 import { canSendOtp, createOtp, verifyStoredOtp } from "@/lib/auth/otp";
 import { getPanelUserOrError } from "@/lib/panel/api";
 import { findUserById, markEmailVerified } from "@/lib/auth/users";
@@ -32,7 +32,11 @@ export async function POST() {
   }
 
   const code = await createOtp(full.email, "email", "verify_email");
-  await deliverOtp({ channel: "email", destination: full.email, code, purpose: "verify_email" });
+  try {
+    await deliverOtp({ channel: "email", destination: full.email, code, purpose: "verify_email" });
+  } catch (err) {
+    return jsonOtpDeliveryFailure(err);
+  }
 
   const payload: Record<string, unknown> = { message: "Verification code sent" };
   if (process.env.NODE_ENV !== "production") payload.devCode = code;

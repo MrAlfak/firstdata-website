@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { Application } from "@splinetool/runtime";
 import { SplineScene } from "@/components/ui/splite";
-import { HERO_SPLINE_SCENE } from "@/config/hero-media";
+import {
+  HERO_SPLINE_SCENE,
+  isHeroSplinePointerMessage,
+} from "@/config/hero-media";
 
 type Props = {
   /** Physical half of the hero for the robot. */
@@ -85,33 +88,105 @@ function normalizeWheelDelta(event: WheelEvent): { deltaX: number; deltaY: numbe
 }
 
 /**
+ * Replay parent-hero pointer position onto Spline Look At / Follow.
+ * Runtime maps `pageX`/`pageY` against the canvas rect — not `clientX`.
+ */
+function createLookAtPointerEvent(x: number, y: number): PointerEvent {
+  const pageX = x + window.scrollX;
+  const pageY = y + window.scrollY;
+  const event = new PointerEvent("pointermove", {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    clientX: x,
+    clientY: y,
+    view: window,
+    pointerId: 1,
+    pointerType: "mouse",
+    isPrimary: true,
+    buttons: 0,
+  });
+  try {
+    Object.defineProperties(event, {
+      pageX: { configurable: true, get: () => pageX },
+      pageY: { configurable: true, get: () => pageY },
+    });
+  } catch {
+    /* UA may already expose pageX from clientX */
+  }
+  return event;
+}
+
+function dispatchSplineLookAt(x: number, y: number, spline: Application | null) {
+  const event = createLookAtPointerEvent(x, y);
+  const manager = spline?.eventManager as
+    | {
+        handlers?: {
+          LookAt?: {
+            events?: Array<{ isReset?: boolean; target?: unknown }>;
+            onMouseMove?: (event: PointerEvent) => void;
+            onMouseEnter?: (event: PointerEvent) => void;
+          };
+          Follow?: {
+            events?: Array<{ isReset?: boolean; target?: unknown }>;
+            onMouseMove?: (event: PointerEvent) => void;
+            onMouseEnter?: (event: PointerEvent) => void;
+          };
+        };
+        eventContext?: {
+          eventElement?: EventTarget;
+          updateRaycaster?: (event: PointerEvent) => void;
+        };
+      }
+    | undefined;
+
+  const ctx = manager?.eventContext;
+  ctx?.updateRaycaster?.(event);
+
+  for (const handler of [manager?.handlers?.LookAt, manager?.handlers?.Follow]) {
+    if (!handler) continue;
+    handler.onMouseEnter?.(event);
+    if (Array.isArray(handler.events)) {
+      for (const item of handler.events) {
+        if (item && item.target === undefined) item.isReset = false;
+      }
+    }
+    handler.onMouseMove?.(event);
+  }
+
+  const target: EventTarget = ctx?.eventElement ?? spline?.canvas ?? window;
+  try {
+    target.dispatchEvent(event);
+  } catch {
+    /* event may already have been dispatched by a handler */
+  }
+  spline?.requestRender?.();
+}
+
+/**
  * Spline runtime for the homepage hero iframe.
  * Forwards wheel/touch to the parent so page scroll stays free while
  * pointer events remain enabled for mouse-follow / Look At on the robot.
  *
- * Framing uses `?robot=left|right` (not `?lang=` — proxy strips lang into a cookie).
+ * Framing: robot sits on the physical left (FA) or right (EN).
  *
  * Look At / Follow / States / smile morphs are authored in the Spline editor.
  * Code only: (1) keeps pointers on the iframe, (2) sets Variables if the
  * export already defines smile/mood keys.
  */
-export default function HeroSplineEmbedClient({ robot = "right" }: Props) {
-  const [towardRight, setTowardRight] = useState(robot !== "left");
+export default function HeroSplineEmbedClient({ robot = "left" }: Props) {
+  const splineRef = useRef<Application | null>(null);
+  const towardLeft = robot !== "right";
+  const shiftClass = towardLeft
+    ? "-translate-x-[20%] md:-translate-x-[26%]"
+    : "translate-x-[20%] md:translate-x-[26%]";
 
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const fromUrl = q.get("robot");
-    if (fromUrl === "left" || fromUrl === "right") {
-      setTowardRight(fromUrl === "right");
-      return;
-    }
-    setTowardRight(robot !== "left");
-  }, [robot]);
-
-  // FA → deep into the empty left half (red zone); EN → right of copy.
-  const shiftClass = towardRight
-    ? "translate-x-[14%] md:translate-x-[16%]"
-    : "-translate-x-[26%] md:-translate-x-[32%]";
+  const onSplineLoad = (spline: Application) => {
+    splineRef.current = spline;
+    applyFacialVariablesIfPresent(spline);
+    // Look At / Follow listen on window so parent-forwarded events are seen.
+    spline.setGlobalEvents(true);
+  };
 
   useEffect(() => {
     /**
@@ -174,25 +249,33 @@ export default function HeroSplineEmbedClient({ robot = "right" }: Props) {
     window.addEventListener("touchend", onTouchEnd, { passive: true, capture: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true, capture: true });
 
+    const onParentPointer = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (!isHeroSplinePointerMessage(event.data)) return;
+      dispatchSplineLookAt(event.data.x, event.data.y, splineRef.current);
+    };
+    window.addEventListener("message", onParentPointer);
+
     return () => {
       window.removeEventListener("wheel", onWheel, true);
       window.removeEventListener("touchstart", onTouchStart, true);
       window.removeEventListener("touchmove", onTouchMove, true);
       window.removeEventListener("touchend", onTouchEnd, true);
       window.removeEventListener("touchcancel", onTouchEnd, true);
+      window.removeEventListener("message", onParentPointer);
     };
   }, []);
 
   return (
     <div className="hero-spline-embed relative h-full w-full overflow-hidden overscroll-none bg-black [touch-action:pan-y]">
       <div
-        className={`absolute inset-0 origin-center scale-[1.22] will-change-transform ${shiftClass}`}
-        data-hero-spline-side={towardRight ? "right" : "left"}
+        className={`absolute inset-0 origin-center scale-[1.08] will-change-transform ${shiftClass}`}
+        data-hero-spline-side={towardLeft ? "left" : "right"}
       >
         <SplineScene
           scene={HERO_SPLINE_SCENE}
           className="h-full w-full"
-          onLoad={applyFacialVariablesIfPresent}
+          onLoad={onSplineLoad}
         />
       </div>
     </div>

@@ -22,7 +22,7 @@ function tokenize(line: string): ReactNode[] {
       <Link
         key={`md-${key++}`}
         href={href}
-        className="underline decoration-term/50 underline-offset-2 text-term hover:decoration-term"
+        className="text-[#1EAEDB] underline decoration-[#1EAEDB]/45 underline-offset-2 hover:decoration-[#1EAEDB]"
       >
         {label}
       </Link>,
@@ -51,7 +51,7 @@ function linkifyPlain(text: string, keyBase: number): ReactNode[] {
         {prefix}
         <Link
           href={href}
-          className="underline decoration-term/50 underline-offset-2 text-term hover:decoration-term"
+          className="text-[#1EAEDB] underline decoration-[#1EAEDB]/45 underline-offset-2 hover:decoration-[#1EAEDB]"
         >
           {href}
         </Link>

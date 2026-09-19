@@ -1,5 +1,5 @@
 import { jsonError, jsonOk } from "@/lib/auth/api";
-import { deliverOtp } from "@/lib/auth/deliver-otp";
+import { deliverOtp, jsonOtpDeliveryFailure } from "@/lib/auth/deliver-otp";
 import { canSendOtp, createOtp } from "@/lib/auth/otp";
 import { emailExists, phoneExists } from "@/lib/auth/users";
 import {
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const payload: Record<string, unknown> = { message: "Reset code sent", channel, expiresIn: 600 };
     if (process.env.NODE_ENV !== "production") payload.devCode = code;
     return jsonOk(payload);
-  } catch {
-    return jsonError("Failed to send reset code", 500, AUTH_ERROR_CODES.OTP_SEND_FAILED);
+  } catch (err) {
+    return jsonOtpDeliveryFailure(err);
   }
 }

@@ -11,7 +11,7 @@ export default function AmbientLayer() {
       <>
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
+          className="pointer-events-none fixed inset-0 z-0 opacity-[0.35] [[data-theme=dark]_&]:hidden"
           style={{
             background:
               "radial-gradient(ellipse 80% 50% at 15% -10%, rgb(var(--c-accent) / 0.07), transparent 55%), radial-gradient(ellipse 60% 40% at 90% 10%, rgb(var(--c-accent) / 0.04), transparent 50%)",

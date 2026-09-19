@@ -1,5 +1,5 @@
 import { jsonError, jsonOk } from "@/lib/auth/api";
-import { deliverOtp } from "@/lib/auth/deliver-otp";
+import { deliverOtp, jsonOtpDeliveryFailure } from "@/lib/auth/deliver-otp";
 import { canSendOtp, createOtp } from "@/lib/auth/otp";
 import { getPanelUserOrError } from "@/lib/panel/api";
 import { findUserById } from "@/lib/auth/users";
@@ -22,7 +22,11 @@ export async function POST() {
   }
 
   const code = await createOtp(full.email, "email", "delete_account");
-  await deliverOtp({ channel: "email", destination: full.email, code, purpose: "delete_account" });
+  try {
+    await deliverOtp({ channel: "email", destination: full.email, code, purpose: "delete_account" });
+  } catch (err) {
+    return jsonOtpDeliveryFailure(err);
+  }
 
   const payload: Record<string, unknown> = { message: "Deletion confirmation code sent" };
   if (process.env.NODE_ENV !== "production") payload.devCode = code;

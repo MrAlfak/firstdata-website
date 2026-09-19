@@ -6,33 +6,18 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { Sparkles, X } from "lucide-react";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
-import AssistantMessageLines from "@/components/interactive/AssistantMessageLines";
+import AssistantReplyModal, {
+  type AssistantTurn,
+} from "@/components/interactive/AssistantReplyModal";
 import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useT } from "@/i18n/LangProvider";
 import { cn } from "@/lib/utils";
 
-type ModalState = {
-  question: string;
-  lines: string[];
-  loading: boolean;
-  error: string | null;
-};
-
 /** GPU-friendly ease-out — transform + opacity only (no blur / layoutId). */
 const softEase = [0.22, 1, 0.36, 1] as const;
 const shellEnter = { duration: 0.3, ease: softEase } as const;
 const shellExit = { duration: 0.24, ease: softEase } as const;
-
-function ThinkingDots() {
-  return (
-    <span className="inline-flex items-center gap-1.5" aria-hidden>
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-paper/50 [animation-delay:-0.3s]" />
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-paper/50 [animation-delay:-0.15s]" />
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-paper/50" />
-    </span>
-  );
-}
 
 function shouldHideSticky(pathname: string): boolean {
   if (pathname.startsWith("/panel")) return true;
@@ -42,6 +27,18 @@ function shouldHideSticky(pathname: string): boolean {
   if (pathname.startsWith("/offline")) return true;
   if (pathname.startsWith("/cta-01")) return true;
   return false;
+}
+
+function cleanPrompt(message: string): string {
+  return message
+    .replace(/^\[(Search|Think|Canvas):\s*/i, "")
+    .replace(/\]$/, "")
+    .replace(/^\[Voice message.*\]$/i, "")
+    .trim();
+}
+
+function nextTurnId() {
+  return `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 /**
@@ -57,19 +54,26 @@ export default function StickyAiPrompt() {
   const panelRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const busyRef = useRef(false);
+  const turnsRef = useRef<AssistantTurn[]>([]);
 
   const [mounted, setMounted] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [modal, setModal] = useState<ModalState | null>(null);
+  const [open, setOpen] = useState(false);
+  const [turns, setTurns] = useState<AssistantTurn[]>([]);
+  const [composerEpoch, setComposerEpoch] = useState(0);
 
   useEffect(() => setMounted(true), []);
-  useFocusTrap(Boolean(modal), panelRef);
+  useEffect(() => {
+    turnsRef.current = turns;
+  }, [turns]);
+  useFocusTrap(open, panelRef);
 
   useEffect(() => {
-    if (!modal) return;
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !busy) setModal(null);
+      if (e.key === "Escape" && !busy) setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
@@ -78,53 +82,98 @@ export default function StickyAiPrompt() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [modal, busy]);
+  }, [open, busy]);
 
-  // Collapse on Escape / click-outside when composer is open (and answer modal is not).
+  // Collapse on Escape / click-outside. Attach after this open-click so the
+  // same pointer-up cannot immediately close the composer.
   useEffect(() => {
-    if (!expanded || modal) return;
+    if (!expanded || open) return;
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setExpanded(false);
     };
-    const onPointer = (e: MouseEvent | TouchEvent) => {
+    const onPointer = (e: PointerEvent) => {
+      if (e.pointerType === "touch" && e.type !== "pointerdown") return;
       const target = e.target as Node | null;
       if (shellRef.current && target && !shellRef.current.contains(target)) {
         setExpanded(false);
       }
     };
 
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onPointer);
-    document.addEventListener("touchstart", onPointer, { passive: true });
+    document.addEventListener("keydown", onKey, true);
+    const listenId = window.setTimeout(() => {
+      document.addEventListener("pointerdown", onPointer, true);
+    }, 0);
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onPointer);
-      document.removeEventListener("touchstart", onPointer);
+      window.clearTimeout(listenId);
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("pointerdown", onPointer, true);
     };
-  }, [expanded, modal]);
+  }, [expanded, open]);
 
   // Route change → collapse
   useEffect(() => {
     setExpanded(false);
   }, [pathname]);
 
+  const abortInFlight = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    busyRef.current = false;
+    setBusy(false);
+    setTurns((prev) => prev.filter((t) => !t.loading));
+  }, []);
+
   const closeModal = useCallback(() => {
-    if (busy) {
-      abortRef.current?.abort();
-      abortRef.current = null;
-      setBusy(false);
-    }
-    setModal(null);
-  }, [busy]);
+    abortInFlight();
+    setOpen(false);
+  }, [abortInFlight]);
+
+  const newChat = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    busyRef.current = false;
+    setBusy(false);
+    setTurns([]);
+    turnsRef.current = [];
+    setComposerEpoch((n) => n + 1);
+    setOpen(true);
+  }, []);
 
   const ask = useCallback(
     async (raw: string) => {
       const query = raw.trim().slice(0, 500);
-      if (!query || busy) return;
+      if (!query || busyRef.current) return;
 
+      busyRef.current = true;
       setBusy(true);
-      setModal({ question: query, lines: [], loading: true, error: null });
+      setExpanded(false);
+      setOpen(true);
+
+      const id = nextTurnId();
+      const history = turnsRef.current
+        .filter((t) => !t.loading && (t.lines.length > 0 || t.error))
+        .flatMap((t) => [
+          { role: "user" as const, content: t.question },
+          {
+            role: "assistant" as const,
+            content: t.error || t.lines.join("\n"),
+          },
+        ])
+        .slice(-8);
+
+      const nextTurn: AssistantTurn = {
+        id,
+        question: query,
+        lines: [],
+        loading: true,
+        error: null,
+      };
+      setTurns((prev) => {
+        const next = [...prev, nextTurn];
+        turnsRef.current = next;
+        return next;
+      });
 
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -133,7 +182,7 @@ export default function StickyAiPrompt() {
         const res = await fetch("/api/assistant/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, lang }),
+          body: JSON.stringify({ query, lang, history }),
           signal: ctrl.signal,
         });
         const data = (await res.json()) as {
@@ -143,9 +192,16 @@ export default function StickyAiPrompt() {
         };
         const lines = Array.isArray(data.lines) ? data.lines.filter(Boolean) : [];
 
+        const patch = (partial: Partial<AssistantTurn>) => {
+          setTurns((prev) => {
+            const next = prev.map((t) => (t.id === id ? { ...t, ...partial } : t));
+            turnsRef.current = next;
+            return next;
+          });
+        };
+
         if (!res.ok || !data.success || lines.length === 0) {
-          setModal({
-            question: query,
+          patch({
             lines: [],
             loading: false,
             error: data.message || chat.errorGeneric,
@@ -153,24 +209,32 @@ export default function StickyAiPrompt() {
           return;
         }
 
-        setModal({ question: query, lines, loading: false, error: null });
+        patch({ lines, loading: false, error: null });
       } catch (e) {
         if ((e as Error)?.name === "AbortError") {
-          setModal(null);
+          setTurns((prev) => {
+            const next = prev.filter((t) => t.id !== id);
+            turnsRef.current = next;
+            return next;
+          });
           return;
         }
-        setModal({
-          question: query,
-          lines: [],
-          loading: false,
-          error: chat.errorGeneric,
+        setTurns((prev) => {
+          const next = prev.map((t) =>
+            t.id === id
+              ? { ...t, lines: [], loading: false, error: chat.errorGeneric }
+              : t,
+          );
+          turnsRef.current = next;
+          return next;
         });
       } finally {
         abortRef.current = null;
+        busyRef.current = false;
         setBusy(false);
       }
     },
-    [busy, lang, chat.errorGeneric],
+    [lang, chat.errorGeneric],
   );
 
   useEffect(() => {
@@ -189,98 +253,58 @@ export default function StickyAiPrompt() {
   if (skin !== "modern") return null;
   if (shouldHideSticky(pathname)) return null;
 
-  const modalUi = modal
-    ? createPortal(
-        <div
-          className="fixed inset-0 z-[130] flex items-end justify-center p-3 sm:items-center sm:p-6"
-          role="presentation"
-          onClick={() => {
-            if (!busy) closeModal();
+  const modalUi = createPortal(
+    <AnimatePresence>
+      {open ? (
+        <AssistantReplyModal
+          key="assistant-reply"
+          turns={turns}
+          busy={busy}
+          dir={dir}
+          fa={fa}
+          titleId={titleId}
+          panelRef={panelRef}
+          composerKey={`modal-${composerEpoch}`}
+          suggestions={chat.suggestions ?? []}
+          copy={{
+            eyebrow: chat.eyebrow,
+            assistantName: chat.assistantName,
+            online: chat.online,
+            thinking: chat.thinking,
+            placeholder: chat.placeholder,
+            close: chat.close,
+            newChat: chat.newChat,
+            disclaimer: chat.disclaimer,
+            welcomeLines: chat.welcomeLines ?? [],
           }}
-        >
-          <div className="absolute inset-0 bg-ink/80 backdrop-blur-md" aria-hidden />
-          <div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={titleId}
-            dir={dir}
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-              "relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-border bg-[var(--ai-card,#181c1b)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]",
-              "max-h-[min(88vh,820px)]",
-              fa ? "font-iran" : "font-iran",
-            )}
-          >
-            <div className="flex items-center gap-3 border-b border-border/80 px-4 py-3.5 sm:px-5">
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {chat.eyebrow}
-                </p>
-                <h2 id={titleId} className="truncate text-base font-medium text-foreground">
-                  {chat.modalTitle}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={closeModal}
-                aria-label={chat.close}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-5">
-              <div className="flex justify-end">
-                <div className="max-w-[90%] rounded-2xl rounded-ee-md bg-primary px-4 py-2.5 text-sm leading-relaxed text-primary-foreground">
-                  {modal.question}
-                </div>
-              </div>
-              <div className="flex justify-start gap-3">
-                <div className="mt-1 hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-[10px] font-semibold text-foreground sm:flex">
-                  FD
-                </div>
-                <div className="max-w-[92%] rounded-2xl rounded-es-md border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed text-foreground">
-                  {modal.loading ? (
-                    <div className="flex items-center gap-2.5 text-muted-foreground">
-                      <ThinkingDots />
-                      <span className="text-xs">{chat.thinking}</span>
-                    </div>
-                  ) : modal.error ? (
-                    <p className="text-muted-foreground">{modal.error}</p>
-                  ) : (
-                    <AssistantMessageLines lines={modal.lines} />
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-border/80 px-4 py-3 sm:px-5">
-              <p className="text-[10px] leading-relaxed text-muted-foreground">{chat.disclaimer}</p>
-            </div>
-          </div>
-        </div>,
-        document.body,
-      )
-    : null;
+          onClose={closeModal}
+          onNewChat={newChat}
+          onSend={(message) => {
+            void ask(cleanPrompt(message) || message);
+          }}
+        />
+      ) : null}
+    </AnimatePresence>,
+    document.body,
+  );
 
   return (
     <>
       <div
         id="assistant"
         className={cn(
-          "pointer-events-none fixed inset-x-0 bottom-0 z-[55]",
+          "fixed bottom-0 left-1/2 z-[90] -translate-x-1/2",
           "pb-[max(0.75rem,env(safe-area-inset-bottom))]",
+          expanded
+            ? "w-[min(100%-1.5rem,48rem)] pointer-events-auto"
+            : "w-max max-w-[min(92vw,22rem)] pointer-events-auto",
+          open && "pointer-events-none",
         )}
       >
         <div
           className={cn(
-            "pointer-events-auto mx-auto w-full px-3",
-            // Expanded: clear the left skin FAB; mini chip stays compact & centered.
-            expanded
-              ? "max-w-3xl pl-[max(0.75rem,13.75rem)] sm:max-w-3xl sm:px-5 sm:pl-[max(1.25rem,13.75rem)] lg:max-w-3xl lg:px-6 lg:pl-[max(1.5rem,13.75rem)]"
-              : "flex max-w-3xl justify-center sm:px-5",
+            "mx-auto w-full",
+            expanded && "pl-[max(0.75rem,13.75rem)] pr-3 sm:pr-5 lg:pr-6",
           )}
         >
           <div ref={shellRef} className={cn("relative w-full", !expanded && "w-auto")}>
@@ -334,12 +358,7 @@ export default function StickyAiPrompt() {
                     placeholder={chat.placeholder}
                     className={cn("mb-2", fa ? "font-iran" : "")}
                     onSend={(message) => {
-                      const cleaned = message
-                        .replace(/^\[(Search|Think|Canvas):\s*/i, "")
-                        .replace(/\]$/, "")
-                        .replace(/^\[Voice message.*\]$/i, "")
-                        .trim();
-                      void ask(cleaned || message);
+                      void ask(cleanPrompt(message) || message);
                     }}
                   />
                 </motion.div>
@@ -354,7 +373,16 @@ export default function StickyAiPrompt() {
                 >
                   <motion.button
                     type="button"
-                    onClick={() => setExpanded(true)}
+                    onPointerDown={(event) => {
+                      if (event.button !== 0) return;
+                      event.stopPropagation();
+                      setExpanded(true);
+                    }}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setExpanded(true);
+                    }}
                     aria-label={chat.expandAria}
                     aria-expanded={false}
                     whileHover={{ scale: 1.03, y: -1 }}

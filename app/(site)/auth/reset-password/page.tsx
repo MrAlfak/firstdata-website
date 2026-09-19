@@ -1,18 +1,29 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import ResetPasswordClient from "./ResetPasswordClient";
+import { dictionaries } from "@/i18n/dictionaries";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 
-export const metadata: Metadata = {
-  title: "Reset Password",
-  robots: { index: false, follow: false },
+type Props = {
+  searchParams: Promise<{ channel?: string; email?: string; phone?: string }>;
 };
 
-export default function ResetPasswordPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getRequestLang();
+  return {
+    title: dictionaries[lang].auth.resetPassword.title,
+    robots: { index: false, follow: false },
+  };
+}
+
+export default async function ResetPasswordPage({ searchParams }: Props) {
+  const { channel, email, phone } = await searchParams;
   return (
     <main>
-      <Suspense>
-        <ResetPasswordClient />
-      </Suspense>
+      <ResetPasswordClient
+        initialChannel={channel === "sms" ? "sms" : "email"}
+        initialEmail={email?.trim() ?? ""}
+        initialPhone={phone?.trim() ?? ""}
+      />
     </main>
   );
 }

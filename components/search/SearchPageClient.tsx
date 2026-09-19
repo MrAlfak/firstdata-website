@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   getFeaturedSearchItems,
   POPULAR_SEARCHES,
@@ -13,12 +13,11 @@ import { clearRecentSearches, getRecentSearches, pushRecentSearch } from "@/lib/
 import { useT } from "@/i18n/LangProvider";
 import { searchDictionaries } from "@/i18n/search";
 
-export default function SearchPageClient() {
+export default function SearchPageClient({ initialQuery }: { initialQuery: string }) {
   const { fa, dir, lang } = useT();
   const ui = searchDictionaries[lang];
   const router = useRouter();
-  const params = useSearchParams();
-  const initial = params.get("q") ?? "";
+  const initial = initialQuery;
   const [query, setQuery] = useState(initial);
   const [recent, setRecent] = useState<string[]>([]);
 

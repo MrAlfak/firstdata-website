@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
+import { LogoCloud } from "@/components/ui/logo-cloud";
 import { useT } from "@/i18n/LangProvider";
-import { HERO_SPLINE_EMBED_PATH } from "@/config/hero-media";
+import { HERO_SPLINE_EMBED_PATH, HERO_SPLINE_POINTER_TYPE } from "@/config/hero-media";
 
 type Props = {
   revealed?: boolean;
@@ -23,13 +24,12 @@ function openBuilderView() {
 /**
  * Modern-skin homepage hero — Spline card below the floating glass header.
  *
- * Spline iframe covers the whole card so the robot mouse-follows anywhere
- * over the hero (fine pointer). Copy is pointer-events-none (CTAs re-enable).
- * Coarse/touch: iframe is pointer-events-none so the page scrolls natively;
- * embed still forwards wheel/touch when the iframe does receive events.
+ * Spline iframe covers the whole card so the robot mouse-follows on the open
+ * half (fine pointer). Copy would otherwise steal hits (`pointer-events` is not
+ * inherited); the parent forwards those coords into the embed so Look At continues.
+ * Coarse/touch: iframe is pointer-events-none so the page scrolls natively.
  *
- * Framing: embed `?robot=left|right` (not `?lang=` — site proxy strips lang).
- * FA → left empty half; EN → right. Copy on logical start with a scrim.
+ * Framing: robot on the physical left in FA, right in EN; copy overlays the logical start.
  * Mobile: stacked, center-aligned title / description / CTAs.
  *
  * CTA hierarchy (sales playbook):
@@ -39,6 +39,7 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
   const { d, dir, fa, t } = useT();
   // Coarse pointers: let touch hit the page (iframe is overflow-locked).
   const [passThroughPointers, setPassThroughPointers] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");
@@ -47,6 +48,37 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
+
+  useEffect(() => {
+    if (passThroughPointers) return;
+
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      const iframe = iframeRef.current;
+      if (!iframe?.contentWindow) return;
+      if (event.target === iframe) return;
+      const rect = iframe.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      ) {
+        return;
+      }
+      iframe.contentWindow.postMessage(
+        {
+          type: HERO_SPLINE_POINTER_TYPE,
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        },
+        window.location.origin,
+      );
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [passThroughPointers]);
 
   // Fallbacks keep the modern hero alive if i18n HMR drops `hero.spline` mid-edit.
   const spline = d.hero?.spline;
@@ -58,7 +90,7 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
       ? "محصول دیجیتال شما را از ایده تا رشد طراحی، توسعه و پشتیبانی می‌کنیم."
       : "We design, build, and grow digital products that perform.");
 
-  // `robot=` survives proxy.ts (which redirects `?lang=` into the fd-lang cookie).
+  // FA (RTL): robot on the physical left. EN (LTR): robot on the physical right.
   const embedSrc = `${HERO_SPLINE_EMBED_PATH}?robot=${fa ? "left" : "right"}`;
 
   return (
@@ -81,6 +113,8 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
 
         {/* Full-bleed Spline — mouse-follow on fine pointers; scroll-through on touch */}
         <iframe
+          key={embedSrc}
+          ref={iframeRef}
           title={fa ? "صحنه سه‌بعدی هیرو" : "Hero 3D scene"}
           src={embedSrc}
           className={`absolute inset-0 z-0 h-full w-full border-0 bg-black ${
@@ -91,12 +125,12 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
           tabIndex={-1}
         />
 
-        {/* Copy overlay: pass-through to iframe except interactive CTAs */}
+        {/* Copy overlay: spacer passes through; copy column forwards look-at. */}
         <div
           className="pointer-events-none relative z-10 flex h-full flex-col md:flex-row"
           dir={dir}
         >
-          <div className="relative z-10 flex flex-1 flex-col items-center justify-center p-8 text-center md:items-start md:p-10 md:text-start">
+          <div className="pointer-events-auto relative z-10 flex flex-1 flex-col items-center justify-center p-8 text-center md:items-start md:p-10 md:text-start">
             {/* Mobile: vertical scrim under centered copy */}
             <div
               aria-hidden
@@ -162,9 +196,13 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
           </div>
 
           {/* Spacer keeps copy on logical start; iframe receives pointers here */}
-          <div className="hidden flex-1 md:block" aria-hidden />
+          <div className="pointer-events-none hidden flex-1 md:block" aria-hidden />
         </div>
       </Card>
+
+      <div className="mx-auto max-w-7xl pt-6 sm:pt-8" aria-label={fa ? "لوگوها" : "logos"}>
+        <LogoCloud />
+      </div>
     </section>
   );
 }

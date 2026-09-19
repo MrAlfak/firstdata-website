@@ -14,17 +14,20 @@ export async function generateMetadata(): Promise<Metadata> {
     path: "/services",
     title: ui.metaTitle,
     description: ui.metaDescription,
+    lang,
   });
 }
 
 const faqSchemas = buildBilingualFaqJsonLd(dictionaries.en.faq.items, dictionaries.fa.faq.items);
 
-const breadcrumbs = [
-  { name: "Home", href: "/" },
-  { name: "Services" },
-];
+export default async function ServicesPage() {
+  const lang = await getRequestLang();
+  const nav = dictionaries[lang].nav;
+  const breadcrumbs = [
+    { name: nav.home, href: "/" },
+    { name: nav.services },
+  ];
 
-export default function ServicesPage() {
   return (
     <main>
       <BreadcrumbJsonLd items={breadcrumbs} />

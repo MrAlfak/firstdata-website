@@ -73,11 +73,12 @@ export async function POST(req: Request) {
 
 
     if (canSendOtp(email.trim().toLowerCase(), "email")) {
-
-      const code = await createOtp(email.trim().toLowerCase(), "email", "verify_email");
-
-      await deliverOtp({ channel: "email", destination: email.trim().toLowerCase(), code, purpose: "verify_email" });
-
+      try {
+        const code = await createOtp(email.trim().toLowerCase(), "email", "verify_email");
+        await deliverOtp({ channel: "email", destination: email.trim().toLowerCase(), code, purpose: "verify_email" });
+      } catch {
+        // Password signup still succeeds if transactional email is not configured.
+      }
     }
 
 

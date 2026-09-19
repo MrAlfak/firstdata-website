@@ -14,6 +14,11 @@ next-env.d.ts
 data/
 *.log
 
+# On-device STT assets (fetched by scripts/fetch-stt-model.mjs)
+public/stt/*.zip
+public/stt/*.zip.part
+public/stt/vosk.js
+
 # Accidental nested clone of this repo (breaks GitHub Desktop commits)
 /firstdata-website/
 

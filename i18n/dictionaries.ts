@@ -394,6 +394,14 @@ type Dict = {
     errorGeneric: string;
     footerHint: string;
     disclaimer: string;
+    voiceAria: string;
+    voiceStopAria: string;
+    voiceListening: string;
+    voiceLoading: string;
+    voiceTranscribing: string;
+    voiceUnsupported: string;
+    voiceDenied: string;
+    voiceEmpty: string;
     welcomeLines: string[];
     suggestions: string[];
   };
@@ -539,6 +547,7 @@ type Dict = {
       LOGOUT_FAILED: string;
       SESSION_FAILED: string;
       OTP_SEND_FAILED: string;
+      OTP_DELIVERY_UNAVAILABLE: string;
     };
     contact: {
       nameRequired: string;
@@ -854,7 +863,7 @@ export const dictionaries: Record<Lang, Dict> = {
     nav: {
       home: "Home", aboutus: "About Us", aboutTeam: "Our Team", aboutPartners: "Key Partners", aboutHonors: "Achievements", aboutVision: "Vision", aboutMission: "Mission", method: "How we work", status: "System status", product: "Product", productWeb: "Web", productMobile: "Mobile", productWindows: "Windows", productAi: "Artificial Intelligence", productPlatforms: "Integrated Platforms", services: "Services", serviceWeb: "Website Design", serviceUiUx: "UI/UX Design", serviceEcommerce: "Online Store", serviceAndroid: "Android App", serviceIos: "iOS App", serviceSeo: "SEO & Optimization", serviceConsulting: "Consulting & Project Analysis", serviceSupport: "Support & Development", portfolio: "Portfolio", portfolioWebsites: "Websites", portfolioEcommerce: "Online Stores", portfolioMobile: "Mobile Apps", portfolioDesktop: "Desktop Software", portfolioOther: "Other Projects", blog: "Blog", contactus: "Contact", contactRequest: "Submit Project Request", contactConsultation: "Free Consultation", contactCollaborate: "Work With Us", panel: "User Panel", login: "Sign in", contact: "Contact Us", menuTitle: "Site menu", menuOpen: "Open menu", menuClose: "Close menu", search: "Search", themeLight: "Light", themeDark: "Dark", language: "Language", cart: "Cart", cartItems: "{count} items", cartSpendMore: "Spend {amount} more for free shipping", cartFreeShipping: "You've unlocked free shipping", cartAlsoLike: "You may also like", cartSubtotal: "Subtotal ({count} items)", cartShipping: "Shipping", cartShippingFree: "Free", cartTax: "Tax", cartCheckout: "Checkout · {total}", cartClose: "Close cart", cartEmpty: "Cart is empty", cartEmptyDesc: "No items yet. Add from suggestions below or browse products.", cartEmptyCta: "Browse products", cartEmptyProgress: "Add items to unlock free shipping", megaViewAll: "View all", megaFeatured: "Featured", submenuToggle: "Toggle submenu", }, pages: {
       aboutus: {
-        eyebrow: "> loading /aboutus...", title: "About First Data", subtitle: "Fifteen years building software, with the same passion and more experience.", lines: [
+        eyebrow: "> loading /aboutus...", title: "About Us", subtitle: "Fifteen years building software, with the same passion and more experience.", lines: [
           "150+ live projects across web, mobile, desktop, and custom platforms.",
           "Cross-functional squads with senior-led delivery and weekly transparent reporting.",
           "Full code ownership, no vendor lock-in, support after every launch.",
@@ -1055,7 +1064,7 @@ export const dictionaries: Record<Lang, Dict> = {
       relatedTitle: "Our Mission",
       relatedDesc: "How we turn this vision into delivery, support, and measurable results on every project.",
       relatedHref: "/aboutus/mission",
-      backAbout: "About First Data",
+      backAbout: "About Us",
       backAboutDesc: "Return to the main About Us page.",
     },
     missionUi: {
@@ -1099,7 +1108,7 @@ export const dictionaries: Record<Lang, Dict> = {
       relatedTitle: "Our Vision",
       relatedDesc: "The long-term direction that shapes how we choose tools, teams, and partnerships.",
       relatedHref: "/aboutus/vision",
-      backAbout: "About First Data",
+      backAbout: "About Us",
       backAboutDesc: "Return to the main About Us page.",
     }, hero: {
       eyebrow: "// web.mobile.desktop.seo, delivered.", slogan: "From the dialup era to the world of AI.", lead:
@@ -1244,6 +1253,14 @@ export const dictionaries: Record<Lang, Dict> = {
       footerHint: "Unknown questions are saved so we can improve answers.",
       disclaimer:
         "Answers stay on First Data products & services. Prices are estimates; contracts & payments need a human. Free consult via the contact form.",
+      voiceAria: "Start voice input",
+      voiceStopAria: "Stop recording",
+      voiceListening: "Listening…",
+      voiceLoading: "Preparing voice input…",
+      voiceTranscribing: "Turning speech into text…",
+      voiceUnsupported: "Voice input isn’t available right now. Type your question instead.",
+      voiceDenied: "Microphone access is blocked. Allow the mic, then try again.",
+      voiceEmpty: "Didn’t catch that. Try again.",
       welcomeLines: [
         "Hi — I’m the First Data assistant.",
         "Ask about services, ballpark pricing, timelines, or how to start a project.",
@@ -1298,7 +1315,7 @@ export const dictionaries: Record<Lang, Dict> = {
             "Something went wrong on our side. Retry the action or go back, we logged the incident.", prompt: "root@fd:~$ ./retry.sh --safe", ctaHome: "homepage", ctaContact: "contact us", ctaRetry: "try again", }, global: {
           eyebrow: "> kernel panic, root layout unreachable", title: "Something broke deep inside", subtitle:
             "The page shell crashed before we could recover. Reload or return home, your session data is safe.", prompt: "root@fd:~$ systemctl restart first-data", ctaHome: "homepage", ctaContact: "contact us", ctaRetry: "reload", }, }, auth: {
-        INVALID_CREDENTIALS: "Invalid email or password.", INVALID_OTP: "Invalid or expired verification code.", ACCOUNT_NOT_FOUND: "No account found for this email.", ACCOUNT_NOT_FOUND_PHONE: "No account found for this mobile number.", EMAIL_ALREADY_EXISTS: "This email is already registered.", PHONE_ALREADY_EXISTS: "This mobile number is already registered.", RATE_LIMIT: "Too many requests. Try again later.", VALIDATION: "Please check your input and try again.", SERVER: "Something went wrong. Try again.", LOGOUT_FAILED: "Could not sign out. Try again.", SESSION_FAILED: "Could not verify your session.", OTP_SEND_FAILED: "Could not send verification code.", }, contact: {
+        INVALID_CREDENTIALS: "Invalid email or password.", INVALID_OTP: "Invalid or expired verification code.", ACCOUNT_NOT_FOUND: "No account found for this email.", ACCOUNT_NOT_FOUND_PHONE: "No account found for this mobile number.", EMAIL_ALREADY_EXISTS: "This email is already registered.", PHONE_ALREADY_EXISTS: "This mobile number is already registered.", RATE_LIMIT: "Too many requests. Try again later.", VALIDATION: "Please check your input and try again.", SERVER: "Something went wrong. Try again.", LOGOUT_FAILED: "Could not sign out. Try again.", SESSION_FAILED: "Could not verify your session.", OTP_SEND_FAILED: "Could not send verification code.", OTP_DELIVERY_UNAVAILABLE: "Verification messages are not configured on this server.", }, contact: {
         nameRequired: "Name is required.", emailRequired: "Email is required.", emailInvalid: "Enter a valid email address.", serviceRequired: "Select a service.", messageRequired: "Message is required.", messageMin: "Message must be at least 10 characters.", networkError: "Network error. Check your connection and try again.", }, projectRequest: {
         nameRequired: "Full name is required.", emailRequired: "Email is required.", emailInvalid: "Enter a valid email address.", phoneRequired: "Phone number is required.", phoneInvalid: "Enter a valid phone number.", projectTypeRequired: "Select at least one project type.", budgetRequired: "Select an approximate budget.", timelineRequired: "Select an expected timeline.", descriptionRequired: "Project description is required.", descriptionMin: "Description must be at least 10 characters.", networkError: "Network error. Check your connection and try again.", }, consultationRequest: {
         nameRequired: "Name is required.", phoneRequired: "Phone number is required.", phoneInvalid: "Enter a valid phone number.", contactMethodRequired: "Select a contact method.", emailRequired: "Email is required when email is your contact method.", emailInvalid: "Enter a valid email address.", contactTimeRequired: "Select the best time to contact you.", networkError: "Network error. Check your connection and try again.", }, collaborateRequest: {
@@ -1310,7 +1327,7 @@ export const dictionaries: Record<Lang, Dict> = {
           "$ ping firstdata.ir -c 4", "PING firstdata.ir (185.143.223.100): 56 data bytes", "Request timeout for icmp_seq 0", "Request timeout for icmp_seq 1", "Request timeout for icmp_seq 2", "Request timeout for icmp_seq 3", "--- firstdata.ir ping statistics ---", "4 packets transmitted, 0 received, 100% packet loss", ], checklistTitle: "While you wait", checklist: [
           "Check Wi‑Fi or mobile data is enabled", "Try another network or disable VPN", "Reload this page after reconnecting", ], onlineRestored: "Connection restored, you can retry now.", lastSync: "Last successful sync: unknown (offline)", }, network: {
         failed: "Connection failed. Check your network.", timeout: "Request timed out. Try again.", badGateway: "Server temporarily unavailable (502/504).", malformed: "Unexpected server response.", }, }, contact: {
-      eyebrow: "// get in touch", title: "Contact First Data", subtitle:
+      eyebrow: "// get in touch", title: "Contact us", subtitle:
         "Fill in the form or reach us directly. No sales pressure, just a conversation.", stepContactTitle: "Contact", stepContactDesc: "Who you are", stepDetailsTitle: "Request", stepDetailsDesc: "Service & message", labelName: "Name", labelEmail: "Email", labelPhone: "Phone (optional)", labelService: "Service needed", labelMessage: "Tell us about your project", labelSubmit: "Send Message", submitting: "Sending...", serviceOptions: [
         "Web Design & Development", "Android App", "iOS App", "Windows Software", "SEO & Performance", "UI/UX Design", "E-Commerce", "Support & Maintenance", "Other", ], success: "> Message sent. We'll respond within 1 business day.", sendAnother: "Send another message", directEmail: "info@firstdata.ir", directPhone: "+98 933 127 4039", directAddress: "Shiraz, Sarbaz Blvd, Isargaran St, Alley 3", orDirect: "or reach us directly:", pathsTitle: "Choose your path", pathRequestTitle: "Build", pathRequestDesc: "Scope, budget, timeline — reviewed by a senior engineer.", pathConsultationTitle: "Diagnose", pathConsultationDesc: "Clarify product, stack, and next steps — short discovery, no obligation.", pathCollaborateTitle: "Grow & partner", pathCollaborateDesc: "Ongoing support, hiring, or long-term collaboration with our team.", whatsappLabel: "WhatsApp", telegramLabel: "Telegram", mapLabel: "Open on map", }, projectRequest: {
       sectionBasic: "Basic information", sectionType: "Project type", sectionBudget: "Approximate budget", sectionTimeline: "Expected timeline", sectionDescription: "Project description", sectionFiles: "Attachments", stepBasicDesc: "Name & contact", stepTypeDesc: "What you need", stepPlanTitle: "Plan", stepPlanDesc: "Budget & timeline", stepBriefTitle: "Brief", stepBriefDesc: "Details & files", labelName: "Full name", labelEmail: "Email", labelPhone: "Phone number", labelCompany: "Company name", labelCompanyOptional: "Optional", labelDescription: "Describe your goals, features, and any constraints…", labelUpload: "Upload file", removeFile: "Remove file", filesHint: "Wireframe, PDF, sample site, logo, or brand assets (max 5 files, 10 MB each).", labelSubmit: "Submit request", submitting: "Sending…", success: "> Request received. We'll review it and respond within one business day.", sendAnother: "Submit another request", projectTypes: {
@@ -1358,12 +1375,12 @@ export const dictionaries: Record<Lang, Dict> = {
           "first,data.runtime statistics:", "  client:     businesses of all sizes", "  services:   8", "  projects:   150+", "  uptime:     99.9% SLA", "  contrast:   21:1 [WCAG AAA]", "  stack:      every language & framework", "  status:     OPERATIONAL [OK]", ], render: [
           "initializing first,data.runtime...", "loading service,stack [1/8..8/8]", "mounting delivery,engine ....... [OK]", "calibrating quality,layer ....... [OK]", "build status: SHIPPED [OK]", "runtime: OPERATIONAL", ], whoareyou: [
           "First Data, who we are:", "  company:   First Data", "  tagline:   We Build. You Grow.", "  mission:   engineer digital products that drive", "             real business results.", "  services:  web, android, ios, desktop, seo, ux", "  contact:   info@firstdata.ir", "  phone:     +98 933 127 4039", "  status:    OPERATIONAL [OK]", ], version: [
-          "first,data.runtime v1.0.0", "runtime: Next.js / React 18", "build: production [static]", "contact: info@firstdata.ir", ], }, }, marquee: [
+          "first,data.runtime v1.0.0", "runtime: Next.js / React 19", "build: production [static]", "contact: info@firstdata.ir", ], }, }, marquee: [
       "Web Design", "Android", "iOS", "Windows", "SEO", "UI/UX", "E-Commerce", "Support", "React", "Next.js", "Swift", "Kotlin", "Laravel", "Node.js", "TypeScript", "Figma", ], }, fa: {
     nav: {
       home: "خانه", aboutus: "درباره ما", aboutTeam: "تیم ما", aboutPartners: "شرکا کلیدی", aboutHonors: "افتخارات", aboutVision: "چشم‌انداز", aboutMission: "ماموریت", method: "روش کار", status: "وضعیت سیستم", product: "محصولات", productWeb: "وب", productMobile: "موبایل", productWindows: "ویندوز", productAi: "هوش مصنوعی", productPlatforms: "پلتفرم‌های یکپارچه", services: "خدمات", serviceWeb: "طراحی وب‌سایت", serviceUiUx: "طراحی UI و UX", serviceEcommerce: "فروشگاه اینترنتی", serviceAndroid: "اپلیکیشن اندروید", serviceIos: "اپلیکیشن iOS", serviceSeo: "سئو و بهینه‌سازی", serviceConsulting: "مشاوره و تحلیل پروژه", serviceSupport: "پشتیبانی و توسعه", portfolio: "نمونه‌کارها", portfolioWebsites: "وب‌سایت‌ها", portfolioEcommerce: "فروشگاه اینترنتی", portfolioMobile: "اپلیکیشن موبایل", portfolioDesktop: "نرم‌افزار دسکتاپ", portfolioOther: "دیگر پروژه‌ها", blog: "وبلاگ", contactus: "تماس", contactRequest: "ثبت درخواست پروژه", contactConsultation: "دریافت مشاوره رایگان", contactCollaborate: "همکاری با ما", panel: "پنل کاربری", login: "ورود", contact: "تماس با ما", menuTitle: "منوی سایت", menuOpen: "باز کردن منو", menuClose: "بستن منو", search: "جستجو", themeLight: "روز", themeDark: "شب", language: "زبان", cart: "سبد خرید", cartItems: "{count} کالا", cartSpendMore: "{amount} دیگر تا ارسال رایگان", cartFreeShipping: "ارسال رایگان فعال شد", cartAlsoLike: "شاید این‌ها را هم بپسندید", cartSubtotal: "جمع جزء ({count} کالا)", cartShipping: "ارسال", cartShippingFree: "رایگان", cartTax: "مالیات", cartCheckout: "تسویه · {total}", cartClose: "بستن سبد", cartEmpty: "سبد خرید خالی است", cartEmptyDesc: "هنوز کالایی ندارید. از پیشنهادهای زیر اضافه کنید یا محصولات را ببینید.", cartEmptyCta: "مشاهده محصولات", cartEmptyProgress: "برای ارسال رایگان کالا اضافه کنید", megaViewAll: "مشاهده همه", megaFeatured: "ویژه", submenuToggle: "باز و بسته کردن زیرمنو", }, pages: {
       aboutus: {
-        eyebrow: "> بارگذاری /aboutus...", title: "درباره FirstData", subtitle: "۱۵ سال است که نرم‌افزار می‌سازیم؛ هنوز هم با همان اشتیاق، اما با تجربه‌ای بیشتر.", lines: [
+        eyebrow: "> بارگذاری /aboutus...", title: "درباره ما", subtitle: "۱۵ سال است که نرم‌افزار می‌سازیم؛ هنوز هم با همان اشتیاق، اما با تجربه‌ای بیشتر.", lines: [
           "بیش از ۱۵۰ پروژه زنده در وب، موبایل، دسکتاپ و پلتفرم‌های اختصاصی.",
           "تیم‌های چندتخصصی با رهبری ارشد و گزارش‌دهی شفاف هفتگی.",
           "مالکیت کامل کد، بدون وابستگی به فروشنده، پشتیبانی پس از هر لانچ.",
@@ -1564,7 +1581,7 @@ export const dictionaries: Record<Lang, Dict> = {
       relatedTitle: "ماموریت ما",
       relatedDesc: "چگونه این چشم‌انداز را به تحویل، پشتیبانی و نتیجه قابل اندازه‌گیری در هر پروژه تبدیل می‌کنیم.",
       relatedHref: "/aboutus/mission",
-      backAbout: "درباره FirstData",
+      backAbout: "درباره ما",
       backAboutDesc: "بازگشت به صفحه اصلی درباره ما.",
     },
     missionUi: {
@@ -1608,7 +1625,7 @@ export const dictionaries: Record<Lang, Dict> = {
       relatedTitle: "چشم‌انداز ما",
       relatedDesc: "جهت بلندمدتی که انتخاب ابزار، تیم و همکاری‌ها را شکل می‌دهد.",
       relatedHref: "/aboutus/vision",
-      backAbout: "درباره FirstData",
+      backAbout: "درباره ما",
       backAboutDesc: "بازگشت به صفحه اصلی درباره ما.",
     }, hero: {
       eyebrow: "// وب.موبایل.دسکتاپ.سئو, تحویل‌شده.", slogan: "از روزهای Dialup تا دنیای AI", lead:
@@ -1753,6 +1770,14 @@ export const dictionaries: Record<Lang, Dict> = {
       footerHint: "سؤال‌های ناشناخته ذخیره می‌شوند تا بعداً جواب بهتری بسازیم.",
       disclaimer:
         "پاسخ‌ها فقط درباره محصولات و خدمات اولین دیتا است. قیمت‌ها تقریبی‌اند؛ قرارداد و پرداخت با تیم انسانی. مشاوره رایگان از فرم تماس.",
+      voiceAria: "شروع ورودی صوتی",
+      voiceStopAria: "توقف ضبط",
+      voiceListening: "در حال شنیدن…",
+      voiceLoading: "در حال آماده‌سازی تشخیص گفتار…",
+      voiceTranscribing: "در حال تبدیل گفتار به متن…",
+      voiceUnsupported: "ورودی صوتی الان در دسترس نیست. سؤال را بنویسید.",
+      voiceDenied: "دسترسی به میکروفون مسدود است. اجازه بدهید و دوباره تلاش کنید.",
+      voiceEmpty: "چیزی شنیده نشد. دوباره تلاش کنید.",
       welcomeLines: [
         "سلام — من دستیار اولین دیتا هستم.",
         "از خدمات، بازه قیمت، زمان تحویل یا نحوه شروع پروژه بپرسید.",
@@ -1803,7 +1828,7 @@ export const dictionaries: Record<Lang, Dict> = {
             "خطایی از سمت ما رخ داد. دوباره تلاش کنید یا برگردید, جزئیات ثبت شده است.", prompt: "root@fd:~$ ./retry.sh --safe", ctaHome: "صفحه اصلی", ctaContact: "تماس با ما", ctaRetry: "تلاش دوباره", }, global: {
           eyebrow: "> خطای بحرانی, layout از دسترس خارج شد", title: "یک خطای عمیق رخ داد", subtitle:
             "پوسته صفحه قبل از بازیابی از کار افتاد. رفرش کنید یا به خانه برگردید, داده‌های شما امن است.", prompt: "root@fd:~$ systemctl restart first-data", ctaHome: "صفحه اصلی", ctaContact: "تماس با ما", ctaRetry: "بارگذاری مجدد", }, }, auth: {
-        INVALID_CREDENTIALS: "ایمیل یا رمز عبور اشتباه است.", INVALID_OTP: "کد تأیید نامعتبر یا منقضی شده.", ACCOUNT_NOT_FOUND: "حسابی با این ایمیل یافت نشد.", ACCOUNT_NOT_FOUND_PHONE: "حسابی با این شماره موبایل یافت نشد.", EMAIL_ALREADY_EXISTS: "این ایمیل قبلاً ثبت شده.", PHONE_ALREADY_EXISTS: "این شماره موبایل قبلاً ثبت شده.", RATE_LIMIT: "درخواست‌های زیاد. بعداً تلاش کنید.", VALIDATION: "ورودی را بررسی کنید.", SERVER: "خطایی رخ داد. دوباره تلاش کنید.", LOGOUT_FAILED: "خروج انجام نشد.", SESSION_FAILED: "بررسی نشست ناموفق بود.", OTP_SEND_FAILED: "ارسال کد تأیید ناموفق بود.", }, contact: {
+        INVALID_CREDENTIALS: "ایمیل یا رمز عبور اشتباه است.", INVALID_OTP: "کد تأیید نامعتبر یا منقضی شده.", ACCOUNT_NOT_FOUND: "حسابی با این ایمیل یافت نشد.", ACCOUNT_NOT_FOUND_PHONE: "حسابی با این شماره موبایل یافت نشد.", EMAIL_ALREADY_EXISTS: "این ایمیل قبلاً ثبت شده.", PHONE_ALREADY_EXISTS: "این شماره موبایل قبلاً ثبت شده.", RATE_LIMIT: "درخواست‌های زیاد. بعداً تلاش کنید.", VALIDATION: "ورودی را بررسی کنید.", SERVER: "خطایی رخ داد. دوباره تلاش کنید.", LOGOUT_FAILED: "خروج انجام نشد.", SESSION_FAILED: "بررسی نشست ناموفق بود.", OTP_SEND_FAILED: "ارسال کد تأیید ناموفق بود.", OTP_DELIVERY_UNAVAILABLE: "ارسال پیام تأیید روی این سرور پیکربندی نشده است.", }, contact: {
         nameRequired: "نام الزامی است.", emailRequired: "ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", serviceRequired: "یک خدمت انتخاب کنید.", messageRequired: "پیام الزامی است.", messageMin: "پیام باید حداقل ۱۰ کاراکتر باشد.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, projectRequest: {
         nameRequired: "نام و نام خانوادگی الزامی است.", emailRequired: "ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", phoneRequired: "شماره تماس الزامی است.", phoneInvalid: "شماره تماس معتبر وارد کنید.", projectTypeRequired: "حداقل یک نوع پروژه را انتخاب کنید.", budgetRequired: "بودجه تقریبی را انتخاب کنید.", timelineRequired: "زمان مورد انتظار را انتخاب کنید.", descriptionRequired: "توضیحات پروژه الزامی است.", descriptionMin: "توضیحات باید حداقل ۱۰ کاراکتر باشد.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, consultationRequest: {
         nameRequired: "نام الزامی است.", phoneRequired: "شماره تماس الزامی است.", phoneInvalid: "شماره تماس معتبر وارد کنید.", contactMethodRequired: "روش ارتباط را انتخاب کنید.", emailRequired: "وقتی روش ارتباط ایمیل است، وارد کردن ایمیل الزامی است.", emailInvalid: "ایمیل معتبر وارد کنید.", contactTimeRequired: "بهترین زمان تماس را انتخاب کنید.", networkError: "خطای شبکه. اتصال را بررسی کنید.", }, collaborateRequest: {
@@ -1815,7 +1840,7 @@ export const dictionaries: Record<Lang, Dict> = {
           "$ ping firstdata.ir -c 4", "PING firstdata.ir (185.143.223.100): 56 data bytes", "Request timeout for icmp_seq 0", "Request timeout for icmp_seq 1", "Request timeout for icmp_seq 2", "Request timeout for icmp_seq 3", "--- firstdata.ir ping statistics ---", "4 packets transmitted, 0 received, 100% packet loss", ], checklistTitle: "تا زمان اتصال", checklist: [
           "اتصال Wi‑Fi یا داده موبایل را بررسی کنید", "شبکه دیگر امتحان کنید یا VPN را خاموش کنید", "بعد از اتصال، این صفحه را دوباره بارگذاری کنید", ], onlineRestored: "اتصال برقرار شد, می‌توانید دوباره تلاش کنید.", lastSync: "آخرین همگام‌سازی موفق: نامشخص (آفلاین)", }, network: {
         failed: "اتصال برقرار نشد.", timeout: "زمان درخواست تمام شد.", badGateway: "سرور موقتاً در دسترس نیست.", malformed: "پاسخ سرور نامعتبر بود.", }, }, contact: {
-      eyebrow: "// تماس", title: "تماس با اولین دیتا", subtitle:
+      eyebrow: "// تماس", title: "تماس با ما", subtitle:
         "فرم را پر کنید یا مستقیماً با ما در ارتباط باشید. بدون فروش اجباری، فقط یک مکالمه.", stepContactTitle: "تماس", stepContactDesc: "اطلاعات شما", stepDetailsTitle: "درخواست", stepDetailsDesc: "خدمت و پیام", labelName: "نام", labelEmail: "ایمیل", labelPhone: "تلفن (اختیاری)", labelService: "خدمات مورد نیاز", labelMessage: "درباره پروژه‌تان بگویید", labelSubmit: "ارسال پیام", submitting: "در حال ارسال...", serviceOptions: [
         "طراحی و توسعه وب‌سایت", "اپلیکیشن اندروید", "اپلیکیشن iOS", "نرم‌افزار ویندوز", "سئو و بهینه‌سازی", "طراحی UI/UX", "فروشگاه اینترنتی", "پشتیبانی و نگهداری", "سایر", ], success: "> پیام ارسال شد. در یک روز کاری پاسخ می‌دهیم.", sendAnother: "ارسال پیام دیگر", directEmail: "info@firstdata.ir", directPhone: "‎+۹۸ ۹۳۳ ۱۲۷ ۴۰۳۹", directAddress: "شیراز - بلوار سرباز - خیابان ایثارگران کوچه ۳", orDirect: "یا مستقیماً با ما تماس بگیرید:", pathsTitle: "مسیر خود را انتخاب کنید", pathRequestTitle: "ساخت", pathRequestDesc: "هدف، بودجه و زمان‌بندی — بررسی توسط مهندس ارشد.", pathConsultationTitle: "تشخیص", pathConsultationDesc: "محصول، استک و قدم بعدی را شفاف کنید — کشف کوتاه، بدون تعهد.", pathCollaborateTitle: "رشد و همکاری", pathCollaborateDesc: "پشتیبانی مداوم، استخدام یا همکاری بلندمدت با تیم ما.", whatsappLabel: "واتساپ", telegramLabel: "تلگرام", mapLabel: "مشاهده روی نقشه", }, projectRequest: {
       sectionBasic: "اطلاعات اولیه", sectionType: "نوع پروژه", sectionBudget: "بودجه تقریبی", sectionTimeline: "زمان مورد انتظار", sectionDescription: "توضیحات پروژه", sectionFiles: "فایل", stepBasicDesc: "نام و تماس", stepTypeDesc: "نیاز شما", stepPlanTitle: "برنامه", stepPlanDesc: "بودجه و زمان", stepBriefTitle: "شرح", stepBriefDesc: "جزئیات و فایل", labelName: "نام و نام خانوادگی", labelEmail: "ایمیل", labelPhone: "شماره تماس", labelCompany: "نام شرکت", labelCompanyOptional: "اختیاری", labelDescription: "اهداف، امکانات و محدودیت‌های پروژه را بنویسید…", labelUpload: "آپلود", removeFile: "حذف فایل", filesHint: "وایرفریم، PDF، نمونه سایت، لوگو یا فایل برند (حداکثر ۵ فایل، هر کدام ۱۰ مگابایت).", labelSubmit: "ارسال درخواست", submitting: "در حال ارسال…", success: "> درخواست شما ثبت شد. ظرف یک روز کاری بررسی و پاسخ می‌دهیم.", sendAnother: "ارسال درخواست دیگر", projectTypes: {
@@ -1863,5 +1888,5 @@ export const dictionaries: Record<Lang, Dict> = {
           "آمار اولین‌دیتا.رانتایم:", "  مشتری:     کسب‌وکارهای متنوع", "  خدمات:     ۸", "  پروژه‌ها:   ۱۵۰+", "  آپ‌تایم:    ۹۹.۹٪ SLA", "  کنتراست:   ۲۱:۱ [WCAG AAA]", "  پشته:      هر زبان و فریم‌ورک", "  وضعیت:     عملیاتی [موفق]", ], "رندر": [
           "در حال راه‌اندازی اولین‌دیتا.رانتایم...", "بارگذاری پشتهٔ خدمات [۱/۸..۸/۸]", "سوارکردن موتور تحویل ....... [موفق]", "کالیبراسیون لایهٔ کیفیت ....... [موفق]", "وضعیت ساخت: ارسال‌شده [موفق]", "رانتایم: عملیاتی", ], "شماکیستید": [
           "اولین دیتا, ما که هستیم:", "  شرکت:     اولین دیتا", "  شعار:     ما می‌سازیم. شما رشد می‌کنید.", "  مأموریت:  ساختن محصولات دیجیتال که", "            نتایج واقعی کسب‌وکاری ایجاد کنند.", "  خدمات:    وب، اندروید، iOS، دسکتاپ، سئو، UX", "  تماس:     info@firstdata.ir", "  تلفن:     ‎+۹۸ ۹۳۳ ۱۲۷ ۴۰۳۹", "  وضعیت:    عملیاتی [موفق]", ], "نسخه": [
-          "اولین‌دیتا.رانتایم نسخه ۱.۰.۰", "رانتایم: Next.js / React 18", "ساخت: تولید [استاتیک]", "تماس: info@firstdata.ir", ], }, }, marquee: [
+          "اولین‌دیتا.رانتایم نسخه ۱.۰.۰", "رانتایم: Next.js / React 19", "ساخت: تولید [استاتیک]", "تماس: info@firstdata.ir", ], }, }, marquee: [
       "طراحی وب", "اندروید", "iOS", "ویندوز", "سئو", "UI/UX", "فروشگاه", "پشتیبانی", "ری‌اکت", "نکست‌جی‌اس", "سوئیفت", "کاتلین", "لاراول", "نود", "تایپ‌اسکریپت", "فیگما", ], }, };

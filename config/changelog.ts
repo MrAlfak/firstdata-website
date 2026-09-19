@@ -2,7 +2,7 @@
  * Single source of truth for site version and changelog.
  * Bump APP_VERSION and add an entry here when shipping user-visible updates.
  */
-export const APP_VERSION = "2.6.137";
+export const APP_VERSION = "2.6.153";
 
 export type ChangelogLocaleItems = {
   fa: string[];
@@ -16,6 +16,210 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: "2.6.153",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "متن ویس دستیار در دو خط دیده می‌شود و دیگر روی یک خط قطع نمی‌شود",
+      ],
+      en: [
+        "Assistant voice transcript wraps to two lines instead of cutting off",
+      ],
+    },
+  },
+  {
+    version: "2.6.152",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "ورودی صوتی دستیار بدون گوگل کار می‌کند و گفتار فارسی روی دستگاه به متن تبدیل می‌شود",
+      ],
+      en: [
+        "Assistant voice works without Google by transcribing Persian on-device",
+      ],
+    },
+  },
+  {
+    version: "2.6.151",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "ویس دستیار گفتار را در مرورگر به متن تبدیل می‌کند و خطای Transcription برطرف شد",
+      ],
+      en: [
+        "Assistant voice transcribes in the browser and no longer shows Transcription failed",
+      ],
+    },
+  },
+  {
+    version: "2.6.150",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "ویس دستیار میکروفون را می‌گیرد و گفتار را به متن تبدیل می‌کند",
+      ],
+      en: [
+        "Assistant mic records voice and turns speech into a message",
+      ],
+    },
+  },
+  {
+    version: "2.6.149",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "مودال پاسخ دستیار با ظاهر شیشه‌ای، انیمیشن و پیام بعدی بازطراحی شد",
+      ],
+      en: [
+        "Assistant reply modal restyled with glass, motion, and follow-up chat",
+      ],
+    },
+  },
+  {
+    version: "2.6.148",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "کلیک روی «از اولین دیتا بپرسید» دوباره آهنگساز را باز می‌کند",
+      ],
+      en: [
+        "Ask First Data chip opens the assistant composer again",
+      ],
+    },
+  },
+  {
+    version: "2.6.147",
+    date: "2026-08-26",
+    items: {
+      fa: [
+        "خط بالای دکمه‌های دایره‌ای منوی موبایل برداشته شد",
+      ],
+      en: [
+        "Removed the hairline highlight on mobile-menu circular buttons",
+      ],
+    },
+  },
+  {
+    version: "2.6.146",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "با باز شدن منوی موبایل، نوار پرسش و دکمه ۵۶K پنهان می‌شوند",
+      ],
+      en: [
+        "Mobile menu hides the Ask bar and 56K dock while it is open",
+      ],
+    },
+  },
+  {
+    version: "2.6.145",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "در نسخه انگلیسی ربات هیرو به سمت راست صحنه می‌رود",
+      ],
+      en: [
+        "English hero places the 3D robot on the right side of the scene",
+      ],
+    },
+  },
+  {
+    version: "2.6.144",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "ربات هیرو موس را روی متن و دکمه‌ها هم دنبال می‌کند",
+      ],
+      en: [
+        "Hero robot keeps mouse-follow while the cursor is over the copy and CTAs",
+      ],
+    },
+  },
+  {
+    version: "2.6.143",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "ربات سه‌بعدی هیرو به سمت چپ صحنه منتقل شد",
+      ],
+      en: [
+        "Hero 3D robot moved to the left side of the scene",
+      ],
+    },
+  },
+  {
+    version: "2.6.142",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "خط زرد نوار اسکرول بالای هیرو مدرن حذف شد",
+      ],
+      en: [
+        "Removed the amber scroll hairline from the top of the modern hero",
+      ],
+    },
+  },
+  {
+    version: "2.6.141",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "پس‌زمینه اسکین مدرن در حالت شب کاملاً مشکی شد",
+      ],
+      en: [
+        "Modern dark theme page background is true black",
+      ],
+    },
+  },
+  {
+    version: "2.6.140",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "منوی همبرگر هدر مدرن روی موبایل به لبهٔ چپ نوار چسبید",
+      ],
+      en: [
+        "Modern header hamburger sits on the left edge of the bar on mobile",
+      ],
+    },
+  },
+  {
+    version: "2.6.139",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "ربات سه‌بعدی هیرو دوباره در مرکز صحنه لود می‌شود (WASM اسپیلاین دیگر با CSP قطع نمی‌شود)",
+        "اسلایدر لوگو زیر هیرو مدرن برگشت",
+      ],
+      en: [
+        "Hero 3D robot loads again in the center (Spline WASM no longer blocked by CSP)",
+        "Logo slider restored under the modern hero",
+      ],
+    },
+  },
+  {
+    version: "2.6.138",
+    date: "2026-08-25",
+    items: {
+      fa: [
+        "کلیدهای Dokploy از سورس حذف شد؛ اسکریپت استقرار فقط از متغیر محیط می‌خواند",
+        "مسیرهای دمو UI دیگر ایندکس نمی‌شوند؛ عنوان صفحات بدون تکرار برند",
+        "JSON-LD دفتر شیراز و لینک شبکه‌های اجتماعی؛ هدر CSP",
+        "OTP در تولید بدون وب‌هوک دیگر موفق گزارش نمی‌شود (۵۰۳)",
+        "نمونه‌کارها به‌عنوان نمونه‌های ناشناس مشخص شدند",
+        "بلاگ و جستجو بدون خالی‌شدن SSR؛ ?lang= برای hreflang پایدار ماند",
+      ],
+      en: [
+        "Removed Dokploy secrets from source; deploy scripts require env vars",
+        "Demo UI routes are noindex; document titles no longer repeat the brand",
+        "Shiraz NAP in JSON-LD plus social sameAs; Content-Security-Policy header",
+        "Production OTP fails closed without delivery webhooks (503)",
+        "Portfolio labeled as anonymized samples, not named-client proofs",
+        "Blog and search stay populated on SSR; ?lang= kept for hreflang",
+      ],
+    },
+  },
   {
     version: "2.6.137",
     date: "2026-08-06",

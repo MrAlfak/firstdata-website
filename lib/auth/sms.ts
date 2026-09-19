@@ -20,11 +20,22 @@ export async function sendOtpSms(input: SendOtpSmsInput): Promise<void> {
   const label = SMS_LABELS[input.purpose];
   const text = `First Data ${label} code: ${input.code}\nValid for 10 minutes.`;
 
-  const webhook = process.env.OTP_SMS_WEBHOOK;
+  const webhook = process.env.OTP_SMS_WEBHOOK?.trim();
   if (webhook) {
-    await fetch(webhook, {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        to: input.to, message: text, code: input.code, purpose: input.purpose, channel: "sms" satisfies OtpChannel, }), });
+    const res = await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: input.to,
+        message: text,
+        code: input.code,
+        purpose: input.purpose,
+        channel: "sms" satisfies OtpChannel,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`OTP SMS webhook failed (${res.status})`);
+    }
     return;
   }
 
@@ -33,5 +44,5 @@ export async function sendOtpSms(input: SendOtpSmsInput): Promise<void> {
     return;
   }
 
-  console.warn(`[auth][otp][sms] SMS webhook not configured, code for ${input.to} was not sent`);
+  throw new Error("OTP SMS webhook is not configured");
 }

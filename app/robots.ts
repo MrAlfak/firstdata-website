@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo/site";
+import { DEMO_ROBOTS_DISALLOW } from "@/lib/seo/demo-routes";
 
 const DISALLOW = [
   "/api/",
@@ -14,7 +15,9 @@ const DISALLOW = [
   "/forbidden",
   "/offline",
   "/maintenance",
+  "/stt/",
   "/product/*/one-pager",
+  ...DEMO_ROBOTS_DISALLOW,
 ];
 
 export default function robots(): MetadataRoute.Robots {

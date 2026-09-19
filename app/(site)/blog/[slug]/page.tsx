@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { BLOG_SLUGS, getPostBySlug } from "@/config/blog";
 import { dictionaries } from "@/i18n/dictionaries";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 import { buildArticleJsonLd } from "@/lib/seo/article-jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import BlogPostClient from "./BlogPostClient";
@@ -22,11 +23,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Not Found" };
   }
 
+  const lang = await getRequestLang();
+  const loc = post[lang];
+
   return pageMetadata({
     path: `/blog/${slug}`,
-    title: post.en.title,
-    description: post.en.excerpt,
+    title: loc.title,
+    description: loc.excerpt,
     openGraphType: "article",
+    lang,
   });
 }
 
@@ -37,12 +42,13 @@ export default async function BlogPostPage({ params }: Props) {
     notFound();
   }
 
-  const nav = dictionaries.en.nav;
-  const blogTitle = dictionaries.en.pages.blog.title;
+  const lang = await getRequestLang();
+  const nav = dictionaries[lang].nav;
+  const blogTitle = dictionaries[lang].pages.blog.title;
   const breadcrumbs = [
     { name: nav.home, href: "/" },
     { name: blogTitle, href: "/blog" },
-    { name: post.en.title },
+    { name: post[lang].title },
   ];
 
   return (
@@ -50,7 +56,7 @@ export default async function BlogPostPage({ params }: Props) {
       <BreadcrumbJsonLd items={breadcrumbs} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildArticleJsonLd(post)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildArticleJsonLd(post, lang)) }}
       />
       <BlogPostClient post={post} />
     </main>

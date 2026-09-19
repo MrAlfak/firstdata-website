@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     return jsonError("Too many requests. Try again shortly.", 429, "rate_limited");
   }
 
-  let body: { query?: unknown; lang?: unknown };
+  let body: { query?: unknown; lang?: unknown; history?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -41,6 +41,19 @@ export async function POST(req: NextRequest) {
   if (!query) return jsonError("query required", 400);
 
   const lang = body.lang === "en" ? "en" : "fa";
+
+  const history: { role: "user" | "assistant"; content: string }[] = [];
+  if (Array.isArray(body.history)) {
+    for (const item of body.history.slice(-8)) {
+      if (!item || typeof item !== "object") continue;
+      const role = (item as { role?: unknown }).role;
+      const content = (item as { content?: unknown }).content;
+      if (role !== "user" && role !== "assistant") continue;
+      if (typeof content !== "string") continue;
+      const trimmed = content.trim().slice(0, 800);
+      if (trimmed) history.push({ role, content: trimmed });
+    }
+  }
 
   const finish = (lines: string[], matched: boolean, source: string) => {
     try {
@@ -65,6 +78,7 @@ export async function POST(req: NextRequest) {
   const llm = await parspackChatCompletion({
     messages: [
       { role: "system", content: buildFirstDataSystemPrompt(lang) },
+      ...history,
       { role: "user", content: query },
     ],
     maxTokens: 700,

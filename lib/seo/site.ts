@@ -25,9 +25,18 @@ export function langAlternates(path: string) {
   };
 }
 
+/** Customer-facing office (matches footer / contact NAP). */
+export const ORG_ADDRESS = {
+  streetAddress: "Sarbaz Blvd, Isargaran St, Alley 3",
+  addressLocality: "Shiraz",
+  addressRegion: "Fars",
+  addressCountry: "IR",
+};
+
+/** Approximate coordinates for Sarbaz Blvd, Shiraz. */
 export const ORG_GEO = {
-  latitude: 35.6892,
-  longitude: 51.389,
+  latitude: 29.6196,
+  longitude: 52.5319,
 };
 
 export const ORG_HOURS = [

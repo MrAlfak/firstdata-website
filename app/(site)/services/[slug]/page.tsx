@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import { SERVICES_SLUGS, SERVICES_SLUG_TO_NUMBER } from "@/config/navigation";
+import { dictionaries, type Lang } from "@/i18n/dictionaries";
 import { androidPageDictionaries } from "@/i18n/android-page";
 import { consultingPageDictionaries } from "@/i18n/consulting-page";
 import { ecommercePageDictionaries } from "@/i18n/ecommerce-page";
@@ -10,6 +11,7 @@ import { seoPageDictionaries } from "@/i18n/seo-page";
 import { supportPageDictionaries } from "@/i18n/support-page";
 import { uiUxPageDictionaries } from "@/i18n/ui-ux-page";
 import { webDesignPageDictionaries } from "@/i18n/web-design-page";
+import { getRequestLang } from "@/lib/i18n/request-lang";
 import { pageMetadata } from "@/lib/seo/metadata";
 import ServiceSubClient from "./ServiceSubClient";
 
@@ -17,16 +19,28 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-const TITLES: Record<string, string> = {
-  "web-design": "Website Design",
-  "ui-ux": "UI/UX Design",
-  ecommerce: "Online Store",
-  android: "Android App",
-  ios: "iOS App",
-  seo: "SEO & Optimization",
-  consulting: "Consulting & Project Analysis",
-  support: "Support & Development",
-};
+function serviceHero(slug: string, lang: Lang) {
+  switch (slug) {
+    case "web-design":
+      return webDesignPageDictionaries[lang].hero;
+    case "ui-ux":
+      return uiUxPageDictionaries[lang].hero;
+    case "ecommerce":
+      return ecommercePageDictionaries[lang].hero;
+    case "android":
+      return androidPageDictionaries[lang].hero;
+    case "ios":
+      return iosPageDictionaries[lang].hero;
+    case "seo":
+      return seoPageDictionaries[lang].hero;
+    case "consulting":
+      return consultingPageDictionaries[lang].hero;
+    case "support":
+      return supportPageDictionaries[lang].hero;
+    default:
+      return null;
+  }
+}
 
 export function generateStaticParams() {
   return SERVICES_SLUGS.map((slug) => ({ slug }));
@@ -38,30 +52,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Not Found" };
   }
 
-  const title = TITLES[slug] ?? "Services";
-  const description =
-    slug === "web-design"
-      ? webDesignPageDictionaries.fa.hero.body
-      : slug === "ui-ux"
-        ? uiUxPageDictionaries.fa.hero.body
-        : slug === "ecommerce"
-          ? ecommercePageDictionaries.fa.hero.body
-          : slug === "android"
-            ? androidPageDictionaries.fa.hero.body
-            : slug === "ios"
-              ? iosPageDictionaries.fa.hero.body
-              : slug === "seo"
-                ? seoPageDictionaries.fa.hero.body
-                : slug === "consulting"
-                  ? consultingPageDictionaries.fa.hero.body
-                  : slug === "support"
-                    ? supportPageDictionaries.fa.hero.body
-                    : `First Data, ${title}`;
+  const lang = await getRequestLang();
+  const hero = serviceHero(slug, lang);
+  const title = hero?.title ?? dictionaries[lang].nav.services;
+  const description = hero?.body ?? title;
 
   return pageMetadata({
     path: `/services/${slug}`,
     title,
     description,
+    lang,
   });
 }
 
@@ -71,11 +71,13 @@ export default async function ServiceSubPage({ params }: Props) {
     notFound();
   }
 
-  const title = TITLES[slug] ?? slug;
+  const lang = await getRequestLang();
+  const nav = dictionaries[lang].nav;
+  const hero = serviceHero(slug, lang);
   const breadcrumbs = [
-    { name: "Home", href: "/" },
-    { name: "Services", href: "/services" },
-    { name: title },
+    { name: nav.home, href: "/" },
+    { name: nav.services, href: "/services" },
+    { name: hero?.title ?? slug },
   ];
 
   return (

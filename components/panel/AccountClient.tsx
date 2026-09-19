@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useT } from "@/i18n/LangProvider";
 import type { PublicUser } from "@/lib/auth/types";
 import { fetchJson } from "@/lib/errors/fetch-json";
+import { resolveAuthError } from "@/lib/errors/resolve-auth-error";
 import { LogOut, Monitor } from "lucide-react";
 import { PanelAlert, PanelCard, PanelEmpty, PanelLoading } from "./PanelLayoutClient";
 import { usePanelSkin } from "./PanelSkinToggle";
@@ -358,6 +359,10 @@ export default function AccountClient() {
     pushAlert({ message, tone: "error" });
   }
 
+  function flashApiErr(result: { message: string; code?: string }) {
+    flashErr(resolveAuthError(d.errors.auth, result, result.message));
+  }
+
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault();
     setErr("");
@@ -381,7 +386,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     setUser(result.data.user);
@@ -399,7 +404,7 @@ export default function AccountClient() {
       { method: "POST" },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     if (result.data.devCode) setVerifyDev(String(result.data.devCode));
@@ -417,7 +422,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     setUser(result.data.user);
@@ -441,7 +446,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     if (result.data.devCode) setContactDev(String(result.data.devCode));
@@ -464,7 +469,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     setUser(result.data.user);
@@ -485,7 +490,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     void loadSessions();
@@ -505,7 +510,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     setUser(result.data.user);
@@ -528,7 +533,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     setUser(result.data.user);
@@ -544,7 +549,7 @@ export default function AccountClient() {
       { method: "POST" },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     if (result.data.devCode) setDeleteDev(String(result.data.devCode));
@@ -565,7 +570,7 @@ export default function AccountClient() {
       },
     );
     if (!result.ok) {
-      flashErr(result.message);
+      flashApiErr(result);
       return;
     }
     router.push("/auth/login");

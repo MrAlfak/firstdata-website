@@ -1,16 +1,19 @@
 import type { BlogPost } from "@/config/blog";
+import type { Lang } from "@/i18n/dictionaries";
 import { countWords } from "@/lib/blog";
 import { SITE_URL } from "./site";
 
-export function buildArticleJsonLd(post: BlogPost) {
+export function buildArticleJsonLd(post: BlogPost, lang: Lang = "en") {
+  const loc = post[lang];
+  const alt = post[lang === "fa" ? "en" : "fa"];
   const url = `${SITE_URL}/blog/${post.slug}`;
   return {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: post.en.title,
-    alternativeHeadline: post.fa.title,
-    description: post.en.excerpt,
-    inLanguage: ["en-US", "fa-IR"],
+    headline: loc.title,
+    alternativeHeadline: alt.title,
+    description: loc.excerpt,
+    inLanguage: lang === "fa" ? "fa-IR" : "en-US",
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
     author: {
@@ -33,7 +36,7 @@ export function buildArticleJsonLd(post: BlogPost) {
     },
     url,
     articleSection: post.category,
-    wordCount: countWords(post.en.body.join(" ")),
+    wordCount: countWords(loc.body.join(" ")),
     keywords: post.tags?.join(", "),
   };
 }

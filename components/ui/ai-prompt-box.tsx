@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/LangProvider";
+import {
+  isAbortError,
+  isMicDenied,
+  startBrowserStt,
+  type BrowserSttSession,
+} from "@/lib/assistant/browser-stt";
 
 const PROMPT_STYLE_ID = "ai-prompt-box-styles";
 
@@ -183,59 +190,39 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 interface VoiceRecorderProps {
-  isRecording: boolean;
-  onStartRecording: () => void;
-  onStopRecording: (duration: number) => void;
+  transcript?: string;
+  label?: string;
   visualizerBars?: number;
 }
 
 const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
-  isRecording,
-  onStartRecording,
-  onStopRecording,
+  transcript,
+  label,
   visualizerBars = 32,
 }) => {
   const [time, setTime] = React.useState(0);
-  const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-  const previousRecording = React.useRef(false);
-  const durationRef = React.useRef(0);
+  const [levels, setLevels] = React.useState<number[]>(() => Array(visualizerBars).fill(4));
 
   React.useEffect(() => {
-    durationRef.current = time;
-  }, [time]);
+    const id = window.setInterval(() => setTime((t) => t + 1), 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
   React.useEffect(() => {
-    if (isRecording) {
-      if (!previousRecording.current) {
-        onStartRecording();
-      }
-      timerRef.current = setInterval(() => {
-        setTime((t) => t + 1);
-      }, 1000);
-    } else if (previousRecording.current) {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      onStopRecording(durationRef.current);
-      setTime(0);
-      durationRef.current = 0;
-    }
-
-    if (!isRecording && timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-
-    previousRecording.current = isRecording;
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+    let raf = 0;
+    const origin = performance.now();
+    const tick = (now: number) => {
+      const t = (now - origin) / 180;
+      setLevels(
+        Array.from({ length: visualizerBars }, (_, i) => {
+          return 4 + (Math.sin(t + i * 0.45) * 0.5 + 0.5) * 18;
+        }),
+      );
+      raf = requestAnimationFrame(tick);
     };
-  }, [isRecording, onStartRecording, onStopRecording]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [visualizerBars]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -244,27 +231,25 @@ const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   };
 
   return (
-    <div className="flex w-full items-center gap-3 px-2 py-3">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 text-red-400">
-        <Mic className="h-4 w-4" />
+    <div className="flex w-full flex-col gap-2 px-2 py-3">
+      <div className="flex w-full items-center gap-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+          <Mic className="h-4 w-4" />
+        </div>
+        <span className="font-mono text-sm text-[#E5E7EB]">{formatTime(time)}</span>
+        <div className="flex flex-1 items-center justify-center gap-[2px]">
+          {levels.map((height, i) => (
+            <span
+              key={i}
+              className="w-[3px] rounded-full bg-[#1EAEDB]"
+              style={{ height }}
+            />
+          ))}
+        </div>
       </div>
-      <span className="font-mono text-sm text-[#E5E7EB]">{formatTime(time)}</span>
-      <div className="flex flex-1 items-center justify-center gap-[2px]">
-        {[...Array(visualizerBars)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="w-[3px] rounded-full bg-[#1EAEDB]"
-            animate={{
-              height: [4, 8 + ((i * 7) % 16), 4],
-            }}
-            transition={{
-              duration: 0.5,
-              repeat: Infinity,
-              delay: i * 0.05,
-            }}
-          />
-        ))}
-      </div>
+      <p className="line-clamp-2 break-words px-1 text-start text-sm leading-5 text-[#E5E7EB]">
+        {transcript || label}
+      </p>
     </div>
   );
 };
@@ -506,17 +491,43 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
     } = props;
 
     useInjectPromptStyles();
+    const { d } = useT();
+    const voiceCopy = d.assistantChat;
 
     const [input, setInput] = React.useState("");
     const [files, setFiles] = React.useState<File[]>([]);
     const [filePreviews, setFilePreviews] = React.useState<Record<string, string>>({});
     const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
     const [isRecording, setIsRecording] = React.useState(false);
+    const [isVoicePreparing, setIsVoicePreparing] = React.useState(false);
+    const [voiceError, setVoiceError] = React.useState<string | null>(null);
+    const [liveTranscript, setLiveTranscript] = React.useState("");
     const [showSearch, setShowSearch] = React.useState(false);
     const [showThink, setShowThink] = React.useState(false);
     const [showCanvas, setShowCanvas] = React.useState(false);
     const uploadInputRef = React.useRef<HTMLInputElement>(null);
     const promptBoxRef = React.useRef<HTMLDivElement>(null);
+    const recordingRef = React.useRef(false);
+    const preparingRef = React.useRef(false);
+    const sttRef = React.useRef<BrowserSttSession | null>(null);
+    const sttAbortRef = React.useRef<AbortController | null>(null);
+    const onSendRef = React.useRef(onSend);
+    onSendRef.current = onSend;
+    const stopTimerRef = React.useRef<number | null>(null);
+
+    const releaseMic = React.useCallback(() => {
+      recordingRef.current = false;
+      preparingRef.current = false;
+      if (stopTimerRef.current) {
+        window.clearTimeout(stopTimerRef.current);
+        stopTimerRef.current = null;
+      }
+      sttRef.current = null;
+      sttAbortRef.current?.abort();
+      sttAbortRef.current = null;
+    }, []);
+
+    React.useEffect(() => () => releaseMic(), [releaseMic]);
 
     const setRefs = React.useCallback(
       (node: HTMLDivElement | null) => {
@@ -634,17 +645,90 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
       }
     };
 
-    const handleStartRecording = React.useCallback(() => {
-      // Hook for parent integrations
-    }, []);
+    const stopVoice = React.useCallback(async () => {
+      if (stopTimerRef.current) {
+        window.clearTimeout(stopTimerRef.current);
+        stopTimerRef.current = null;
+      }
 
-    const handleStopRecording = React.useCallback(
-      (duration: number) => {
+      if (preparingRef.current && !sttRef.current) {
+        preparingRef.current = false;
+        recordingRef.current = false;
+        sttAbortRef.current?.abort();
+        sttAbortRef.current = null;
+        setIsVoicePreparing(false);
         setIsRecording(false);
-        onSend(`[Voice message - ${duration} seconds]`, []);
-      },
-      [onSend],
-    );
+        setLiveTranscript("");
+        return;
+      }
+
+      if (!recordingRef.current && !sttRef.current) {
+        setIsRecording(false);
+        setIsVoicePreparing(false);
+        return;
+      }
+
+      recordingRef.current = false;
+      preparingRef.current = false;
+      const session = sttRef.current;
+      sttRef.current = null;
+      const spoken = session ? (await session.stop()).trim() : "";
+      sttAbortRef.current = null;
+      setIsRecording(false);
+      setIsVoicePreparing(false);
+      setLiveTranscript("");
+
+      if (spoken) {
+        onSendRef.current(spoken, []);
+        return;
+      }
+      setVoiceError(voiceCopy.voiceEmpty);
+    }, [voiceCopy.voiceEmpty]);
+
+    const startVoice = React.useCallback(async () => {
+      setVoiceError(null);
+      setLiveTranscript("");
+      preparingRef.current = true;
+      recordingRef.current = false;
+      setIsVoicePreparing(true);
+      setIsRecording(true);
+
+      const abort = new AbortController();
+      sttAbortRef.current?.abort();
+      sttAbortRef.current = abort;
+
+      try {
+        const session = await startBrowserStt({
+          onPartial: (text) => setLiveTranscript(text),
+          signal: abort.signal,
+        });
+        if (abort.signal.aborted || !preparingRef.current) {
+          await session.stop();
+          return;
+        }
+        sttRef.current = session;
+        preparingRef.current = false;
+        recordingRef.current = true;
+        setIsVoicePreparing(false);
+        stopTimerRef.current = window.setTimeout(() => {
+          void stopVoice();
+        }, 60_000);
+      } catch (err) {
+        preparingRef.current = false;
+        recordingRef.current = false;
+        sttRef.current = null;
+        sttAbortRef.current = null;
+        setIsVoicePreparing(false);
+        setIsRecording(false);
+        setLiveTranscript("");
+        if (isAbortError(err)) return;
+        if (isMicDenied(err)) {
+          setVoiceError(voiceCopy.voiceDenied);
+          return;
+        }
+        setVoiceError(voiceCopy.voiceUnsupported);
+      }
+    }, [stopVoice, voiceCopy.voiceDenied, voiceCopy.voiceUnsupported]);
 
     const hasContent = input.trim() !== "" || files.length > 0;
 
@@ -711,9 +795,10 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
 
               {isRecording && (
                 <VoiceRecorder
-                  isRecording={isRecording}
-                  onStartRecording={handleStartRecording}
-                  onStopRecording={handleStopRecording}
+                  transcript={isVoicePreparing ? undefined : liveTranscript}
+                  label={
+                    isVoicePreparing ? voiceCopy.voiceLoading : voiceCopy.voiceListening
+                  }
                 />
               )}
 
@@ -888,10 +973,17 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
                   <Button
                     size="icon"
                     className="h-8 w-8 rounded-full bg-white text-black hover:bg-white/90"
+                    aria-label={
+                      isRecording
+                        ? voiceCopy.voiceStopAria
+                        : hasContent
+                          ? voiceCopy.send
+                          : voiceCopy.voiceAria
+                    }
                     onClick={() => {
-                      if (isRecording) setIsRecording(false);
+                      if (isRecording) void stopVoice();
                       else if (hasContent) handleSubmit();
-                      else setIsRecording(true);
+                      else void startVoice();
                     }}
                     disabled={isLoading && !hasContent}
                   >
@@ -909,6 +1001,9 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               </PromptInputActions>
             </div>
           </PromptInput>
+          {voiceError ? (
+            <p className="mt-1.5 px-1 text-[11px] text-[#F87171]">{voiceError}</p>
+          ) : null}
         </div>
 
         <ImageViewDialog imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />

@@ -493,10 +493,16 @@ export default function Header() {
 
   useEffect(() => {
     if (searchOpen) return;
-    if (mobileOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.setAttribute("data-mobile-nav", "open");
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.removeAttribute("data-mobile-nav");
+    }
     return () => {
       if (!searchOpen) document.body.style.overflow = "";
+      document.documentElement.removeAttribute("data-mobile-nav");
     };
   }, [mobileOpen, searchOpen]);
 

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import SearchPageClient from "@/components/search/SearchPageClient";
 import { getRequestLang } from "@/lib/i18n/request-lang";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -19,17 +18,16 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     path: query ? `/search?q=${encodeURIComponent(query)}` : "/search",
     title: query ? `${ui.title}: ${query}` : ui.pageTitle,
     description: ui.pageLead,
-    // Query result URLs are shareable but should not flood the index.
     noIndex: Boolean(query),
+    lang,
   });
 }
 
-export default function SearchPage() {
+export default async function SearchPage({ searchParams }: Props) {
+  const { q } = await searchParams;
   return (
     <main>
-      <Suspense fallback={null}>
-        <SearchPageClient />
-      </Suspense>
+      <SearchPageClient initialQuery={q?.trim() ?? ""} />
     </main>
   );
 }

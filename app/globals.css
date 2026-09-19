@@ -566,23 +566,23 @@ html[data-panel-skin="modern"][data-theme="light"] {
   color-scheme: light;
 }
 
-/* AI + night — SaaS dark (not CRT green) */
+/* AI + night — true black page (not CRT green / charcoal wash) */
 html[data-panel-skin="modern"][data-theme="dark"] {
-  --c-bg: 15 18 17;
+  --c-bg: 0 0 0;
   --c-fg: 230 235 232;
   --c-accent: 52 211 153;
   --c-dim: 140 160 150;
   --c-amber: 251 191 36;
   --c-error: 248 113 113;
-  --bg: #0f1211;
+  --bg: #000000;
   --fg: #e6ebe8;
-  --ai-surface: 24 28 27;
-  --ai-card: #181c1b;
-  --ai-header-bg: rgb(24 28 27 / 0.94);
-  --ai-input-bg: #1c2120;
+  --ai-surface: 10 10 10;
+  --ai-card: #0a0a0a;
+  --ai-header-bg: rgb(10 10 10 / 0.94);
+  --ai-input-bg: #111111;
   --ai-solid-btn: 230 235 232;
-  --ai-solid-btn-fg: 15 18 17;
-  --ai-danger-bg: linear-gradient(180deg, rgb(40 22 22), rgb(24 28 27));
+  --ai-solid-btn-fg: 0 0 0;
+  --ai-danger-bg: linear-gradient(180deg, rgb(40 22 22), rgb(10 10 10));
   color-scheme: dark;
 }
 
@@ -624,6 +624,11 @@ html[data-panel-skin="modern"] body {
     radial-gradient(ellipse 80% 50% at 50% -20%, rgb(var(--c-accent) / 0.06), transparent 55%),
     radial-gradient(ellipse 60% 40% at 100% 0%, rgb(var(--c-fg) / 0.03), transparent 50%);
   background-attachment: fixed;
+}
+
+html[data-panel-skin="modern"][data-theme="dark"] body {
+  background-color: #000;
+  background-image: none;
 }
 
 /* ─── Editorial SaaS helpers (public site) ─── */
@@ -1742,19 +1747,21 @@ html[data-panel-skin="modern"] .fd-glass-mobile-utility .fd-glass-utility-btn {
     radial-gradient(circle at 30% 15%, rgb(255 255 255 / 0.7), transparent 42%),
     linear-gradient(145deg, rgb(255 255 255 / 0.32), rgb(245 249 247 / 0.12));
   color: rgb(25 50 42 / 0.62);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.76),
-    0 4px 13px rgb(24 49 41 / 0.035);
+  box-shadow: 0 4px 13px rgb(24 49 41 / 0.035);
   backdrop-filter: blur(17px) saturate(145%);
+}
+
+html[data-panel-skin="modern"] .fd-glass-mobile-utility .fd-glass-utility-btn::before,
+html[data-panel-skin="modern"] .fd-glass-mobile-utility .fd-glass-utility-btn::after {
+  content: none;
+  opacity: 0;
 }
 
 html[data-panel-skin="modern"][data-theme="dark"] .fd-glass-mobile-utility .fd-glass-utility-btn {
   border-color: rgb(var(--c-fg) / 0.14);
   background: rgb(var(--c-fg) / 0.06);
   color: rgb(var(--c-fg) / 0.82);
-  box-shadow:
-    inset 0 1px 0 rgb(var(--c-fg) / 0.08),
-    0 4px 13px rgb(0 0 0 / 0.22);
+  box-shadow: 0 4px 13px rgb(0 0 0 / 0.22);
 }
 
 /* ─── Modern mega menus (navbar-06 reference) ─── */
@@ -2365,9 +2372,16 @@ html[data-panel-skin="modern"] .fd-mega-mobile-copy span {
   }
 }
 
-@media (max-width: 1280px) {
-  html[data-panel-skin="modern"] header.site-header-ai .fd-glass-navbar {
-    grid-template-columns: minmax(160px, 1fr) auto;
+@media (max-width: 1279px) {
+  /* Match desktop 3-col specificity so the hamburger is not stuck in the empty center track. */
+  html[data-panel-skin="modern"]:not([data-theme="dark"]) header.site-header-ai .fd-glass-navbar,
+  html[data-panel-skin="modern"][data-theme="light"] header.site-header-ai .fd-glass-navbar,
+  html[data-panel-skin="modern"][data-theme="dark"] header.site-header-ai .fd-glass-navbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  html[data-panel-skin="modern"] header.site-header-ai .fd-glass-actions {
+    justify-self: end;
   }
 }
 
@@ -2786,6 +2800,11 @@ html[data-panel-skin="modern"] section .border {
 html[data-panel-skin="modern"] .scroll-progress,
 html[data-panel-skin="modern"] [data-scroll-progress] {
   opacity: 0.85;
+}
+
+/* CRT amber hairline — hide on modern; it reads as a yellow streak over the black hero. */
+html[data-panel-skin="modern"] .fd-scroll-progress {
+  display: none;
 }
 
 /* Soften panel forms / lists / CTAs (tickets, invoices, editors) */
@@ -3538,6 +3557,13 @@ html.fd-crossing-derez body {
   --fd-dock-bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));
 }
 
+/* Full-screen mobile nav sits under the header; hide docks that stack above it. */
+html[data-mobile-nav="open"] #assistant,
+html[data-mobile-nav="open"] .fd-shiny-skin,
+html[data-mobile-nav="open"] [data-back-to-top] {
+  display: none !important;
+}
+
 /* ── Shiny skin FAB (56K ↔ AI) — binary digits, no bloom orbs ── */
 .fd-shiny-skin {
   --shiny-w: 138px;
@@ -3975,7 +4001,6 @@ html[lang="en"] .fd-shiny-skin[data-skin="modern"] .fd-shiny-face {
 }
 
 /* Kill CRT phosphor glow in AI night mode */
-html[data-panel-skin="modern"][data-theme="dark"] body,
 html[data-panel-skin="modern"][data-theme="dark"] h1,
 html[data-panel-skin="modern"][data-theme="dark"] .font-pixel {
   text-shadow: none !important;

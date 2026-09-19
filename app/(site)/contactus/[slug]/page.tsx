@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/contactus/${slug}`,
     title: page.title,
     description: page.subtitle,
+    lang,
   });
 }
 

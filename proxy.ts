@@ -14,7 +14,7 @@ const AUTH_PATHS = [
 const PROTECTED_PREFIX = "/panel";
 const ADMIN_PREFIX = "/admin";
 const MAINTENANCE_PATH = "/maintenance";
-const BYPASS_PREFIXES = ["/api", "/_next", "/fonts", "/maintenance", "/offline"];
+const BYPASS_PREFIXES = ["/api", "/_next", "/fonts", "/maintenance", "/offline", "/stt"];
 
 function isBypassed(pathname: string): boolean {
   if (pathname.startsWith("/icon")) return true;
@@ -50,9 +50,10 @@ export async function proxy(req: NextRequest) {
 
   const langParam = req.nextUrl.searchParams.get("lang");
   if (langParam === "fa" || langParam === "en") {
-    const clean = req.nextUrl.clone();
-    clean.searchParams.delete("lang");
-    const res = NextResponse.redirect(clean);
+    // Keep ?lang= on the URL so hreflang/sitemap alternates are stable for crawlers.
+    const res = NextResponse.next({
+      request: { headers: withLangHeaders(req, langParam) },
+    });
     res.cookies.set(LANG_STORAGE_KEY, langParam, {
       path: "/",
       maxAge: 60 * 60 * 24 * 365,
@@ -123,6 +124,6 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?|css|js)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest|stt(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2?|css|js|zip)$).*)",
   ],
 };
