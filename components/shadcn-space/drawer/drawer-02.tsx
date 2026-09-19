@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import EmptyState from "@/components/shadcn-space/blocks/empty-state-06/empty-state";
+import PixelIcon from "@/components/icons/PixelIcon";
+import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 import { cn } from "@/lib/utils";
 
 const FREE_SHIPPING_THRESHOLD = 555;
@@ -186,6 +188,8 @@ export function ShoppingCartDrawer({
   initialItems = [],
   persist = true,
 }: ShoppingCartDrawerProps = {}) {
+  const [skin] = usePanelSkin();
+  const modern = skin === "modern";
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [hydrated, setHydrated] = useState(!persist);
   const [hasFiredConfetti, setHasFiredConfetti] = useState(false);
@@ -314,7 +318,11 @@ export function ShoppingCartDrawer({
         />
       }
     >
-      <ShoppingCartIcon className="size-4" />
+      {modern ? (
+        <ShoppingCartIcon className="size-4" />
+      ) : (
+        <PixelIcon name="shopping-shipping-cart" size={16} className="text-current" />
+      )}
     </DrawerTrigger>
   ) : (
     <DrawerTrigger
@@ -326,7 +334,11 @@ export function ShoppingCartDrawer({
         />
       }
     >
-      <ShoppingCartIcon className="size-4" />
+      {modern ? (
+        <ShoppingCartIcon className="size-4" />
+      ) : (
+        <PixelIcon name="shopping-shipping-cart" size={16} className="text-current" />
+      )}
       {viewCartLabel}
     </DrawerTrigger>
   );
@@ -337,7 +349,11 @@ export function ShoppingCartDrawer({
       <DrawerContent className={CART_DRAWER_CONTENT_CLASS}>
         <DrawerHeader className="flex shrink-0 flex-row items-center justify-between gap-0 border-b border-border p-6">
           <div className="flex min-w-0 items-center gap-3">
-            <ShoppingBagIcon className="size-5 shrink-0" />
+            {modern ? (
+              <ShoppingBagIcon className="size-5 shrink-0" />
+            ) : (
+              <PixelIcon name="shopping-shipping-cart" size={20} className="text-current" />
+            )}
             <DrawerTitle className="truncate text-xl font-medium">
               {itemsTitle}
             </DrawerTitle>
@@ -350,7 +366,11 @@ export function ShoppingCartDrawer({
                 className="shrink-0 cursor-pointer"
                 aria-label={closeLabel}
               >
-                <XIcon className="size-5" />
+                {modern ? (
+                  <XIcon className="size-5" />
+                ) : (
+                  <PixelIcon name="phone-actions-remove-1" size={16} className="text-current" />
+                )}
               </Button>
             }
           />

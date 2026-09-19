@@ -99,6 +99,9 @@ function writeSkinLocal(skin: PanelSkin) {
 }
 
 async function persistSkinAccount(skin: PanelSkin) {
+  if (typeof document !== "undefined" && !/(?:^|;\s*)fd_auth=1/.test(document.cookie)) {
+    return;
+  }
   try {
     await fetch("/api/panel/account", {
       method: "PATCH",

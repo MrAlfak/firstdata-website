@@ -32,7 +32,7 @@ function contentSecurityPolicy(frameAncestors, opts = {}) {
     "font-src 'self' data:",
     connectSrc,
     "frame-src 'self' https://prod.spline.design",
-    "media-src 'self' blob: https://d8j0ntlcm91z4.cloudfront.net",
+    "media-src 'self' data: blob: https://d8j0ntlcm91z4.cloudfront.net",
     "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",

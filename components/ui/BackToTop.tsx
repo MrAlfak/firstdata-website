@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import PixelIcon from "@/components/icons/PixelIcon";
 import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 import { useT } from "@/i18n/LangProvider";
 import { cn } from "@/lib/utils";
@@ -138,7 +139,15 @@ export default function BackToTop() {
               ),
         )}
       >
-        <ArrowUp className="h-4 w-4" strokeWidth={modern ? 2.25 : 2} aria-hidden />
+        {modern ? (
+          <ArrowUp className="h-4 w-4" strokeWidth={2.25} aria-hidden />
+        ) : (
+          <PixelIcon
+            name="internet-network-upload"
+            size={18}
+            className="text-current"
+          />
+        )}
       </button>
     </div>
   );

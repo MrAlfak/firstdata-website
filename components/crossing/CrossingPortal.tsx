@@ -42,17 +42,21 @@ export function CrossingPortal({
   useEffect(() => {
     const shell = document.getElementById("site-shell") ?? document.body;
     const prevBusy = shell.getAttribute("aria-busy");
-    shell.setAttribute("aria-busy", "true");
-    if (shell !== document.body) {
-      shell.setAttribute("inert", "");
-      shell.setAttribute("aria-hidden", "true");
-    }
-    document.documentElement.setAttribute("data-crossing", "1");
+    let safety: number | undefined;
 
-    const safety = window.setTimeout(() => clearShellLock(shell, prevBusy), 18_000);
+    const frame = requestAnimationFrame(() => {
+      shell.setAttribute("aria-busy", "true");
+      if (shell !== document.body) {
+        shell.setAttribute("inert", "");
+        shell.setAttribute("aria-hidden", "true");
+      }
+      document.documentElement.setAttribute("data-crossing", "1");
+      safety = window.setTimeout(() => clearShellLock(shell, prevBusy), 18_000);
+    });
 
     return () => {
-      clearTimeout(safety);
+      cancelAnimationFrame(frame);
+      if (safety) clearTimeout(safety);
       clearShellLock(shell, prevBusy);
     };
   }, []);

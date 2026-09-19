@@ -7,7 +7,7 @@ import BackToTop from "@/components/ui/BackToTop";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div id="site-shell">
+    <div id="site-shell" suppressHydrationWarning>
       <Header />
       <SectionSidebarGate />
       <SiteBreadcrumbBar />

@@ -179,33 +179,27 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
 
 
 export async function setSessionCookie(token: string): Promise<void> {
-
   const jar = await cookies();
-
   jar.set(SESSION_COOKIE, token, {
-
     httpOnly: true,
-
     secure: process.env.NODE_ENV === "production",
-
     sameSite: "lax",
-
     path: "/",
-
     maxAge: SESSION_MAX_AGE,
-
   });
-
+  jar.set("fd_auth", "1", {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_MAX_AGE,
+  });
 }
 
-
-
 export async function clearSessionCookie(): Promise<void> {
-
   const jar = await cookies();
-
   jar.delete(SESSION_COOKIE);
-
+  jar.delete("fd_auth");
 }
 
 
