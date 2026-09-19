@@ -116,10 +116,10 @@ const LiquidWaveSpinner = memo(
     const containerRef = useRef<HTMLDivElement>(null);
     const clipId = useId();
 
-    const randomYDuration = useMemo(() => 5.5 + Math.random() * 1.5, []);
-    const randomXDurationBg = useMemo(() => 3.5 + Math.random() * 1.0, []);
-    const randomXDurationFg = useMemo(() => 2.5 + Math.random() * 1.0, []);
-    const randomDelay = useMemo(() => Math.random() * 0.5, []);
+    const randomYDuration = 6.2;
+    const randomXDurationBg = 4.0;
+    const randomXDurationFg = 3.0;
+    const randomDelay = 0.25;
 
     return (
       <motion.div

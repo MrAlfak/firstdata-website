@@ -2,12 +2,15 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useState,
+  useSyncExternalStore,
   type MouseEvent,
   type ReactNode,
 } from "react";
+import { useMounted } from "@/lib/hooks/useMounted";
 import {
   buildPanelSkinCookie,
   type PanelSkin,
@@ -155,47 +158,52 @@ export function reconcileSkinWithAccount(accountSkin: unknown): void {
   applyPanelSkin(fromAccount);
 }
 
+function subscribePanelSkin(callback: () => void): () => void {
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === PANEL_SKIN_KEY) callback();
+  };
+  const onCustom = () => {
+    callback();
+  };
+  window.addEventListener("storage", onStorage);
+  window.addEventListener("fd-panel-skin", onCustom);
+  return () => {
+    window.removeEventListener("storage", onStorage);
+    window.removeEventListener("fd-panel-skin", onCustom);
+  };
+}
+
+function getPanelSkinSnapshot(): PanelSkin {
+  return readDocumentPanelSkin();
+}
+
 /**
  * [skin, setSkin, hydrated]
  * Gate skin-branching UI (Hero) on hydrated to avoid modern→terminal flash.
  */
 export function usePanelSkin(): [PanelSkin, (next: PanelSkin) => void, boolean] {
   const initial = useContext(PanelSkinInitialContext);
-  const [skin, setSkin] = useState<PanelSkin>(initial);
-  const [hydrated, setHydrated] = useState(false);
+  const skin = useSyncExternalStore(
+    subscribePanelSkin,
+    getPanelSkinSnapshot,
+    () => initial,
+  );
+  const hydrated = useMounted();
 
-  useLayoutEffect(() => {
-    const stored = readDocumentPanelSkin();
-    setSkin(stored);
+  useEffect(() => {
     if (!document.documentElement.hasAttribute("data-preloader")) {
-      document.documentElement.setAttribute("data-panel-skin", stored);
+      document.documentElement.setAttribute("data-panel-skin", skin);
     }
     try {
-      document.cookie = buildPanelSkinCookie(stored);
+      document.cookie = buildPanelSkinCookie(skin);
     } catch {
       /* ignore */
     }
-    setHydrated(true);
+  }, [skin]);
 
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === PANEL_SKIN_KEY) setSkin(normalizePanelSkin(e.newValue));
-    };
-    const onCustom = (e: Event) => {
-      const detail = (e as CustomEvent<PanelSkin>).detail;
-      if (detail === "modern" || detail === "terminal") setSkin(detail);
-    };
-    window.addEventListener("storage", onStorage);
-    window.addEventListener("fd-panel-skin", onCustom);
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.removeEventListener("fd-panel-skin", onCustom);
-    };
-  }, []);
-
-  function set(next: PanelSkin) {
-    setSkin(next);
+  const set = useCallback((next: PanelSkin) => {
     applyPanelSkin(next, { syncAccount: true });
-  }
+  }, []);
 
   return [skin, set, hydrated];
 }

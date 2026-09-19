@@ -11,6 +11,7 @@ import AssistantReplyModal, {
 } from "@/components/interactive/AssistantReplyModal";
 import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
+import { useMounted } from "@/lib/hooks/useMounted";
 import { useT } from "@/i18n/LangProvider";
 import { cn } from "@/lib/utils";
 
@@ -57,14 +58,18 @@ export default function StickyAiPrompt() {
   const busyRef = useRef(false);
   const turnsRef = useRef<AssistantTurn[]>([]);
 
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [expanded, setExpanded] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setExpanded(false);
+  }
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<AssistantTurn[]>([]);
   const [composerEpoch, setComposerEpoch] = useState(0);
 
-  useEffect(() => setMounted(true), []);
   useEffect(() => {
     turnsRef.current = turns;
   }, [turns]);
@@ -110,11 +115,6 @@ export default function StickyAiPrompt() {
       document.removeEventListener("pointerdown", onPointer, true);
     };
   }, [expanded, open]);
-
-  // Route change → collapse
-  useEffect(() => {
-    setExpanded(false);
-  }, [pathname]);
 
   const abortInFlight = useCallback(() => {
     abortRef.current?.abort();

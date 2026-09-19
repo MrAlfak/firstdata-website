@@ -53,7 +53,7 @@ export default function ProductFeaturesSection({ data, accentText = "text-term" 
             }`}
           >
             <span className={`me-2 ${accentText}`} aria-hidden>
-              //
+              {"//"}
             </span>
             {data.callout}
           </motion.p>

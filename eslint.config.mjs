@@ -10,5 +10,5 @@ export default defineConfig([
       react: { version: "19" },
     },
   },
-  globalIgnores([".next/**", "node_modules/**", "out/**"]),
+  globalIgnores([".next/**", "node_modules/**", "out/**", "public/stt/**", "scripts/**"]),
 ]);

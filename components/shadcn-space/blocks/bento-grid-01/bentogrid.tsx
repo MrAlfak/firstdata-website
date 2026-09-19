@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import ReminderAnimation, {
   type ReminderItem,
@@ -153,16 +154,22 @@ const Bentogrid = ({
                 <div className="flex h-full flex-col rounded-xl border border-border">
                   <div className="relative flex flex-1 items-center justify-center rounded-t-xl bg-muted p-8">
                     {cell.imageLight ? (
-                      <img
+                      <Image
                         src={cell.imageLight}
                         alt={cell.imageAlt ?? cell.title}
+                        width={400}
+                        height={250}
+                        unoptimized
                         className={cell.imageDark ? "dark:hidden" : undefined}
                       />
                     ) : null}
                     {cell.imageDark ? (
-                      <img
+                      <Image
                         src={cell.imageDark}
                         alt={cell.imageAlt ?? cell.title}
+                        width={400}
+                        height={250}
+                        unoptimized
                         className="hidden dark:block"
                       />
                     ) : null}

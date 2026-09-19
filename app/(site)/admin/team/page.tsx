@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useT } from "@/i18n/LangProvider";
 import UserSearchInput from "@/components/admin/UserSearchInput";
 import { PanelCard, PanelLoading } from "@/components/panel/PanelLayoutClient";
@@ -25,20 +25,22 @@ export default function AdminTeamPage() {
   const [role, setRole] = useState("member");
   const [msg, setMsg] = useState("");
 
-  function loadOrgs() {
+  const loadOrgs = useCallback(() => {
     fetch("/api/admin/organizations")
       .then((r) => r.json())
       .then((j) => {
         if (j.success) {
           setOrgs(j.organizations);
-          if (j.organizations[0] && !selectedOrg) setSelectedOrg(j.organizations[0].id);
+          if (j.organizations[0]) {
+            setSelectedOrg((prev) => prev ?? j.organizations[0].id);
+          }
         }
       });
-  }
+  }, []);
 
   useEffect(() => {
     loadOrgs();
-  }, []);
+  }, [loadOrgs]);
 
   useEffect(() => {
     if (!selectedOrg) return;

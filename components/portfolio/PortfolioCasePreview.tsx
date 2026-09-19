@@ -1,7 +1,6 @@
 "use client";
 
 import type { PortfolioCategory, PortfolioProject } from "@/config/portfolio";
-import { useT } from "@/i18n/LangProvider";
 
 type Props = {
   project: PortfolioProject;
@@ -147,7 +146,6 @@ function previewForCategory(
 }
 
 export default function PortfolioCasePreview({ project, compact = false }: Props) {
-  const { lang } = useT();
   const title = project.title.en;
   const path = project.id.replace(/-/g, "/");
 

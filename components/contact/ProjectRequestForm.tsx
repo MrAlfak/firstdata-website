@@ -62,19 +62,21 @@ export default function ProjectRequestForm() {
   useEffect(() => {
     const draft = readLeadPrefill();
     if (!draft) return;
-    setForm((prev) => ({
-      ...prev,
-      name: draft.name?.trim() || prev.name,
-      email: draft.email?.trim() || prev.email,
-      phone: draft.phone?.trim() || prev.phone,
-      companyName: draft.companyName?.trim() || prev.companyName,
-      projectTypes: draft.projectTypes?.length ? draft.projectTypes : prev.projectTypes,
-      budget: draft.budget || prev.budget,
-      timeline: draft.timeline || prev.timeline,
-      description: draft.description?.trim() || prev.description,
-    }));
-    if (draft.description?.trim()) setStep(3);
-    clearLeadPrefill();
+    queueMicrotask(() => {
+      setForm((prev) => ({
+        ...prev,
+        name: draft.name?.trim() || prev.name,
+        email: draft.email?.trim() || prev.email,
+        phone: draft.phone?.trim() || prev.phone,
+        companyName: draft.companyName?.trim() || prev.companyName,
+        projectTypes: draft.projectTypes?.length ? draft.projectTypes : prev.projectTypes,
+        budget: draft.budget || prev.budget,
+        timeline: draft.timeline || prev.timeline,
+        description: draft.description?.trim() || prev.description,
+      }));
+      if (draft.description?.trim()) setStep(3);
+      clearLeadPrefill();
+    });
   }, []);
 
   const inputClass = cls.input();

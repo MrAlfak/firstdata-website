@@ -64,6 +64,11 @@ type Props = {
 
 export function LangProvider({ children, initialLang = "fa" }: Props) {
   const [lang, setLangState] = useState<Lang>(initialLang);
+  const [prevInitialLang, setPrevInitialLang] = useState<Lang>(initialLang);
+  if (initialLang !== prevInitialLang) {
+    setPrevInitialLang(initialLang);
+    setLangState(initialLang);
+  }
   const [switching, setSwitching] = useState(false);
   const [txKey, setTxKey] = useState(0);
   const txTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -72,11 +77,6 @@ export function LangProvider({ children, initialLang = "fa" }: Props) {
   // (that was causing English→Persian / Persian→English flashes on first paint).
   useEffect(() => {
     persistLang(initialLang);
-    if (lang !== initialLang) {
-      setLangState(initialLang);
-    }
-    // Only re-sync when the server seed changes (navigation with new cookie)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialLang]);
 
   const playTransition = useCallback(() => {

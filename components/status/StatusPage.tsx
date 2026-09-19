@@ -23,9 +23,7 @@ export default function StatusPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const load = useCallback(() => {
-    setLoading(true);
-    setError(false);
+  const fetchHealth = useCallback(() => {
     fetch("/api/health", { cache: "no-store" })
       .then(async (r) => {
         const j = (await r.json()) as HealthPayload;
@@ -39,9 +37,15 @@ export default function StatusPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(false);
+    fetchHealth();
+  }, [fetchHealth]);
+
   useEffect(() => {
-    load();
-  }, [load]);
+    fetchHealth();
+  }, [fetchHealth]);
 
   const ok = data?.ok && !error;
   const font = ai ? "font-iran" : fa ? "font-fa" : "font-mono";

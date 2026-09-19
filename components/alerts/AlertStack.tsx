@@ -76,12 +76,14 @@ export default function AlertStack() {
     return () => clearTimeout(t);
   }, [alerts]);
 
-  useEffect(() => {
+  const [prevAlertsLength, setPrevAlertsLength] = useState(alerts.length);
+  if (alerts.length !== prevAlertsLength) {
+    setPrevAlertsLength(alerts.length);
     if (!alerts.length) {
       setManualOpen(false);
       setHoverOpen(false);
     }
-  }, [alerts.length]);
+  }
 
   useEffect(() => {
     const shell = shellRef.current;
@@ -221,7 +223,6 @@ export default function AlertStack() {
         tabIndex={0}
         role="group"
         aria-label={a.stackLabel}
-        aria-expanded={open}
         onMouseEnter={() => {
           if (window.matchMedia("(hover: none)").matches) return;
           window.clearTimeout(closeTimer.current);

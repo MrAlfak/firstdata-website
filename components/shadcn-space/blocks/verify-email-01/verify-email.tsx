@@ -1,6 +1,7 @@
 "use client";
 
 import type { FormEvent, ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -99,14 +100,20 @@ const VerifyEmail = ({
                 )
               ) : (
                 <Link href={logoHref}>
-                  <img
+                  <Image
                     src={logoLightSrc}
                     alt={logoAlt}
+                    width={40}
+                    height={40}
+                    unoptimized
                     className="h-10 w-10 dark:hidden"
                   />
-                  <img
+                  <Image
                     src={logoDarkSrc}
                     alt={logoAlt}
+                    width={40}
+                    height={40}
+                    unoptimized
                     className="hidden h-10 w-10 dark:block"
                   />
                 </Link>

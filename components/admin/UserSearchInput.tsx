@@ -20,11 +20,24 @@ export default function UserSearchInput({
   const [selected, setSelected] = useState<UserHit | null>(null);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
     if (!value) {
       setSelected(null);
-      return;
     }
+  }
+
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    if (query.trim().length < 2) {
+      setHits([]);
+    }
+  }
+
+  useEffect(() => {
+    if (!value) return;
     if (selected?.id === value) return;
     fetch(`/api/admin/users?q=${value}`)
       .then((r) => r.json())
@@ -36,10 +49,7 @@ export default function UserSearchInput({
 
   useEffect(() => {
     const q = query.trim();
-    if (q.length < 2) {
-      setHits([]);
-      return;
-    }
+    if (q.length < 2) return;
     const t = setTimeout(() => {
       fetch(`/api/admin/users?q=${encodeURIComponent(q)}`)
         .then((r) => r.json())

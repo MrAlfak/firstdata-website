@@ -36,6 +36,13 @@ type Phase =
 export function EnterAiCrossing({ active, locale, status, onCommit, onDone }: Props) {
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("idle");
+  const [prevActive, setPrevActive] = useState(active);
+  if (active !== prevActive) {
+    setPrevActive(active);
+    if (!active) {
+      setPhase("idle");
+    }
+  }
   const [flyTo, setFlyTo] = useState<Point | null>(null);
   const doneRef = useRef(false);
   const committedRef = useRef(false);
@@ -60,10 +67,8 @@ export function EnterAiCrossing({ active, locale, status, onCommit, onDone }: Pr
 
   useEffect(() => {
     if (!active) {
-      setPhase("idle");
       doneRef.current = false;
       committedRef.current = false;
-      setFlyTo(null);
       return;
     }
 
@@ -76,46 +81,45 @@ export function EnterAiCrossing({ active, locale, status, onCommit, onDone }: Pr
     doneRef.current = false;
     committedRef.current = false;
 
-    if (reduced) {
-      setPhase("handoff");
-      if (!committedRef.current) {
-        committedRef.current = true;
-        onCommit();
-      }
-      timers.current.push(window.setTimeout(finish, 120));
-      return () => {
-        clearTimers();
-        releaseCrossing();
-        clearCrossingLock();
-      };
-    }
-
-    setPhase("compress");
-    document.documentElement.setAttribute("data-crossing-compress", "1");
-
-    timers.current.push(
-      window.setTimeout(() => {
-        document.documentElement.removeAttribute("data-crossing-compress");
-        setPhase("charge");
-      }, 320),
-      window.setTimeout(() => setPhase("assemble"), 1680),
-      window.setTimeout(() => {
+    const frameId = requestAnimationFrame(() => {
+      if (reduced) {
         setPhase("handoff");
         if (!committedRef.current) {
           committedRef.current = true;
           onCommit();
         }
-        requestAnimationFrame(() => {
+        timers.current.push(window.setTimeout(finish, 120));
+        return;
+      }
+
+      setPhase("compress");
+      document.documentElement.setAttribute("data-crossing-compress", "1");
+
+      timers.current.push(
+        window.setTimeout(() => {
+          document.documentElement.removeAttribute("data-crossing-compress");
+          setPhase("charge");
+        }, 320),
+        window.setTimeout(() => setPhase("assemble"), 1680),
+        window.setTimeout(() => {
+          setPhase("handoff");
+          if (!committedRef.current) {
+            committedRef.current = true;
+            onCommit();
+          }
           requestAnimationFrame(() => {
-            setFlyTo(brandAnchorCenter());
+            requestAnimationFrame(() => {
+              setFlyTo(brandAnchorCenter());
+            });
           });
-        });
-      }, 2480),
-      window.setTimeout(() => setPhase("exit"), 3020),
-      window.setTimeout(finish, 3520),
-    );
+        }, 2480),
+        window.setTimeout(() => setPhase("exit"), 3020),
+        window.setTimeout(finish, 3520),
+      );
+    });
 
     return () => {
+      cancelAnimationFrame(frameId);
       clearTimers();
       document.documentElement.removeAttribute("data-crossing-compress");
       if (!doneRef.current) {

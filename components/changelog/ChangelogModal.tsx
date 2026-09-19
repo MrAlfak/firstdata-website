@@ -50,9 +50,11 @@ export default function ChangelogModal({
     };
   }, [open, onClose]);
 
-  useEffect(() => {
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (!open) setMaximized(false);
-  }, [open]);
+  }
 
   if (!open) return null;
 

@@ -21,11 +21,14 @@ export function useTypewriter({
 }: UseTypewriterOptions): UseTypewriterReturn {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
-
-  useEffect(() => {
+  const [prevText, setPrevText] = useState(text);
+  if (text !== prevText) {
+    setPrevText(text);
     setDisplayed("");
     setDone(false);
+  }
 
+  useEffect(() => {
     let intervalId: ReturnType<typeof setInterval> | undefined;
 
     const delayTimer = setTimeout(() => {

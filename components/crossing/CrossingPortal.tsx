@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { CrossingAtmosphere } from "./CrossingAtmosphere";
+import { useMounted } from "@/lib/hooks/useMounted";
 
 type Props = {
   children: ReactNode;
@@ -33,11 +34,7 @@ export function CrossingPortal({
   reducedMotion = false,
   className,
 }: Props) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   useEffect(() => {
     const shell = document.getElementById("site-shell") ?? document.body;

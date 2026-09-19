@@ -74,12 +74,20 @@ export default function ModernSearchCommand({ open, onClose }: Props) {
   const results = React.useMemo(() => searchSite(query, lang), [query, lang]);
   const showResults = query.trim().length > 0;
 
-  React.useEffect(() => {
+  const [prevOpen, setPrevOpen] = React.useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (!open) {
       setQuery("");
-      return;
     }
-    setRecent(getRecentSearchEntries());
+  }
+
+  React.useEffect(() => {
+    if (!open) return;
+    const frameId = requestAnimationFrame(() => {
+      setRecent(getRecentSearchEntries());
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [open]);
 
   const navigate = React.useCallback(

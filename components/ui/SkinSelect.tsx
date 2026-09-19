@@ -87,6 +87,7 @@ export default function SkinSelect({
       <button
         id={id}
         type="button"
+        role="combobox"
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}

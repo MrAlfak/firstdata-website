@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { FILL_PATHS, LOGO_VIEW_BOX, TRACE_PATH } from "@/lib/brand/mark-paths";
+import { usePrefersReducedMotion } from "@/motion/usePrefersReducedMotion";
 
 /**
  * Logo Trace Loader — compact SVG reveal (21st.dev / dqnamo pattern).
@@ -33,32 +34,35 @@ export function LogoTraceLoader({
   ariaLabel = "Loading",
   onDone,
 }: LogoTraceLoaderProps) {
-  const [phase, setPhase] = useState<LoaderPhase>("loop");
-  const [fillOpacity, setFillOpacity] = useState(0);
+  const prefersReduced = usePrefersReducedMotion();
+  const [phase, setPhase] = useState<LoaderPhase>(() => (prefersReduced ? "done" : "loop"));
+  const [fillOpacity, setFillOpacity] = useState(() => (prefersReduced ? 1 : 0));
   const doneRef = useRef(false);
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
-
-  const shouldResolve = isComplete || !loading;
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setPhase("done");
-      setFillOpacity(1);
+    onDoneRef.current = onDone;
+  }, [onDone]);
+
+  const shouldResolve = isComplete || !loading || prefersReduced;
+
+  useEffect(() => {
+    if (prefersReduced) {
       if (!doneRef.current) {
         doneRef.current = true;
         onDoneRef.current?.();
       }
     }
-  }, []);
+  }, [prefersReduced]);
 
   useEffect(() => {
     if (doneRef.current) return;
     if (!shouldResolve) return;
     if (phase !== "loop") return;
 
-    setPhase("closingOutline");
+    const t0 = window.setTimeout(() => {
+      setPhase("closingOutline");
+    }, 0);
     const closeMs = 420;
     const fillMs = Math.round(fillFadeSeconds * 1000);
     const holdMs = 280;
@@ -86,6 +90,7 @@ export function LogoTraceLoader({
     }, closeMs + fillMs + holdMs + 800);
 
     return () => {
+      clearTimeout(t0);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(fallback);

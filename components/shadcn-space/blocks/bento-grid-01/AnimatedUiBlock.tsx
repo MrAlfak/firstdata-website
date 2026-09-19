@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import {
   AppWindowMac,
@@ -15,11 +16,12 @@ export default function AnimatedUiBlock() {
   return (
     <div className="relative flex min-h-[216px] items-center justify-center">
       <span className="flex items-center justify-center rounded-full shadow-lg">
-        <img
+        <Image
           alt="shadcn dark logo"
           src="https://images.shadcnspace.com/assets/logo/shadcn-logo.png"
           width={96}
           height={96}
+          unoptimized
         />
       </span>
       <motion.div

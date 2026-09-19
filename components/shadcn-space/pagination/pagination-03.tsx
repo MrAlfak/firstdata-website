@@ -47,10 +47,11 @@ export function InteractiveJumpPagination({
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [inputValue, setInputValue] = React.useState(String(activePage));
-
-  React.useEffect(() => {
+  const [prevActivePage, setPrevActivePage] = React.useState(activePage);
+  if (activePage !== prevActivePage) {
+    setPrevActivePage(activePage);
     setInputValue(String(activePage));
-  }, [activePage]);
+  }
 
   const handlePageChange = (page: number) => {
     const newPage = Math.max(1, Math.min(totalPages, page));

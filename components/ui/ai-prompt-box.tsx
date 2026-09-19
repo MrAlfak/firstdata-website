@@ -421,7 +421,7 @@ const PromptInputTextarea: React.FC<
   );
 };
 
-interface PromptInputActionsProps extends React.HTMLAttributes<HTMLDivElement> {}
+type PromptInputActionsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const PromptInputActions: React.FC<PromptInputActionsProps> = ({
   children,
@@ -440,7 +440,7 @@ interface PromptInputActionProps extends React.ComponentProps<typeof Button> {
   className?: string;
 }
 
-const PromptInputAction: React.FC<PromptInputActionProps> = ({
+export const PromptInputAction: React.FC<PromptInputActionProps> = ({
   tooltip,
   children,
   className,
@@ -512,7 +512,9 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
     const sttRef = React.useRef<BrowserSttSession | null>(null);
     const sttAbortRef = React.useRef<AbortController | null>(null);
     const onSendRef = React.useRef(onSend);
-    onSendRef.current = onSend;
+    React.useEffect(() => {
+      onSendRef.current = onSend;
+    }, [onSend]);
     const stopTimerRef = React.useRef<number | null>(null);
 
     const releaseMic = React.useCallback(() => {

@@ -65,9 +65,11 @@ export default function PanelCommandPalette() {
     return () => window.clearTimeout(t);
   }, [open]);
 
-  useEffect(() => {
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
     setActive(0);
-  }, [query]);
+  }
 
   function go(href: string) {
     close();

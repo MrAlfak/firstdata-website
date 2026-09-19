@@ -91,9 +91,10 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   }, [push]);
 
   useEffect(() => {
+    const activeTimers = timers.current;
     return () => {
-      timers.current.forEach((t) => window.clearTimeout(t));
-      timers.current.clear();
+      activeTimers.forEach((t) => window.clearTimeout(t));
+      activeTimers.clear();
     };
   }, []);
 

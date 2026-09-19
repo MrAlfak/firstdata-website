@@ -1,10 +1,7 @@
 import type { NextRequest } from "next/server";
 import { jsonError, jsonOk } from "@/lib/auth/api";
 import { requireStaffOrError } from "@/lib/panel/admin-api";
-import {
-  adminListInvoices,
-  adminMarkInvoicePaid,
-} from "@/lib/panel/admin-repository";
+import { adminListInvoices } from "@/lib/panel/admin-repository";
 import { adminCreateInvoice } from "@/lib/panel/repository";
 
 export const runtime = "nodejs";

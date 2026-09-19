@@ -75,7 +75,7 @@ export function InfiniteSlider({
       });
     } else {
       translation.set(from);
-      setStarted(true);
+      requestAnimationFrame(() => setStarted(true));
       controls = animate(translation, [from, to], {
         ease: "linear",
         duration,

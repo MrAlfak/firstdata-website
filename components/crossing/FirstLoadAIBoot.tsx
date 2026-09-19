@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CrossingPortal } from "./CrossingPortal";
 import { IdentityDisc, type DiscVisualPhase } from "./IdentityDisc";
@@ -17,7 +17,7 @@ import type { CrossingLocale } from "@/lib/crossing/types";
 type Props = {
   locale: CrossingLocale;
   status: string;
-  ready: string;
+  ready?: string;
   enabled?: boolean;
   onDone: () => void;
 };
@@ -35,11 +35,18 @@ export function FirstLoadAIBoot({
   onDone,
 }: Props) {
   const reduced = useReducedMotion();
-  const [phase, setPhase] = useState<Phase | "skip" | null>(null);
+  const [phase, setPhase] = useState<Phase | "skip" | null>(() => (!enabled ? "skip" : null));
+  const [prevEnabled, setPrevEnabled] = useState(enabled);
+  if (enabled !== prevEnabled) {
+    setPrevEnabled(enabled);
+    if (!enabled) {
+      setPhase("skip");
+    }
+  }
   const doneRef = useRef(false);
   const timers = useRef<number[]>([]);
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (doneRef.current) return;
     doneRef.current = true;
     timers.current.forEach(clearTimeout);
@@ -50,58 +57,56 @@ export function FirstLoadAIBoot({
     releaseCrossing();
     setPhase("done");
     onDone();
-  };
+  }, [onDone]);
 
   useEffect(() => {
     if (!enabled) {
-      setPhase("skip");
       onDone();
       return;
     }
 
-    if (hasSeenModernFirstLoad()) {
-      setPhase("skip");
-      onDone();
-      return;
-    }
+    const frameId = requestAnimationFrame(() => {
+      if (hasSeenModernFirstLoad()) {
+        setPhase("skip");
+        onDone();
+        return;
+      }
 
-    if (!tryAcquireCrossing("enter-ai")) {
-      setPhase("skip");
-      onDone();
-      return;
-    }
+      if (!tryAcquireCrossing("enter-ai")) {
+        setPhase("skip");
+        onDone();
+        return;
+      }
 
-    setCrossingLock("enter-ai");
-    setPhase("void");
+      setCrossingLock("enter-ai");
+      setPhase("void");
 
-    if (reduced) {
-      setPhase("lock");
-      const t = window.setTimeout(finish, 100);
-      timers.current.push(t);
-      return () => {
-        timers.current.forEach(clearTimeout);
-        releaseCrossing();
-        clearCrossingLock();
-      };
-    }
+      if (reduced) {
+        setPhase("lock");
+        const t = window.setTimeout(finish, 100);
+        timers.current.push(t);
+        return;
+      }
 
-    timers.current.push(
-      window.setTimeout(() => setPhase("charge"), 200),
-      window.setTimeout(() => setPhase("assemble"), 980),
-      window.setTimeout(() => setPhase("lock"), 1480),
-      window.setTimeout(() => setPhase("exit"), 1880),
-      window.setTimeout(finish, 2360),
-    );
+      timers.current.push(
+        window.setTimeout(() => setPhase("charge"), 200),
+        window.setTimeout(() => setPhase("assemble"), 980),
+        window.setTimeout(() => setPhase("lock"), 1480),
+        window.setTimeout(() => setPhase("exit"), 1880),
+        window.setTimeout(finish, 2360),
+      );
+    });
 
     return () => {
+      cancelAnimationFrame(frameId);
       timers.current.forEach(clearTimeout);
+      timers.current = [];
       if (!doneRef.current) {
         releaseCrossing();
         clearCrossingLock();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, reduced]);
+  }, [enabled, onDone, reduced, finish]);
 
   if (!phase || phase === "skip" || phase === "done") return null;
 
@@ -126,7 +131,7 @@ export function FirstLoadAIBoot({
   return (
     <CrossingPortal
       locale={locale}
-      status={phase === "exit" ? ready : status}
+      status={phase === "exit" ? (ready ?? status) : status}
       exiting={phase === "exit"}
       intensity={intensity}
       reducedMotion={Boolean(reduced)}

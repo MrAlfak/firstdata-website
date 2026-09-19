@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import InnerPage from "@/components/layout/InnerPage";
 import BlogCategoryFilter, { type BlogFilter } from "@/components/blog/BlogCategoryFilter";
 import BlogFeaturedPost from "@/components/blog/BlogFeaturedPost";
@@ -38,15 +38,18 @@ export default function BlogClient({ initialFilter }: { initialFilter: BlogFilte
   );
 
   const [filter, setFilter] = useState<BlogFilter>(initialFilter);
-  const [pageIndex, setPageIndex] = useState(1);
-
-  useEffect(() => {
+  const [prevInitialFilter, setPrevInitialFilter] = useState(initialFilter);
+  if (initialFilter !== prevInitialFilter) {
+    setPrevInitialFilter(initialFilter);
     setFilter(initialFilter);
-  }, [initialFilter]);
+  }
 
-  useEffect(() => {
+  const [pageIndex, setPageIndex] = useState(1);
+  const [prevFilter, setPrevFilter] = useState(filter);
+  if (filter !== prevFilter) {
+    setPrevFilter(filter);
     setPageIndex(1);
-  }, [filter]);
+  }
 
   const counts = useMemo(() => {
     const base: Record<BlogFilter, number> = {
@@ -81,15 +84,13 @@ export default function BlogClient({ initialFilter }: { initialFilter: BlogFilte
     ? Math.max(1, Math.ceil(filtered.length / MODERN_PAGE_SIZE))
     : 1;
 
+  const safePageIndex = Math.min(pageIndex, totalPages);
+
   const pagedPosts = useMemo(() => {
     if (!modern) return filtered;
-    const start = (pageIndex - 1) * MODERN_PAGE_SIZE;
+    const start = (safePageIndex - 1) * MODERN_PAGE_SIZE;
     return filtered.slice(start, start + MODERN_PAGE_SIZE);
-  }, [filtered, modern, pageIndex]);
-
-  useEffect(() => {
-    if (pageIndex > totalPages) setPageIndex(totalPages);
-  }, [pageIndex, totalPages]);
+  }, [filtered, modern, safePageIndex]);
 
   const handlePageChange = useCallback((next: number) => {
     setPageIndex(next);
@@ -139,7 +140,7 @@ export default function BlogClient({ initialFilter }: { initialFilter: BlogFilte
           {modern && totalPages > 1 ? (
             <div className="px-4 pb-12 sm:px-6 lg:px-8">
               <InteractiveJumpPagination
-                page={pageIndex}
+                page={safePageIndex}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
                 ofLabel={ui.pageOf}

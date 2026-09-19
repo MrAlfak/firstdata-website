@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { createPortal } from "react-dom";
+import { useMounted } from "@/lib/hooks/useMounted";
 import {
   brandAnchorCenter,
   filamentPath,
@@ -48,16 +49,21 @@ export function ExitDialupCrossing({
   onError,
 }: Props) {
   const reduced = useReducedMotion();
+  const mounted = useMounted();
   const [phase, setPhase] = useState<Phase>("idle");
-  const [mounted, setMounted] = useState(false);
+  const [prevActive, setPrevActive] = useState(active);
+  if (active !== prevActive) {
+    setPrevActive(active);
+    if (!active) {
+      setPhase("idle");
+    }
+  }
   const [from, setFrom] = useState<Point>({ x: 0, y: 0 });
   const [to, setTo] = useState<Point>({ x: 0, y: 0 });
   const [pathLen, setPathLen] = useState(1);
   const doneRef = useRef(false);
   const committedRef = useRef(false);
   const timers = useRef<number[]>([]);
-
-  useEffect(() => setMounted(true), []);
 
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
@@ -113,7 +119,6 @@ export function ExitDialupCrossing({
 
   useEffect(() => {
     if (!active) {
-      setPhase("idle");
       doneRef.current = false;
       committedRef.current = false;
       return;
@@ -128,59 +133,58 @@ export function ExitDialupCrossing({
     doneRef.current = false;
     committedRef.current = false;
 
-    const fab = origin ?? measureFabCenter();
-    const brand = brandAnchorCenter();
-    setFrom(brand);
-    setTo(fab);
-    setPathLen(1);
+    const initFrame = requestAnimationFrame(() => {
+      const fab = origin ?? measureFabCenter();
+      const brand = brandAnchorCenter();
+      setFrom(brand);
+      setTo(fab);
+      setPathLen(1);
 
-    if (reduced) {
-      try {
-        if (!committedRef.current) {
-          committedRef.current = true;
-          onCommit();
-        }
-        timers.current.push(window.setTimeout(finish, 80));
-      } catch {
-        onError?.();
-        finish();
-      }
-      return () => {
-        clearTimers();
-        releaseCrossing();
-        clearCrossingLock();
-      };
-    }
-
-    setPhase("coherence");
-    document.documentElement.classList.add("fd-crossing-derez");
-
-    timers.current.push(
-      window.setTimeout(() => {
-        document.documentElement.classList.remove("fd-crossing-derez");
-        setPhase("unspool");
-        setPathLen(1);
-      }, 220),
-      window.setTimeout(() => {
-        setPhase("retract");
-        setPathLen(0);
-      }, 620),
-      window.setTimeout(() => {
-        setPhase("reveal");
+      if (reduced) {
         try {
-          runViewTransitionWipe(fab);
-        } catch {
-          onError?.();
           if (!committedRef.current) {
             committedRef.current = true;
             onCommit();
           }
+          timers.current.push(window.setTimeout(finish, 80));
+        } catch {
+          onError?.();
+          finish();
         }
-      }, 860),
-      window.setTimeout(finish, 1420),
-    );
+        return;
+      }
+
+      setPhase("coherence");
+      document.documentElement.classList.add("fd-crossing-derez");
+
+      timers.current.push(
+        window.setTimeout(() => {
+          document.documentElement.classList.remove("fd-crossing-derez");
+          setPhase("unspool");
+          setPathLen(1);
+        }, 220),
+        window.setTimeout(() => {
+          setPhase("retract");
+          setPathLen(0);
+        }, 620),
+        window.setTimeout(() => {
+          setPhase("reveal");
+          try {
+            runViewTransitionWipe(fab);
+          } catch {
+            onError?.();
+            if (!committedRef.current) {
+              committedRef.current = true;
+              onCommit();
+            }
+          }
+        }, 860),
+        window.setTimeout(finish, 1420),
+      );
+    });
 
     return () => {
+      cancelAnimationFrame(initFrame);
       clearTimers();
       document.documentElement.classList.remove("fd-crossing-derez");
       if (!doneRef.current) {

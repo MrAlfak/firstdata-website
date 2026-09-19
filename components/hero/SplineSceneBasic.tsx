@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
@@ -11,15 +12,6 @@ import { HERO_SPLINE_EMBED_PATH, HERO_SPLINE_POINTER_TYPE } from "@/config/hero-
 type Props = {
   revealed?: boolean;
 };
-
-function openBuilderView() {
-  const fab = document.querySelector<HTMLButtonElement>("[data-skin-fab]");
-  if (fab && !fab.disabled) {
-    fab.click();
-    return;
-  }
-  window.location.assign("/?skin=terminal");
-}
 
 /**
  * Modern-skin homepage hero — Spline card below the floating glass header.
@@ -36,7 +28,17 @@ function openBuilderView() {
  * 1) Project assessment  2) Portfolio outcomes  3) Builder / 56K world
  */
 export default function SplineSceneBasic({ revealed = true }: Props) {
+  const router = useRouter();
   const { d, dir, fa, t } = useT();
+
+  const handleOpenBuilderView = () => {
+    const fab = document.querySelector<HTMLButtonElement>("[data-skin-fab]");
+    if (fab && !fab.disabled) {
+      fab.click();
+      return;
+    }
+    router.push("/?skin=terminal");
+  };
   // Coarse pointers: let touch hit the page (iframe is overflow-locked).
   const [passThroughPointers, setPassThroughPointers] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -185,7 +187,7 @@ export default function SplineSceneBasic({ revealed = true }: Props) {
               </Link>
               <button
                 type="button"
-                onClick={openBuilderView}
+                onClick={handleOpenBuilderView}
                 className={`rounded-full border border-white/15 px-4 py-2.5 text-xs text-neutral-400 transition-colors hover:border-white/35 hover:text-neutral-200 ${
                   fa ? "font-iran" : ""
                 }`}

@@ -35,11 +35,23 @@ export default function SearchModal({ open, onClose }: Props) {
   const results = useMemo(() => searchSite(query, lang), [query, lang]);
   const showResults = query.trim().length > 0;
 
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (!open) {
+      setQuery("");
+      setMaximized(false);
+    }
+  }
+
   useFocusTrap(open, panelRef);
 
   useEffect(() => {
     if (!open) return;
-    setRecent(getRecentSearches());
+
+    const frameId = requestAnimationFrame(() => {
+      setRecent(getRecentSearches());
+    });
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -50,18 +62,12 @@ export default function SearchModal({ open, onClose }: Props) {
     const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 40);
 
     return () => {
+      cancelAnimationFrame(frameId);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
       window.clearTimeout(focusTimer);
     };
   }, [open, onClose]);
-
-  useEffect(() => {
-    if (!open) {
-      setQuery("");
-      setMaximized(false);
-    }
-  }, [open]);
 
   if (!open) return null;
 

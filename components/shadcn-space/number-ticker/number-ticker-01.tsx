@@ -37,15 +37,18 @@ export function NumberTicker({
   const reducedMotion = usePrefersReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const [inViewReady, setInViewReady] = useState(!inView);
+  const [prevInView, setPrevInView] = useState(inView);
+  if (inView !== prevInView) {
+    setPrevInView(inView);
+    if (!inView) setInViewReady(true);
+  }
+
   const [value, setValue] = useState(reducedMotion && active ? end : start);
   const startTimeRef = useRef<number | null>(null);
   const shouldAnimate = active && inViewReady && !reducedMotion;
 
   useEffect(() => {
-    if (!inView) {
-      setInViewReady(true);
-      return;
-    }
+    if (!inView) return;
 
     const el = ref.current;
     if (!el) return;
@@ -66,26 +69,26 @@ export function NumberTicker({
 
   useEffect(() => {
     if (!shouldAnimate) {
-      setValue(active && reducedMotion ? end : start);
       startTimeRef.current = null;
       return;
     }
 
     startTimeRef.current = null;
-    setValue(start);
     let frame = 0;
 
     const animate = (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp;
+        setValue(start);
+      }
 
       const progress = timestamp - startTimeRef.current;
       const percent = Math.min(progress / (duration * 1000), 1);
 
       // ease-out cubic for smooth animation
       const eased = 1 - Math.pow(1 - percent, 3);
-
-      const current = start + (end - start) * eased;
-      setValue(current);
+      const currentValue = start + (end - start) * eased;
+      setValue(currentValue);
 
       if (percent < 1) {
         frame = requestAnimationFrame(animate);
@@ -99,7 +102,8 @@ export function NumberTicker({
     return () => cancelAnimationFrame(frame);
   }, [start, end, duration, shouldAnimate, active, reducedMotion]);
 
-  const numeric = value.toFixed(decimals);
+  const displayValue = shouldAnimate ? value : active && reducedMotion ? end : start;
+  const numeric = displayValue.toFixed(decimals);
   const formatted = formatValue ? formatValue(numeric) : numeric;
 
   return (

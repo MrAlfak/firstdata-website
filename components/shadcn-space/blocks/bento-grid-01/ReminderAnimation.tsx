@@ -69,12 +69,12 @@ export default function ReminderAnimation({ items = DATA }: Props) {
   const [visible, setVisible] = useState<Item[]>(() => source.slice(0, 3));
   const [pointer, setPointer] = useState(() => Math.min(2, source.length - 1));
 
-  useEffect(() => {
+  const [prevSourceKey, setPrevSourceKey] = useState(sourceKey);
+  if (sourceKey !== prevSourceKey) {
+    setPrevSourceKey(sourceKey);
     setVisible(source.slice(0, Math.min(3, source.length)));
     setPointer(Math.min(2, source.length - 1));
-    // Reset only when item ids change (avoid reset on new array refs)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- sourceKey tracks identity
-  }, [sourceKey]);
+  }
 
   useEffect(() => {
     if (source.length < 2) return;

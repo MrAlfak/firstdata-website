@@ -17,7 +17,6 @@ function CrtTerminal({ showIntro }: Props) {
     lines,
     input,
     setInput,
-    printing,
     busy,
     outputRef,
     inputRef,

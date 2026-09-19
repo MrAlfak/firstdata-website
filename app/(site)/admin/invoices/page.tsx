@@ -6,6 +6,10 @@ import UserSearchInput from "@/components/admin/UserSearchInput";
 import { PanelCard, PanelEmpty, PanelLoading } from "@/components/panel/PanelLayoutClient";
 import type { AdminInvoiceRow } from "@/lib/panel/admin-repository";
 
+function generateManualRefId() {
+  return `manual-${Date.now()}`;
+}
+
 export default function AdminInvoicesPage() {
   const { dir, a, fd } = useT();
   const inv = a.invoices;
@@ -65,7 +69,7 @@ export default function AdminInvoicesPage() {
 
   async function markPaid(id: number) {
     if (!confirm(inv.markPaidConfirm)) return;
-    const refId = prompt(inv.refId) ?? `manual-${Date.now()}`;
+    const refId = prompt(inv.refId) ?? generateManualRefId();
     await fetch(`/api/admin/invoices/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

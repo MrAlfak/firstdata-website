@@ -278,6 +278,13 @@ export default function Header() {
   const megaCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const megaTriggerRefs = useRef<Record<string, HTMLElement | null>>({});
   const [openMegaSlug, setOpenMegaSlug] = useState<string | null>(null);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setOpenMobileSubmenu(null);
+    setContactDesktopOpen(false);
+    setOpenMegaSlug(null);
+  }
   const [authUser, setAuthUser] = useState<PublicUser | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
@@ -350,14 +357,6 @@ export default function Header() {
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
-
-  useEffect(() => {
-    scheduleUpdate(() => setOpenMobileSubmenu(null));
-  }, [pathname]);
-
-  useEffect(() => {
-    setContactDesktopOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!contactDesktopOpen) return;
@@ -450,10 +449,6 @@ export default function Header() {
     clearMegaCloseTimer();
     megaCloseTimer.current = setTimeout(() => closeMegaMenus(), 145);
   };
-
-  useEffect(() => {
-    setOpenMegaSlug(null);
-  }, [pathname]);
 
   useEffect(() => {
     if (!siteModern || !openMegaSlug) return;

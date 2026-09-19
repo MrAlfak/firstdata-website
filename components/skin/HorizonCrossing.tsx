@@ -183,14 +183,21 @@ function HorizonStage({
     dissolveRaf.current = requestAnimationFrame(tick);
   }
 
+  const startLandingRef = useRef(startLanding);
+  const fireDoneRef = useRef(fireDone);
+  useEffect(() => {
+    startLandingRef.current = startLanding;
+    fireDoneRef.current = fireDone;
+  });
+
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
     const stage = stageRef.current;
     // Absolute escape hatch — WebGL stall / RAF cancel must never trap the page
     const safety = window.setTimeout(() => {
       if (doneFired.current) return;
-      if (!dissolveStarted.current) startLanding();
-      window.setTimeout(fireDone, 400);
+      if (!dissolveStarted.current) startLandingRef.current();
+      window.setTimeout(() => fireDoneRef.current(), 400);
     }, SAFETY_MS);
 
     if (stage) {

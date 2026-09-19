@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useVelocity, useMotionValueEvent } from "motion/react";
 import StableScramble from "@/motion/StableScramble";
@@ -12,6 +13,7 @@ import SplineSceneBasic from "@/components/hero/SplineSceneBasic";
 import { usePanelSkin } from "@/components/panel/PanelSkinToggle";
 
 export default function Hero() {
+  const router = useRouter();
   const [revealed, setRevealed] = useState(false);
   const { t, fa, dir, d, p } = useT();
   const [skin, , skinReady] = usePanelSkin();
@@ -167,7 +169,7 @@ export default function Hero() {
                     onClick={() => {
                       const fab = document.querySelector<HTMLButtonElement>("[data-skin-fab]");
                       if (fab && !fab.disabled) fab.click();
-                      else window.location.assign("/?skin=modern");
+                      else router.push("/?skin=modern");
                     }}
                     className={`border border-paper/20 px-4 py-2 text-[10px] uppercase tracking-wider text-paper/45 transition-colors duration-200 hover:border-paper/50 hover:text-paper/80 sm:px-5 sm:py-2.5 ${
                       fa ? "font-fa" : ""
@@ -191,7 +193,7 @@ export default function Hero() {
           >
             {[...marqueeItems, ...marqueeItems].map((item, i) => (
               <span key={i} className={`px-2 sm:px-3 ${fa ? "font-fa" : ""}`}>
-                {item} ///
+                {item} {"///"}
               </span>
             ))}
           </div>

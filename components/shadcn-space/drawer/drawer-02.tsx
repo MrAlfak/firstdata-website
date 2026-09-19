@@ -192,14 +192,16 @@ export function ShoppingCartDrawer({
   const modern = skin === "modern";
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [hydrated, setHydrated] = useState(!persist);
-  const [hasFiredConfetti, setHasFiredConfetti] = useState(false);
+  const hasFiredConfettiRef = useRef(false);
   const progressSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!persist) return;
-    const stored = readStoredCart();
-    if (stored) setItems(stored);
-    setHydrated(true);
+    queueMicrotask(() => {
+      const stored = readStoredCart();
+      if (stored) setItems(stored);
+      setHydrated(true);
+    });
   }, [persist]);
 
   useEffect(() => {
@@ -263,7 +265,7 @@ export function ShoppingCartDrawer({
 
   useEffect(() => {
     if (subtotal >= FREE_SHIPPING_THRESHOLD && subtotal > 0) {
-      if (!hasFiredConfetti) {
+      if (!hasFiredConfettiRef.current) {
         if (progressSectionRef.current) {
           const rect = progressSectionRef.current.getBoundingClientRect();
           const x = (rect.left + rect.width / 2) / window.innerWidth;
@@ -274,12 +276,12 @@ export function ShoppingCartDrawer({
             origin: { x, y },
           });
         }
-        setHasFiredConfetti(true);
+        hasFiredConfettiRef.current = true;
       }
     } else {
-      setHasFiredConfetti(false);
+      hasFiredConfettiRef.current = false;
     }
-  }, [subtotal, hasFiredConfetti]);
+  }, [subtotal]);
 
   const viewCartLabel = labels?.viewCart ?? "View Cart";
   const ariaLabel = triggerAriaLabel ?? viewCartLabel;

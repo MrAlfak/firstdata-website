@@ -19,12 +19,19 @@ export default function SearchPageClient({ initialQuery }: { initialQuery: strin
   const router = useRouter();
   const initial = initialQuery;
   const [query, setQuery] = useState(initial);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
+    setQuery(initial);
+  }
   const [recent, setRecent] = useState<string[]>([]);
 
   useEffect(() => {
-    setQuery(initial);
     if (initial.trim()) pushRecentSearch(initial);
-    setRecent(getRecentSearches());
+    const frameId = requestAnimationFrame(() => {
+      setRecent(getRecentSearches());
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [initial]);
 
   const results = useMemo(() => searchSite(query, lang, 24), [query, lang]);

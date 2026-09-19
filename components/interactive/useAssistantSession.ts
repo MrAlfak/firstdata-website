@@ -147,7 +147,9 @@ export function useAssistantSession(mode: AssistantMode) {
 
   useEffect(() => {
     if (mode !== "chat") {
-      setHydrated(true);
+      scheduleUpdate(() => {
+        setHydrated(true);
+      });
       return;
     }
     const saved = readSession(lang);

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Eye, Ticket } from "lucide-react";
 import { useT } from "@/i18n/LangProvider";
@@ -128,6 +129,7 @@ export default function TicketsClient() {
 }
 
 export function TicketNewClient() {
+  const router = useRouter();
   const { dir, fa, p } = useT();
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [contracts, setContracts] = useState<ContractOption[]>([]);
@@ -156,11 +158,7 @@ export function TicketNewClient() {
     return contracts.filter((c) => String(c.project_id) === projectId);
   }, [contracts, projectId]);
 
-  useEffect(() => {
-    if (contractId && !filteredContracts.some((c) => String(c.id) === contractId)) {
-      setContractId("");
-    }
-  }, [contractId, filteredContracts]);
+  const selectedContractId = filteredContracts.some((c) => String(c.id) === contractId) ? contractId : "";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -172,14 +170,14 @@ export function TicketNewClient() {
     form.append("department", department);
     form.append("priority", priority);
     if (projectId) form.append("projectId", projectId);
-    if (contractId) form.append("contractId", contractId);
+    if (selectedContractId) form.append("contractId", selectedContractId);
     files.forEach((file) => form.append("files", file));
 
     const res = await fetch("/api/panel/tickets", { method: "POST", body: form });
     const j = await res.json();
     setBusy(false);
     if (j.success && j.ticketId) {
-      window.location.href = `/panel/tickets/${j.ticketId}`;
+      router.push(`/panel/tickets/${j.ticketId}`);
       return;
     }
     setError(typeof j.message === "string" ? j.message : p.common.error);
@@ -246,7 +244,10 @@ export function TicketNewClient() {
               <select
                 className={input}
                 value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
+                onChange={(e) => {
+                  setProjectId(e.target.value);
+                  setContractId("");
+                }}
                 disabled={projects.length === 0}
               >
                 <option value="">{p.tickets.noProject}</option>
@@ -264,7 +265,7 @@ export function TicketNewClient() {
               <label className="mb-1 block text-xs text-paper/45">{p.nav.contracts}</label>
               <select
                 className={input}
-                value={contractId}
+                value={selectedContractId}
                 onChange={(e) => setContractId(e.target.value)}
                 disabled={filteredContracts.length === 0}
               >

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -29,11 +30,12 @@ const BreadcrumbOutlineDemo = () => {
         </li>
         <BreadcrumbItem>
           <BreadcrumbLink href="#" className="inline-flex items-center">
-            <img
+            <Image
               src="https://images.shadcnspace.com/assets/logo/theme-logo.svg"
               width={20}
               height={20}
               alt=""
+              unoptimized
             />
             <span className="sr-only">Home</span>
           </BreadcrumbLink>
