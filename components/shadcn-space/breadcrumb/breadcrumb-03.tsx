@@ -31,7 +31,7 @@ const BreadcrumbOutlineDemo = () => {
         <BreadcrumbItem>
           <BreadcrumbLink href="#" className="inline-flex items-center">
             <Image
-              src="https://images.shadcnspace.com/assets/logo/theme-logo.svg"
+              src="/images/shadcnspace/logo/theme-logo.svg"
               width={20}
               height={20}
               alt=""

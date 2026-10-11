@@ -18,7 +18,7 @@ export default function AnimatedUiBlock() {
       <span className="flex items-center justify-center rounded-full shadow-lg">
         <Image
           alt="shadcn dark logo"
-          src="https://images.shadcnspace.com/assets/logo/shadcn-logo.png"
+          src="/images/shadcnspace/logo/shadcn-logo.png"
           width={96}
           height={96}
           unoptimized

@@ -34,21 +34,21 @@ const DEFAULT_CARDS: [BentoCell, BentoCell, BentoCell] = [
   {
     title: "Multiple layout options",
     description: "We have LTR and RTL options along with different layout options as well.",
-    imageLight: "https://images.shadcnspace.com/assets/bento-grid/bento-grid-img-1.png",
-    imageDark: "https://images.shadcnspace.com/assets/bento-grid/bento-grid-darkimg-1.png",
+    imageLight: "/images/shadcnspace/bento-grid/bento-grid-img-1.png",
+    imageDark: "/images/shadcnspace/bento-grid/bento-grid-darkimg-1.png",
     imageAlt: "layout options",
   },
   {
     title: "Well documented",
     description: "A well-structured and easy-to-follow documentation for your project.",
-    imageLight: "https://images.shadcnspace.com/assets/bento-grid/bento-grid-img-2.png",
-    imageDark: "https://images.shadcnspace.com/assets/bento-grid/bento-grid-darkimg-2.png",
+    imageLight: "/images/shadcnspace/bento-grid/bento-grid-img-2.png",
+    imageDark: "/images/shadcnspace/bento-grid/bento-grid-darkimg-2.png",
     imageAlt: "documentation",
   },
   {
     title: "Multiple color options",
     description: "Unlimited color options to match with your brand instantly and easily.",
-    imageLight: "https://images.shadcnspace.com/assets/bento-grid/bento-grid-img-3.png",
+    imageLight: "/images/shadcnspace/bento-grid/bento-grid-img-3.png",
     imageAlt: "color options",
   },
 ];

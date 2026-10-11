@@ -45,9 +45,9 @@ export type ForgotPasswordProps = {
 };
 
 const DEFAULT_LOGO_LIGHT =
-  "https://images.shadcnspace.com/assets/logo/logo-icon-black.svg";
+  "/images/shadcnspace/logo/logo-icon-black.svg";
 const DEFAULT_LOGO_DARK =
-  "https://images.shadcnspace.com/assets/logo/logo-icon-white.svg";
+  "/images/shadcnspace/logo/logo-icon-white.svg";
 
 const ForgotPassword = ({
   className,

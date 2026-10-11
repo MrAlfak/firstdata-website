@@ -36,35 +36,35 @@ export function LogoCloud({ className }: { className?: string }) {
 
 const logos = [
   {
-    src: "https://storage.efferd.com/logo/nvidia-wordmark.svg",
+    src: "/images/logos/nvidia-wordmark.svg",
     alt: "Nvidia Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/supabase-wordmark.svg",
+    src: "/images/logos/supabase-wordmark.svg",
     alt: "Supabase Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/openai-wordmark.svg",
+    src: "/images/logos/openai-wordmark.svg",
     alt: "OpenAI Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/turso-wordmark.svg",
+    src: "/images/logos/turso-wordmark.svg",
     alt: "Turso Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/vercel-wordmark.svg",
+    src: "/images/logos/vercel-wordmark.svg",
     alt: "Vercel Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/github-wordmark.svg",
+    src: "/images/logos/github-wordmark.svg",
     alt: "GitHub Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/claude-wordmark.svg",
+    src: "/images/logos/claude-wordmark.svg",
     alt: "Claude AI Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/clerk-wordmark.svg",
+    src: "/images/logos/clerk-wordmark.svg",
     alt: "Clerk Logo",
   },
 ];

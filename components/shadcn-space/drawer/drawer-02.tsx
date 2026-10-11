@@ -54,7 +54,7 @@ export const SAMPLE_CART_ITEMS: CartItem[] = [
     price: 89.0,
     qty: 1,
     image:
-      "https://images.shadcnspace.com/assets/ecommerce/product-category/product-category-02-2.webp",
+      "/images/shadcnspace/ecommerce/product-category-02-2.webp",
   },
   {
     id: "apple-watch",
@@ -63,7 +63,7 @@ export const SAMPLE_CART_ITEMS: CartItem[] = [
     price: 429.0,
     qty: 1,
     image:
-      "https://images.shadcnspace.com/assets/ecommerce/product-category/product-category-03-1.webp",
+      "/images/shadcnspace/ecommerce/product-category-03-1.webp",
   },
 ];
 
@@ -75,7 +75,7 @@ const suggestions = [
     rating: 4.6,
     reviews: "1.2k",
     image:
-      "https://images.shadcnspace.com/assets/ecommerce/product-category/product-category-03-4.webp",
+      "/images/shadcnspace/ecommerce/product-category-03-4.webp",
   },
   {
     id: "glow-serum",
@@ -84,7 +84,7 @@ const suggestions = [
     rating: 4.8,
     reviews: "3.4k",
     image:
-      "https://images.shadcnspace.com/assets/ecommerce/product-category/product-category-03-3.webp",
+      "/images/shadcnspace/ecommerce/product-category-03-3.webp",
   },
   {
     id: "space-mini-tote",
@@ -93,7 +93,7 @@ const suggestions = [
     rating: 4.3,
     reviews: "287",
     image:
-      "https://images.shadcnspace.com/assets/ecommerce/product-overview/product-overview-02-img-1.webp",
+      "/images/shadcnspace/ecommerce/product-overview-02-img-1.webp",
   },
 ];
 

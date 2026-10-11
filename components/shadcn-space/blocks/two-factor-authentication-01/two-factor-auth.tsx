@@ -81,13 +81,13 @@ function DefaultLogo({ alt }: { alt: string }) {
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="https://images.shadcnspace.com/assets/logo/logo-icon-black.svg"
+        src="/images/shadcnspace/logo/logo-icon-black.svg"
         alt={alt}
         className="h-10 w-10 dark:hidden"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="https://images.shadcnspace.com/assets/logo/logo-icon-white.svg"
+        src="/images/shadcnspace/logo/logo-icon-white.svg"
         alt={alt}
         className="hidden h-10 w-10 dark:block"
       />

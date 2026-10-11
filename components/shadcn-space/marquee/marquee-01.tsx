@@ -14,53 +14,53 @@ export const DEMO_REVIEWS: ReviewItem[] = [
     name: "Ken Masters",
     username: "@kmasters",
     body: "“Our productivity has nearly doubled since onboarding. Automation features removed repetitive tasks, allowing our team to focus on building instead of managing operations.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/rough.webp",
+    profile: "/images/shadcnspace/profiles/rough.webp",
   },
   {
     name: "Kira Athrun",
     username: "@kathrun",
     body: "“What surprised us most was how quickly our team adapted. Minimal learning curve, excellent documentation, and powerful features make it a must-have for modern SaaS companies.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/albert.webp",
+    profile: "/images/shadcnspace/profiles/albert.webp",
   },
   {
     name: "Lirael Nassun",
     username: "@lnassun",
     body: "“This is easily one of the most reliable SaaS tools we’ve adopted. The UI is intuitive, integrations are seamless, and it saves us countless hours every week.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/linda.webp",
+    profile: "/images/shadcnspace/profiles/linda.webp",
   },
   {
     name: "Jessica",
     username: "@jessica",
     body: "Switching to this platform streamlined our entire workflow. Setup was effortless, performance improved instantly, and our team now ships features faster without worrying about infrastructure.",
-    profile: "https://images.shadcnspace.com/assets/profiles/jessica.webp",
+    profile: "/images/shadcnspace/profiles/jessica.webp",
   },
   {
     name: "Jenny",
     username: "@jenny",
     body: "“We evaluated multiple solutions, but this stood out immediately. It’s fast, scalable, and thoughtfully designed for growing teams that need stability without added complexity.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/jenny.webp",
+    profile: "/images/shadcnspace/profiles/jenny.webp",
   },
   {
     name: "Kira Athrun",
     username: "@kathrun",
     body: "“What surprised us most was how quickly our team adapted. Minimal learning curve, excellent documentation, and powerful features make it a must-have for modern SaaS companies.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/albert.webp",
+    profile: "/images/shadcnspace/profiles/albert.webp",
   },
   {
     name: "Ken Masters",
     username: "@kmasters",
     body: "“Our productivity has nearly doubled since onboarding. Automation features removed repetitive tasks, allowing our team to focus on building instead of managing operations.”",
-    profile: "https://images.shadcnspace.com/assets/profiles/rough.webp",
+    profile: "/images/shadcnspace/profiles/rough.webp",
   },
 ];
 
 /** Fallback avatars when i18n testimonials have no image. */
 export const REVIEW_PROFILE_FALLBACKS = [
-  "https://images.shadcnspace.com/assets/profiles/rough.webp",
-  "https://images.shadcnspace.com/assets/profiles/albert.webp",
-  "https://images.shadcnspace.com/assets/profiles/linda.webp",
-  "https://images.shadcnspace.com/assets/profiles/jessica.webp",
-  "https://images.shadcnspace.com/assets/profiles/jenny.webp",
+  "/images/shadcnspace/profiles/rough.webp",
+  "/images/shadcnspace/profiles/albert.webp",
+  "/images/shadcnspace/profiles/linda.webp",
+  "/images/shadcnspace/profiles/jessica.webp",
+  "/images/shadcnspace/profiles/jenny.webp",
 ] as const;
 
 export function ReviewCard({

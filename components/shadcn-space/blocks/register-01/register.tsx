@@ -151,13 +151,13 @@ const RegisterForm = ({
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://images.shadcnspace.com/assets/logo/logo-icon-black.svg"
+                      src="/images/shadcnspace/logo/logo-icon-black.svg"
                       alt={labels.logoAlt}
                       className="h-10 w-10 dark:hidden"
                     />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://images.shadcnspace.com/assets/logo/logo-icon-white.svg"
+                      src="/images/shadcnspace/logo/logo-icon-white.svg"
                       alt={labels.logoAlt}
                       className="hidden h-10 w-10 dark:block"
                     />
@@ -189,7 +189,7 @@ const RegisterForm = ({
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src="https://images.shadcnspace.com/assets/svgs/icon-google.svg"
+                          src="/images/shadcnspace/svgs/icon-google.svg"
                           alt=""
                           className="h-4 w-4"
                         />
@@ -202,13 +202,13 @@ const RegisterForm = ({
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src="https://images.shadcnspace.com/assets/svgs/icon-github.svg"
+                          src="/images/shadcnspace/svgs/icon-github.svg"
                           alt=""
                           className="h-4 w-4 dark:hidden"
                         />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src="https://images.shadcnspace.com/assets/svgs/icon-github-white.svg"
+                          src="/images/shadcnspace/svgs/icon-github-white.svg"
                           alt=""
                           className="hidden h-4 w-4 dark:block"
                         />

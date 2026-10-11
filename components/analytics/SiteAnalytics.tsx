@@ -31,7 +31,7 @@ export default function SiteAnalytics() {
         <Script
           defer
           data-domain={plausibleDomain}
-          src={process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? "https://plausible.io/js/script.js"}
+          src={process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL ?? "/js/plausible.js"}
           strategy="afterInteractive"
         />
       ) : null}
